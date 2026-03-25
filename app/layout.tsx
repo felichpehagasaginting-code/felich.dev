@@ -5,6 +5,9 @@ import { Metadata } from 'next';
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
 import BackToTop from '@/components/BackToTop';
+import EasterEgg from '@/components/EasterEgg';
+import CursorGlow from '@/components/CursorGlow';
+import TabTitle from '@/components/TabTitle';
 import ThemeProvider from '@/components/ThemeProvider';
 import CommandPalette from '@/components/CommandPalette';
 
@@ -57,6 +60,15 @@ export default function RootLayout({
 
             {/* Back to Top */}
             <BackToTop />
+
+            {/* Easter Egg */}
+            <EasterEgg />
+
+            {/* Cursor Glow */}
+            <CursorGlow />
+
+            {/* Tab Title Animation */}
+            <TabTitle />
           </ThemeProvider>
         </Providers>
       </body>

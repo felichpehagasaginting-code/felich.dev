@@ -68,6 +68,14 @@ export default function About() {
           <p className="text-neutral-500 dark:text-neutral-400 text-sm">
             A brief introduction to who I am.
           </p>
+          <div className="flex items-center gap-2 mt-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              3 min read
+            </span>
+          </div>
         </motion.div>
 
         <hr className="dotted-divider mb-8" />

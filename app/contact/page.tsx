@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import CopyButton from '@/components/CopyButton';
 
 const socials = [
   {
@@ -114,12 +115,21 @@ export default function Contact() {
             <div className="relative z-10">
               <h3 className="text-lg font-bold mb-1">{social.title}</h3>
               <p className="text-sm text-white/70 mb-4">{social.subtitle}</p>
-              <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/20 backdrop-blur-sm text-sm font-medium hover:bg-white/30 transition-colors">
-                {social.cta}
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                </svg>
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white/20 backdrop-blur-sm text-sm font-medium hover:bg-white/30 transition-colors">
+                  {social.cta}
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </span>
+                {social.href.startsWith('mailto:') && (
+                  <CopyButton
+                    text={social.href.replace('mailto:', '')}
+                    label="email"
+                    className="text-white/80 hover:text-white"
+                  />
+                )}
+              </div>
             </div>
             <div className="absolute top-4 right-4 text-4xl opacity-30">
               {social.icon}

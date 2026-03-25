@@ -42,10 +42,10 @@ const navLinks = [
 function ThemeSwitcher() {
   const { theme, setTheme } = useLayoutStore();
 
-  const themes: { key: 'light' | 'dark' | 'yellow'; icon: string }[] = [
-    { key: 'light', icon: '☀️' },
-    { key: 'dark', icon: '🌙' },
-    { key: 'yellow', icon: '⚡' },
+  const themes: { key: 'light' | 'dark' | 'yellow'; icon: string; label: string }[] = [
+    { key: 'light', icon: '☀️', label: 'Light Mode' },
+    { key: 'dark', icon: '🌙', label: 'Dark Mode' },
+    { key: 'yellow', icon: '⚡', label: 'Retro Mode' },
   ];
 
   return (
@@ -56,6 +56,7 @@ function ThemeSwitcher() {
           onClick={() => { setTheme(t.key); sounds.playSwitch(); }}
           className={`theme-btn ${theme === t.key ? 'active' : ''}`}
           aria-label={`Switch to ${t.key} theme`}
+          title={t.label}
         >
           {t.icon}
         </button>
@@ -193,7 +194,23 @@ export default function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800">
+      <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 space-y-3">
+        {/* Availability */}
+        <div className="flex items-center justify-center gap-2">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+          </span>
+          <span className="text-[11px] font-medium text-green-600 dark:text-green-400">
+            Available for Work
+          </span>
+        </div>
+
+        {/* Keyboard hint */}
+        <p className="text-[10px] text-neutral-400 dark:text-neutral-600 text-center">
+          Press <kbd className="px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 font-mono text-[9px]">⌘K</kbd> to search
+        </p>
+
         <p className="text-xs text-neutral-400 dark:text-neutral-500 text-center">
           &copy; {new Date().getFullYear()} Felich.
           <br />All rights reserved.
