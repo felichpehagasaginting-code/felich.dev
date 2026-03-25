@@ -290,3 +290,14 @@
   background-color: rgba(217, 119, 6, 0.3);
   color: #78350f;
 }
+
+/* 
+ * Skill Card Dynamic Hover
+ * Isolating hover states only for non-touch devices to prevent stuck active states on mobile 
+ */
+@media (hover: hover) and (pointer: fine) {
+  .skill-card:hover {
+    border-color: var(--skill-color) !important;
+    box-shadow: 0 8px 24px -6px var(--skill-glow) !important;
+  }
+}

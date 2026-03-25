@@ -168,55 +168,56 @@ export default function Home() {
           </div>
 
           {/* Skills grid */}
-          <div className="flex flex-wrap gap-3">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.02 } },
+              hidden: {}
+            }}
+            className="flex flex-wrap gap-2 md:gap-3"
+          >
             <AnimatePresence mode="popLayout">
-              {filteredSkills.map((skill, index) => (
+              {filteredSkills.map((skill) => (
                 <motion.div
                   key={skill.name}
                   layout
-                  initial={{ opacity: 0, scale: 0.8, y: 15 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ 
-                    type: 'spring',
-                    stiffness: 200,
-                    damping: 15,
-                    delay: index * 0.02 
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.8, y: 15 },
+                    visible: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 15 } }
                   }}
+                  exit={{ opacity: 0, scale: 0.8 }}
                   whileHover={{ 
                     scale: 1.05, 
                     y: -4,
                     transition: { type: 'spring', stiffness: 400, damping: 10 }
                   }}
                   whileTap={{ scale: 0.95 }}
-                  className="group relative flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-sm font-semibold 
+                  className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-semibold 
                              bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800
                              cursor-default overflow-hidden transition-all duration-300"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = skill.color;
-                    e.currentTarget.style.boxShadow = `0 8px 24px -6px ${skill.color}60`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '';
-                    e.currentTarget.style.boxShadow = '';
-                  }}
+                  style={{
+                    '--skill-color': skill.color,
+                    '--skill-glow': `${skill.color}60`
+                  } as React.CSSProperties}
                 >
                   {/* Background Tint on Hover */}
                   <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-300 pointer-events-none"
+                    className="absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-300 pointer-events-none hidden lg:block"
                     style={{ backgroundColor: skill.color }}
                   />
 
                   {/* Dot indicator with glow */}
                   <div
-                    className="relative w-3 h-3 rounded-full flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                    className="relative w-2.5 h-2.5 md:w-3 md:h-3 rounded-full flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
                     style={{ 
                       backgroundColor: skill.color, 
                       boxShadow: `0 0 12px ${skill.color}90` 
                     }}
                   >
                     <div 
-                      className="absolute inset-0 rounded-full animate-ping opacity-0 group-hover:opacity-60" 
+                      className="absolute inset-0 rounded-full animate-ping opacity-0 group-hover:opacity-60 hidden lg:block" 
                       style={{ backgroundColor: skill.color }} 
                     />
                   </div>
@@ -227,7 +228,7 @@ export default function Home() {
                 </motion.div>
               ))}
             </AnimatePresence>
-          </div>
+          </motion.div>
         </motion.section>
 
         {/* Keyboard shortcut hint */}
