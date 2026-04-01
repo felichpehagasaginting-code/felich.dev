@@ -104,10 +104,19 @@ export default function About() {
           </p>
         </motion.div>
 
-        <p className="text-neutral-500 dark:text-neutral-400 mb-2">Best regards,</p>
-        <p className="text-3xl font-bold italic text-primary mb-12" style={{ fontFamily: 'cursive' }}>
-          felich
-        </p>
+        <div className="flex items-center gap-4 mb-12">
+          <div className="flex flex-col">
+             <p className="text-neutral-500 dark:text-neutral-400 mb-0.5 text-xs font-mono uppercase tracking-widest">Digital Signature</p>
+             <p className="text-4xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" style={{ fontFamily: 'cursive' }}>
+               felich
+             </p>
+          </div>
+          <div className="w-px h-10 bg-neutral-200 dark:bg-neutral-800" />
+          <div className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex flex-col gap-1">
+             <span>SYS.AUTH: VERIFIED</span>
+             <span>ID: FLCH-2026-X</span>
+          </div>
+        </div>
 
         <hr className="dotted-divider mb-8" />
 
@@ -131,11 +140,12 @@ export default function About() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 * i }}
-                whileHover={{ y: -2, boxShadow: '0 8px 30px rgba(0,0,0,0.08)' }}
-                className="p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 transition-all"
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="group p-5 md:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl hover:bg-white dark:hover:bg-neutral-900/80 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-[0_0_30px_rgba(59,130,246,0.1)] relative overflow-hidden"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-xl flex-shrink-0">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/[0.03] to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                <div className="flex flex-col sm:flex-row items-start gap-4 relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-blue-500/20 group-hover:to-purple-500/20 shadow-inner flex items-center justify-center text-2xl flex-shrink-0 transition-colors">
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -174,11 +184,12 @@ export default function About() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 * i }}
-                whileHover={{ y: -2, boxShadow: '0 8px 30px rgba(0,0,0,0.08)' }}
-                className="p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 transition-all"
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="group p-5 md:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl hover:bg-white dark:hover:bg-neutral-900/80 hover:border-pink-500/30 transition-all duration-300 shadow-sm hover:shadow-[0_0_30px_rgba(236,72,153,0.1)] relative overflow-hidden"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-xl flex-shrink-0">
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/[0.03] to-pink-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                <div className="flex flex-col sm:flex-row items-start gap-4 relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-pink-500/20 group-hover:to-orange-500/20 shadow-inner flex items-center justify-center text-2xl flex-shrink-0 transition-colors">
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -214,24 +225,27 @@ export default function About() {
             {testimonials.map((t, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 + i * 0.1 }}
-                whileHover={{ y: -3, boxShadow: '0 12px 40px rgba(0,0,0,0.1)' }}
-                className="p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 transition-all"
+                whileHover={{ y: -5 }}
+                className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-purple-500/30 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(168,85,247,0.15)] flex flex-col justify-between"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-lg">
+                <div>
+                  <div className="text-4xl text-purple-500/20 mb-2 font-serif">"</div>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6 font-medium relative z-10">
+                    {t.text}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800/50">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-lg shadow-inner ring-2 ring-white dark:ring-neutral-900">
                     {t.avatar}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm">{t.name}</h4>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{t.role}</p>
+                    <h4 className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-r from-neutral-800 to-neutral-600 dark:from-white dark:to-neutral-400 group-hover:from-purple-500 group-hover:to-blue-500 transition-all">{t.name}</h4>
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-neutral-500">{t.role}</p>
                   </div>
                 </div>
-                <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed italic">
-                  &ldquo;{t.text}&rdquo;
-                </p>
               </motion.div>
             ))}
           </div>

@@ -1,56 +1,119 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TypingAnimation from '@/components/TypingAnimation';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import PageTransition from '@/components/PageTransition';
+import Hero3D from '@/components/Hero3D';
+import AnimatedDivider from '@/components/AnimatedDivider';
+import Reveal from '@/components/Reveal';
+import { sounds } from '@/lib/sounds';
 
 const skillCategories = [
-  { name: 'All', count: 32 },
-  { name: 'Frontend', count: 12 },
-  { name: 'Backend', count: 8 },
-  { name: 'Database', count: 5 },
-  { name: 'Tools', count: 7 },
+  { name: 'All', count: 42 },
+  { name: 'Frontend', count: 14 },
+  { name: 'Backend', count: 12 },
+  { name: 'Database', count: 6 },
+  { name: 'Tools', count: 10 },
 ];
 
 const skills = [
-  { name: 'HTML', color: '#e34f26', category: 'Frontend' },
-  { name: 'CSS', color: '#1572b6', category: 'Frontend' },
-  { name: 'JavaScript', color: '#f7df1e', category: 'Frontend' },
-  { name: 'TypeScript', color: '#3178c6', category: 'Frontend' },
-  { name: 'React.js', color: '#61dafb', category: 'Frontend' },
-  { name: 'Next.js', color: '#000000', category: 'Frontend' },
-  { name: 'TailwindCSS', color: '#06b6d4', category: 'Frontend' },
-  { name: 'Bootstrap', color: '#7952b3', category: 'Frontend' },
-  { name: 'Framer Motion', color: '#0055ff', category: 'Frontend' },
-  { name: 'Vite', color: '#646cff', category: 'Frontend' },
-  { name: 'Redux', color: '#764abc', category: 'Frontend' },
-  { name: 'Shadcn UI', color: '#000000', category: 'Frontend' },
-  { name: 'Node.js', color: '#339933', category: 'Backend' },
-  { name: 'Express.js', color: '#000000', category: 'Backend' },
-  { name: 'Python', color: '#3776ab', category: 'Backend' },
-  { name: 'Go', color: '#00add8', category: 'Backend' },
-  { name: 'PHP', color: '#777bb4', category: 'Backend' },
-  { name: 'Laravel', color: '#ff2d20', category: 'Backend' },
-  { name: 'Prisma', color: '#2d3748', category: 'Backend' },
-  { name: 'REST API', color: '#009688', category: 'Backend' },
-  { name: 'PostgreSQL', color: '#4169e1', category: 'Database' },
-  { name: 'MySQL', color: '#4479a1', category: 'Database' },
-  { name: 'MongoDB', color: '#47a248', category: 'Database' },
-  { name: 'Firebase', color: '#ffca28', category: 'Database' },
-  { name: 'Supabase', color: '#3ecf8e', category: 'Database' },
-  { name: 'Git', color: '#f05032', category: 'Tools' },
-  { name: 'GitHub', color: '#181717', category: 'Tools' },
-  { name: 'Docker', color: '#2496ed', category: 'Tools' },
-  { name: 'VS Code', color: '#007acc', category: 'Tools' },
-  { name: 'Postman', color: '#ff6c37', category: 'Tools' },
-  { name: 'npm', color: '#cb3837', category: 'Tools' },
-  { name: 'Vercel', color: '#000000', category: 'Tools' },
+  { name: 'HTML', color: '#e34f26', category: 'Frontend', slug: 'html5' },
+  { name: 'CSS', color: '#1572b6', category: 'Frontend', slug: 'css3' },
+  { name: 'JavaScript', color: '#f7df1e', category: 'Frontend', slug: 'javascript' },
+  { name: 'TypeScript', color: '#3178c6', category: 'Frontend', slug: 'typescript' },
+  { name: 'React.js', color: '#61dafb', category: 'Frontend', slug: 'react' },
+  { name: 'Next.js', color: '#000000', category: 'Frontend', slug: 'nextdotjs' },
+  { name: 'TailwindCSS', color: '#06b6d4', category: 'Frontend', slug: 'tailwindcss' },
+  { name: 'Bootstrap', color: '#7952b3', category: 'Frontend', slug: 'bootstrap' },
+  { name: 'Framer Motion', color: '#0055ff', category: 'Frontend', slug: 'framer' },
+  { name: 'Vite', color: '#646cff', category: 'Frontend', slug: 'vite' },
+  { name: 'Redux', color: '#764abc', category: 'Frontend', slug: 'redux' },
+  { name: 'Shadcn UI', color: '#000000', category: 'Frontend', slug: 'shadcnui' },
+  { name: 'Node.js', color: '#339933', category: 'Backend', slug: 'nodedotjs' },
+  { name: 'Express.js', color: '#000000', category: 'Backend', slug: 'express' },
+  { name: 'Python', color: '#3776ab', category: 'Backend', slug: 'python' },
+  { name: 'Go', color: '#00add8', category: 'Backend', slug: 'go' },
+  { name: 'PHP', color: '#777bb4', category: 'Backend', slug: 'php' },
+  { name: 'Laravel', color: '#ff2d20', category: 'Backend', slug: 'laravel' },
+  { name: 'Prisma', color: '#2d3748', category: 'Backend', slug: 'prisma' },
+  { name: 'REST API', color: '#009688', category: 'Backend', slug: 'postman' },
+  { name: 'PostgreSQL', color: '#4169e1', category: 'Database', slug: 'postgresql' },
+  { name: 'MySQL', color: '#4479a1', category: 'Database', slug: 'mysql' },
+  { name: 'MongoDB', color: '#47a248', category: 'Database', slug: 'mongodb' },
+  { name: 'Firebase', color: '#ffca28', category: 'Database', slug: 'firebase' },
+  { name: 'Supabase', color: '#3ecf8e', category: 'Database', slug: 'supabase' },
+  { name: 'Git', color: '#f05032', category: 'Tools', slug: 'git' },
+  { name: 'GitHub', color: '#181717', category: 'Tools', slug: 'github' },
+  { name: 'Docker', color: '#2496ed', category: 'Tools', slug: 'docker' },
+  { name: 'VS Code', color: '#007acc', category: 'Tools', slug: 'visualstudiocode' },
+  { name: 'Postman', color: '#ff6c37', category: 'Tools', slug: 'postman' },
+  { name: 'npm', color: '#cb3837', category: 'Tools', slug: 'npm' },
+  { name: 'Vercel', color: '#000000', category: 'Tools', slug: 'vercel' },
+  { name: 'Rust', color: '#dea584', category: 'Backend', slug: 'rust' },
+  { name: 'PyTorch', color: '#ee4c2c', category: 'Backend', slug: 'pytorch' },
+  { name: 'TensorFlow', color: '#ff6f00', category: 'Backend', slug: 'tensorflow' },
+  { name: 'Svelte', color: '#ff3e00', category: 'Frontend', slug: 'svelte' },
+  { name: 'React Query', color: '#ff4154', category: 'Frontend', slug: 'reactquery' },
+  { name: 'tRPC', color: '#398ad7', category: 'Backend', slug: 'trpc' },
+  { name: 'Claude', color: '#D97757', category: 'Tools', slug: 'claude' },
+  { name: 'Redis', color: '#dc382d', category: 'Database', slug: 'redis' },
+  { name: 'Linux', color: '#fcc624', category: 'Tools', slug: 'linux' },
+  { name: 'Cloudflare', color: '#f38020', category: 'Tools', slug: 'cloudflare' },
 ];
+
+const skillLinks: Record<string, string> = {
+  'HTML': 'https://developer.mozilla.org/en-US/docs/Web/HTML',
+  'CSS': 'https://developer.mozilla.org/en-US/docs/Web/CSS',
+  'JavaScript': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
+  'TypeScript': 'https://www.typescriptlang.org/',
+  'React.js': 'https://react.dev/',
+  'Next.js': 'https://nextjs.org/',
+  'TailwindCSS': 'https://tailwindcss.com/',
+  'Bootstrap': 'https://getbootstrap.com/',
+  'Framer Motion': 'https://www.framer.com/motion/',
+  'Vite': 'https://vitejs.dev/',
+  'Redux': 'https://redux.js.org/',
+  'Shadcn UI': 'https://ui.shadcn.com/',
+  'Node.js': 'https://nodejs.org/',
+  'Express.js': 'https://expressjs.com/',
+  'Python': 'https://www.python.org/',
+  'Go': 'https://go.dev/',
+  'PHP': 'https://www.php.net/',
+  'Laravel': 'https://laravel.com/',
+  'Prisma': 'https://www.prisma.io/',
+  'PostgreSQL': 'https://www.postgresql.org/',
+  'MySQL': 'https://www.mysql.com/',
+  'MongoDB': 'https://www.mongodb.com/',
+  'Firebase': 'https://firebase.google.com/',
+  'Supabase': 'https://supabase.com/',
+  'Git': 'https://git-scm.com/',
+  'GitHub': 'https://github.com/',
+  'Docker': 'https://www.docker.com/',
+  'VS Code': 'https://code.visualstudio.com/',
+  'Postman': 'https://www.postman.com/',
+  'npm': 'https://www.npmjs.com/',
+  'Vercel': 'https://vercel.com/'
+};
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [localTime, setLocalTime] = useState('');
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLocalTime(new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).format(new Date()));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const filteredSkills = activeFilter === 'All'
     ? skills
     : skills.filter(s => s.category === activeFilter);
@@ -59,106 +122,130 @@ export default function Home() {
     <PageTransition>
       <div>
         {/* Hero Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">
-            Hi, I&apos;m{' '}
-            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient-x pb-2 inline-block">
-              Felich
-            </span>
-          </h1>
+        <Reveal width="100%">
+          <section className="mb-12 flex flex-col md:flex-row items-center gap-8">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              whileHover={{ 
+                perspective: 1000,
+                rotateX: 1,
+                rotateY: -1,
+                transition: { type: 'spring', stiffness: 400, damping: 20 }
+              }}
+              className="flex-1"
+            >
+              <h1 className="text-4xl md:text-5xl font-bold mb-2">
+                Hi, I&apos;m{' '}
+                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient-x pb-2 inline-block">
+                  Felich
+                </span>
+              </h1>
 
-          <div className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 font-medium mb-4 h-8">
-            <TypingAnimation
-              texts={[
-                'Software Engineer',
-                'AI/ML Enthusiast',
-                'Full Stack Developer',
-                'FinTech Builder',
-                'Open Source Contributor',
-              ]}
-            />
-          </div>
+              <div className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 font-medium mb-4 h-8 relative z-10">
+                <TypingAnimation
+                  texts={[
+                    'Software Engineer',
+                    'AI/ML Enthusiast',
+                    'Full Stack Developer',
+                    'FinTech Builder',
+                    'Open Source Contributor',
+                  ]}
+                />
+              </div>
 
-          <div className="flex items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
-            <span className="flex items-center gap-1.5">
-              <span>•</span>
-              Based in Indonesia 🇮🇩
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span>•</span>
-              Onsite
-            </span>
-          </div>
+              <div className="flex items-center gap-6 text-sm text-neutral-500 dark:text-neutral-400 mb-6 relative z-10">
+                <div className="flex items-center gap-2 group cursor-help relative">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                  </span>
+                  <span>Based in Indonesia 🇮🇩</span>
+                  
+                  {/* Time Tooltip */}
+                  <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-3 py-1 rounded-lg text-xs font-mono shadow-xl whitespace-nowrap pointer-events-none z-50">
+                    Local Time: {localTime} (WIB)
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2 group cursor-default">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                  </span>
+                  <span>Available for Onsite</span>
+                </div>
+              </div>
 
-          <div className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed">
-            <p>
-              A Software Engineer dedicated to building impactful digital solutions. I specialize in developing
-              scalable web platforms and AI-driven systems using a modern tech stack, primarily Next.js, TypeScript,
-              Python, and Node.js.
-            </p>
-            <p>
-              My focus is on crafting software architecture that is well-structured, maintainable, and aligned with
-              business goals. I combine technical expertise with proactive communication and leadership to ensure
-              every project delivers logical clarity and a meaningful real-world impact.
-            </p>
-          </div>
-        </motion.section>
+              <div className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed relative z-10">
+                <p>
+                  A Software Engineer dedicated to building impactful digital solutions. I specialize in developing
+                  scalable web platforms and AI-driven systems using a modern tech stack, primarily Next.js, TypeScript,
+                  Python, and Node.js.
+                </p>
+                <p>
+                  My focus is on crafting software architecture that is well-structured, maintainable, and aligned with
+                  business goals. I combine technical expertise with proactive communication and leadership to ensure
+                  every project delivers logical clarity and a meaningful real-world impact.
+                </p>
+              </div>
+            </motion.div>
+            
+            <div className="w-full md:w-1/3 flex-shrink-0 animate-fade-in pointer-events-auto z-20 hover:cursor-grab active:cursor-grabbing interactive-element">
+              <Hero3D />
+            </div>
+          </section>
+        </Reveal>
 
         {/* Stats Counter Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="mb-12"
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-              <AnimatedCounter end={32} className="text-3xl font-bold text-primary" suffix="+" />
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Skills</p>
+        <Reveal width="100%" delay={0.4}>
+          <section className="mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <AnimatedCounter end={32} className="text-3xl font-bold text-primary" suffix="+" />
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Skills</p>
+              </div>
+              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <AnimatedCounter end={8} className="text-3xl font-bold text-primary" suffix="+" />
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Achievements</p>
+              </div>
+              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <AnimatedCounter end={4} className="text-3xl font-bold text-primary" suffix="+" />
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Projects</p>
+              </div>
+              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <AnimatedCounter end={2} className="text-3xl font-bold text-primary" suffix="+" />
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Years Exp.</p>
+              </div>
             </div>
-            <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-              <AnimatedCounter end={8} className="text-3xl font-bold text-primary" suffix="+" />
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Achievements</p>
-            </div>
-            <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-              <AnimatedCounter end={4} className="text-3xl font-bold text-primary" suffix="+" />
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Projects</p>
-            </div>
-            <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-              <AnimatedCounter end={2} className="text-3xl font-bold text-primary" suffix="+" />
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Years Exp.</p>
-            </div>
-          </div>
-        </motion.section>
+          </section>
+        </Reveal>
 
         {/* Skills Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mb-16"
-        >
-          <hr className="dotted-divider mb-8" />
+        <section className="mb-16">
+          <AnimatedDivider className="mb-8" />
 
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <span className="text-lg">{'</>'}</span>
-            Skills
-          </h2>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">
-            My professional skills.
-          </p>
+          <Reveal>
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              <span className="text-lg">{'</>'}</span>
+              Skills
+            </h2>
+          </Reveal>
+          
+          <Reveal delay={0.4}>
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">
+              My professional skills. Click to learn more.
+            </p>
+          </Reveal>
 
           {/* Filter pills */}
           <div className="flex flex-wrap gap-2 mb-6">
             {skillCategories.map((cat) => (
               <button
                 key={cat.name}
-                onClick={() => setActiveFilter(cat.name)}
+                onClick={() => { setActiveFilter(cat.name); sounds.playPop(); }}
+                onMouseEnter={() => sounds.playHover()}
                 className={`filter-pill ${activeFilter === cat.name ? 'active' : ''}`}
               >
                 {cat.name}
@@ -178,16 +265,20 @@ export default function Home() {
             }}
             className="flex flex-wrap gap-2 md:gap-3"
           >
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence>
               {filteredSkills.map((skill) => (
                 <motion.div
                   key={skill.name}
                   layout
-                  variants={{
-                    hidden: { opacity: 0, scale: 0.8, y: 15 },
-                    visible: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 15 } }
+                  onMouseEnter={() => sounds.playHover()}
+                  onClick={() => {
+                    sounds.playPop();
+                    const link = skillLinks[skill.name];
+                    if (link) window.open(link, '_blank');
                   }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.8, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 15 } }}
+                  exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.2 } }}
                   whileHover={{ 
                     scale: 1.05, 
                     y: -4,
@@ -196,7 +287,7 @@ export default function Home() {
                   whileTap={{ scale: 0.95 }}
                   className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-semibold 
                              bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800
-                             cursor-default overflow-hidden transition-all duration-300"
+                             cursor-pointer overflow-hidden transition-all duration-300"
                   style={{
                     '--skill-color': skill.color,
                     '--skill-glow': `${skill.color}60`
@@ -208,28 +299,60 @@ export default function Home() {
                     style={{ backgroundColor: skill.color }}
                   />
 
-                  {/* Dot indicator with glow */}
-                  <div
-                    className="relative w-2.5 h-2.5 md:w-3 md:h-3 rounded-full flex-shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  {/* Logo Indicator */}
+                  <motion.div
+                    className="relative w-4 h-4 md:w-5 md:h-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-0.5"
                     style={{ 
-                      backgroundColor: skill.color, 
-                      boxShadow: `0 0 12px ${skill.color}90` 
+                      filter: `drop-shadow(0 0 5px ${skill.color}50)` 
                     }}
                   >
-                    <div 
-                      className="absolute inset-0 rounded-full animate-ping opacity-0 group-hover:opacity-60 hidden lg:block" 
-                      style={{ backgroundColor: skill.color }} 
+                    <img 
+                      src={`https://cdn.simpleicons.org/${skill.slug}/${skill.color.replace('#', '')}`}
+                      alt={skill.name}
+                      className="w-full h-full object-contain"
                     />
-                  </div>
+                  </motion.div>
 
                   <span className="relative z-10 text-neutral-600 dark:text-neutral-300 transition-colors duration-300 group-hover:text-black dark:group-hover:text-white">
                     {skill.name}
                   </span>
+
+                  {/* Technical Meta-Data Tooltip */}
+                  <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                     <span className="text-[7px] font-mono text-neutral-400 uppercase tracking-tighter">
+                        Spec v1.0
+                     </span>
+                  </div>
+
+                  <div className="absolute inset-0 bg-white/95 dark:bg-neutral-950/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center px-4 z-20">
+                     <div className="flex items-center justify-between mb-1">
+                        <span className="text-[7px] font-bold font-mono tracking-widest text-primary/70 uppercase">
+                          {skill.category}
+                        </span>
+                        <span className="text-[7px] font-mono text-neutral-400">VER_1.2</span>
+                     </div>
+                     
+                     <div className="flex items-center justify-between pointer-events-none">
+                        <span className="text-[9px] font-mono font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-tighter">Expertise</span>
+                        <span className="text-[9px] font-bold font-mono text-primary">
+                          {(skill.name.length * 7 + 38) % 30 + 70}%
+                        </span>
+                     </div>
+                     
+                     <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-800 mt-1.5 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${(skill.name.length * 7 + 38) % 30 + 70}%` }}
+                          transition={{ duration: 0.8, ease: "easeOut" }}
+                          className="h-full bg-gradient-to-r from-blue-600 to-primary"
+                        />
+                     </div>
+                  </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </motion.div>
-        </motion.section>
+        </section>
 
         {/* Keyboard shortcut hint */}
         <motion.div

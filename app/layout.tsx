@@ -7,9 +7,15 @@ import MobileNav from '@/components/MobileNav';
 import BackToTop from '@/components/BackToTop';
 import EasterEgg from '@/components/EasterEgg';
 import CursorGlow from '@/components/CursorGlow';
-import TabTitle from '@/components/TabTitle';
 import ThemeProvider from '@/components/ThemeProvider';
 import CommandPalette from '@/components/CommandPalette';
+import ScrollProgress from '@/components/ScrollProgress';
+import LiveTicker from '@/components/LiveTicker';
+import ThemeWarp from '@/components/ThemeWarp';
+import EngineeringGrid from '@/components/EngineeringGrid';
+import ThemeMetaSync from '@/components/ThemeMetaSync';
+import PulseSync from '@/components/PulseSync';
+import NeuralHUD from '@/components/NeuralHUD';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,6 +46,11 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300`}>
         <Providers>
           <ThemeProvider>
+            <ThemeMetaSync />
+            <PulseSync />
+            <EngineeringGrid />
+            <ThemeWarp />
+            <ScrollProgress />
             {/* Command Palette (global) */}
             <CommandPalette />
 
@@ -52,7 +63,7 @@ export default function RootLayout({
 
               {/* Main Content */}
               <main className="flex-1 min-w-0 pt-14 lg:pt-0">
-                <div className="max-w-4xl mx-auto px-5 sm:px-8 pt-6 pb-24 lg:py-12">
+                <div className="max-w-4xl mx-auto px-5 sm:px-8 pt-6 pb-32 lg:py-12">
                   {children}
                 </div>
               </main>
@@ -67,8 +78,11 @@ export default function RootLayout({
             {/* Cursor Glow */}
             <CursorGlow />
 
-            {/* Tab Title Animation */}
-            <TabTitle />
+            {/* Live Monitoring Ticker */}
+            <LiveTicker />
+            
+            {/* Neural Log Monitor */}
+            <NeuralHUD />
           </ThemeProvider>
         </Providers>
       </body>

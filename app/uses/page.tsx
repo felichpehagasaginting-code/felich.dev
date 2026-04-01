@@ -7,48 +7,49 @@ const categories = [
   {
     title: '💻 Workstation',
     items: [
-      { name: 'Lenovo Legion 5', desc: 'Primary development machine', icon: '🖥️' },
-      { name: '27" External Monitor', desc: 'Extended workspace for coding', icon: '🖥️' },
-      { name: 'Mechanical Keyboard', desc: 'For long coding sessions', icon: '⌨️' },
-      { name: 'Wireless Mouse', desc: 'Ergonomic for daily use', icon: '🖱️' },
+      { name: 'Lenovo LOQ 15', desc: 'Primary development machine', slug: 'lenovo', color: '#E2231A' },
+      { name: 'Ubuntu', desc: 'Primary Operating System', slug: 'ubuntu', color: '#E95420' },
+      { name: 'Legion Mouse', desc: 'Ergonomic for daily use', slug: 'lenovo', color: '#E2231A' },
     ],
   },
   {
     title: '🛠️ Development Tools',
     items: [
-      { name: 'Visual Studio Code', desc: 'Primary code editor with extensions', icon: '📝' },
-      { name: 'GitHub', desc: 'Version control & collaboration', icon: '🐙' },
-      { name: 'Docker', desc: 'Containerization for dev environments', icon: '🐳' },
-      { name: 'Postman', desc: 'API testing & documentation', icon: '📮' },
-      { name: 'Vercel', desc: 'Deployment & hosting', icon: '▲' },
-      { name: 'Terminal (PowerShell / Bash)', desc: 'Daily command-line operations', icon: '💻' },
+      { name: 'Visual Studio Code', desc: 'Primary code editor with extensions', slug: 'visualstudiocode', color: '#007ACC' },
+      { name: 'Claude', desc: 'AI Coding Assistant & Pair Programming', slug: 'anthropic', color: '#D97757' },
+      { name: 'GitHub', desc: 'Version control & collaboration', slug: 'github', color: '#181717' },
+      { name: 'Docker', desc: 'Containerization for dev environments', slug: 'docker', color: '#2496ED' },
+      { name: 'Postman', desc: 'API testing & documentation', slug: 'postman', color: '#FF6C37' },
+      { name: 'Vercel', desc: 'Deployment & hosting', slug: 'vercel', color: '#000000' },
+      { name: 'Terminal / CLI', desc: 'Daily bash & system operations', slug: 'gnometerminal', color: '#4E9A06' },
     ],
   },
   {
     title: '🎨 Design & Productivity',
     items: [
-      { name: 'Figma', desc: 'UI/UX design & prototyping', icon: '🎨' },
-      { name: 'Notion', desc: 'Project management & notes', icon: '📋' },
-      { name: 'Google Workspace', desc: 'Docs, Sheets, Slides for collaboration', icon: '📊' },
-      { name: 'Canva', desc: 'Quick graphic design work', icon: '🖼️' },
+      { name: 'Figma', desc: 'UI/UX design & prototyping', slug: 'figma', color: '#F24E1E' },
+      { name: 'Notion', desc: 'Project management & notes', slug: 'notion', color: '#000000' },
+      { name: 'Google Workspace', desc: 'Docs, Sheets, Slides', slug: 'googleworkspace', color: '#4285F4' },
+      { name: 'Canva', desc: 'Quick graphic design work', slug: 'canva', color: '#00C4CC' },
     ],
   },
   {
     title: '🌐 Browser & Extensions',
     items: [
-      { name: 'Google Chrome', desc: 'Primary browser with DevTools', icon: '🌐' },
-      { name: 'React Developer Tools', desc: 'Component debugging', icon: '⚛️' },
-      { name: 'Grammarly', desc: 'Writing assistance', icon: '✍️' },
-      { name: 'uBlock Origin', desc: 'Ad blocking for cleaner browsing', icon: '🛡️' },
+      { name: 'Google Chrome', desc: 'Primary browser with DevTools', slug: 'googlechrome', color: '#4285F4' },
+      { name: 'React DevTools', desc: 'Component debugging', slug: 'react', color: '#61DAFB' },
+      { name: 'Grammarly', desc: 'Writing assistance', slug: 'grammarly', color: '#15A362' },
+      { name: 'uBlock Origin', desc: 'Ad blocking for cleaner browsing', slug: 'ublockorigin', color: '#800000' },
     ],
   },
   {
     title: '📱 Mobile & Communication',
     items: [
-      { name: 'iPhone', desc: 'Daily driver for communication', icon: '📱' },
-      { name: 'Discord', desc: 'Developer community & collaboration', icon: '💬' },
-      { name: 'Slack', desc: 'Team communication', icon: '💼' },
-      { name: 'Spotify', desc: 'Coding soundtrack', icon: '🎵' },
+      { name: 'iPhone 15 Plus', desc: 'Main daily driver', slug: 'apple', color: '#000000' },
+      { name: 'Poco F3', desc: 'Secondary device & testing', slug: 'xiaomi', color: '#FF6900' },
+      { name: 'Discord', desc: 'Developer community & collaboration', slug: 'discord', color: '#5865F2' },
+      { name: 'Slack', desc: 'Team communication', slug: 'slack', color: '#4A154B' },
+      { name: 'Spotify', desc: 'Coding soundtrack', slug: 'spotify', color: '#1DB954' },
     ],
   },
 ];
@@ -78,23 +79,32 @@ export default function Uses() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: catIndex * 0.1 }}
             >
-              <h2 className="text-xl font-bold mb-4">{cat.title}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
+                <span className="text-primary/50 text-base">⸺</span> {cat.title}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {cat.items.map((item, i) => (
                   <motion.div
                     key={item.name}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: catIndex * 0.1 + i * 0.05 }}
-                    className="group p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+                    className="group flex flex-col justify-between p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:shadow-[0_10px_40px_rgba(59,130,246,0.1)] hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden h-full"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
-                        {item.icon}
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/50 to-blue-500/0 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    <div className="flex items-start gap-4 relative z-10">
+                      <div className="w-12 h-12 rounded-2xl bg-white dark:bg-neutral-900 shadow-inner flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 border border-neutral-100 dark:border-neutral-800 relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-300" style={{ backgroundColor: item.color }} />
+                        <img 
+                           src={`https://cdn.simpleicons.org/${item.slug}/${item.color.replace('#', '')}`}
+                           alt={item.name}
+                           className="w-6 h-6 object-contain relative z-10 transition-transform duration-300 group-hover:scale-105"
+                           style={{ filter: `drop-shadow(0 4px 6px ${item.color}40)` }}
+                        />
                       </div>
-                      <div>
-                        <h3 className="font-bold text-sm group-hover:text-primary transition-colors">{item.name}</h3>
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400">{item.desc}</p>
+                      <div className="flex-1 min-w-0 pt-0.5">
+                        <h3 className="font-extrabold text-sm md:text-base group-hover:text-primary transition-colors tracking-tight leading-snug">{item.name}</h3>
+                        <p className="text-xs font-mono tracking-widest uppercase text-neutral-400 dark:text-neutral-500 mt-1">{item.desc}</p>
                       </div>
                     </div>
                   </motion.div>

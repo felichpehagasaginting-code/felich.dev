@@ -10,6 +10,8 @@ interface TypingAnimationProps {
   className?: string;
 }
 
+import { motion } from 'framer-motion';
+
 export default function TypingAnimation({
   texts,
   typingSpeed = 80,
@@ -57,7 +59,15 @@ export default function TypingAnimation({
   return (
     <span className={className}>
       {displayText}
-      <span className="animate-pulse text-primary">|</span>
+      <motion.span
+        key={displayText.length}
+        initial={{ opacity: 1, scale: 1 }}
+        animate={{ scale: [1, 1.3, 1] }}
+        transition={{ duration: 0.15 }}
+        className="inline-block"
+      >
+        <span className="animate-pulse text-primary font-bold">|</span>
+      </motion.span>
     </span>
   );
 }

@@ -203,17 +203,18 @@ export default function Achievements() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
           <AnimatePresence mode="popLayout">
             {filtered.map((item, i) => (
-              <motion.div key={item.title} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3, delay: i * 0.05 }} layout className="group p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-                <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-xl flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform`}>
+              <motion.div key={item.title} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3, delay: i * 0.05 }} layout className="group p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:bg-white dark:hover:bg-neutral-900/80 hover:shadow-[0_10px_40px_rgba(59,130,246,0.1)] hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="flex items-start gap-5 relative z-10">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-sm group-hover:text-primary transition-colors leading-snug">{item.title}</h3>
-                    <p className="text-xs text-primary/80 font-medium mt-1">{item.org}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">{item.type}</span>
-                      {item.year && <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{item.year}</span>}
+                    <h3 className="font-extrabold text-sm md:text-base group-hover:text-primary transition-colors leading-snug tracking-tight mb-0.5">{item.title}</h3>
+                    <p className="text-xs text-primary/80 font-bold uppercase tracking-wider">{item.org}</p>
+                    <div className="flex items-center gap-2 mt-3">
+                      <span className="px-2.5 py-1 text-[10px] font-bold rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 uppercase tracking-widest">{item.type}</span>
+                      {item.year && <span className="text-[10px] font-mono font-semibold text-neutral-400 dark:text-neutral-500 bg-neutral-50 dark:bg-neutral-900/50 px-2 py-0.5 rounded">{item.year}</span>}
                     </div>
                   </div>
                 </div>
@@ -228,23 +229,38 @@ export default function Achievements() {
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><span>🎓</span> Campus Academic</h2>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">Academic performance overview — Teknologi Rekayasa Perangkat Lunak</p>
 
-          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-neutral-500 dark:text-neutral-400">Aktif — Semester {currentSemester}</span>
+          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl mb-6 shadow-xl shadow-blue-500/5 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
+              <div className="space-y-4 text-sm flex-1">
+                <div className="flex items-center gap-2.5 inline-flex px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full w-fit">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-widest">Aktif — Semester {currentSemester}</span>
                 </div>
-                <p><span className="text-neutral-500 dark:text-neutral-400">Nama</span> <span className="font-semibold">: Felich Pehagasa Ginting</span></p>
-                <p><span className="text-neutral-500 dark:text-neutral-400">Program Studi</span> <span className="font-semibold">: Teknologi Rekayasa Perangkat Lunak</span></p>
-                <p><span className="text-neutral-500 dark:text-neutral-400">Jenjang</span> <span className="font-semibold">: D4 (Sarjana Terapan)</span></p>
-                <p><span className="text-neutral-500 dark:text-neutral-400">Tahun Kuliah</span> <span className="font-semibold">: 2025 – 2029</span></p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white/50 dark:bg-neutral-900/50 p-4 rounded-2xl border border-white/20 dark:border-neutral-800/50 backdrop-blur-sm">
+                  <div>
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 mb-1">Nama Mahasiswa</p>
+                    <p className="font-bold text-base text-neutral-800 dark:text-neutral-200">Felich Pehagasa Ginting</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 mb-1">Tahun Akademik</p>
+                    <p className="font-bold text-base text-neutral-800 dark:text-neutral-200">2025 \u2013 2029</p>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 mb-1">Program Studi & Jenjang</p>
+                    <p className="font-bold text-base text-neutral-800 dark:text-neutral-200">D4 Teknologi Rekayasa Perangkat Lunak</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <IPKRing value={academicStats.ipk} />
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="flex items-center gap-1.5">
-                  <span className="text-sm">{predikat.emoji}</span>
-                  <span className={`text-xs font-semibold ${predikat.color}`}>{predikat.label}</span>
+              <div className="flex flex-col items-center gap-3 bg-neutral-50 dark:bg-neutral-900/80 p-6 rounded-3xl border border-neutral-100 dark:border-neutral-800/80 shadow-inner">
+                <IPKRing value={academicStats.ipk} size={130} />
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2 }} className="flex items-center gap-2 bg-white dark:bg-black px-4 py-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 shadow-sm mt-1">
+                  <span className="text-base">{predikat.emoji}</span>
+                  <span className={`text-xs font-black uppercase tracking-widest ${predikat.color}`}>{predikat.label}</span>
                 </motion.div>
               </div>
             </div>
@@ -257,19 +273,21 @@ export default function Achievements() {
                 const isCompleted = sem.ips !== null;
                 const isCurrent = i === currentSemester;
                 return (
-                  <motion.div key={sem.semester} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: i * 0.06 }} className={`relative p-4 rounded-2xl border transition-all duration-300 ${isCompleted ? 'border-emerald-200 dark:border-emerald-800/50 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-neutral-900/50 hover:shadow-md hover:-translate-y-0.5' : isCurrent ? 'border-blue-200 dark:border-blue-800/50 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/20 dark:to-neutral-900/50 border-dashed' : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 opacity-50'}`}>
-                    <div className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold mb-2 ${isCompleted ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-blue-500 text-white animate-pulse' : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400'}`}>{sem.semester}</div>
+                  <motion.div key={sem.semester} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ type: 'spring', duration: 0.6, delay: i * 0.08 }} className={`relative p-5 rounded-3xl border transition-all duration-300 ${isCompleted ? 'border-emerald-200 dark:border-emerald-800/50 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md shadow-sm hover:shadow-[0_10px_30px_rgba(16,185,129,0.15)] hover:-translate-y-1 hover:border-emerald-500/40' : isCurrent ? 'border-blue-300 dark:border-blue-700/50 bg-blue-50/50 dark:bg-blue-900/10 backdrop-blur-md border-dashed shadow-inner' : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50/30 dark:bg-neutral-900/10 opacity-60 backdrop-blur-sm'}`}>
+                    <div className={`inline-flex items-center justify-center w-8 h-8 rounded-xl text-xs font-black mb-3 shadow-sm ${isCompleted ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' : isCurrent ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white animate-pulse' : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'}`}>S{sem.semester}</div>
                     {isCompleted ? (
                       <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ type: 'spring', stiffness: 200, delay: 0.2 + i * 0.06 }}>
-                        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{sem.ips!.toFixed(2)}</p>
-                        <p className="text-[10px] text-neutral-500 dark:text-neutral-400 mt-0.5">{sem.sks} SKS</p>
+                        <p className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br from-emerald-500 to-teal-600">{sem.ips!.toFixed(2)}</p>
+                        <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-600/70 dark:text-emerald-400/70 mt-1">{sem.sks} SKS</p>
                       </motion.div>
                     ) : isCurrent ? (
-                      <div><p className="text-sm font-medium text-blue-500 dark:text-blue-400">Ongoing</p><p className="text-[10px] text-neutral-400">In progress</p></div>
+                      <div><p className="text-lg font-bold text-blue-500 dark:text-blue-400 mt-1">Ongoing</p><p className="text-[10px] font-mono tracking-widest uppercase text-blue-400/70 mt-1">In progress</p></div>
                     ) : (
-                      <div><p className="text-sm font-medium text-neutral-400 dark:text-neutral-500">—</p><p className="text-[10px] text-neutral-400">Upcoming</p></div>
+                      <div><p className="text-lg font-bold text-neutral-400 dark:text-neutral-600 mt-1">—</p><p className="text-[10px] font-mono tracking-widest uppercase text-neutral-400/70 mt-1">Upcoming</p></div>
                     )}
-                    <p className="text-[10px] text-neutral-400 dark:text-neutral-500 mt-2 leading-tight">{sem.label}</p>
+                    <div className="absolute top-4 right-4 text-[8px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500 text-right opacity-50">
+                       {sem.label.split(' ').map((t, idx) => <span key={idx} className="block">{t}</span>)}
+                    </div>
                   </motion.div>
                 );
               })}
@@ -313,13 +331,14 @@ export default function Achievements() {
           <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">Campus organizations and community involvement.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {organizations.map((org, i) => (
-              <motion.div key={org.name} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }} whileHover={{ y: -3, boxShadow: '0 12px 40px rgba(0,0,0,0.1)' }} className="p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${org.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg`}>{org.icon}</div>
+              <motion.div key={org.name} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }} whileHover={{ y: -4, scale: 1.01 }} className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl transition-all duration-300 hover:shadow-[0_10px_40px_rgba(59,130,246,0.1)] hover:border-blue-500/30 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/[0.03] to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                <div className="flex flex-col sm:flex-row items-start gap-5 relative z-10">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${org.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300`}>{org.icon}</div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-base">{org.name}</h3>
-                    <p className="text-sm text-primary font-semibold mt-0.5">{org.role}</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-2 leading-relaxed">{org.desc}</p>
+                    <h3 className="font-extrabold text-base md:text-lg group-hover:text-primary transition-colors">{org.name}</h3>
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-primary font-bold mt-1 inline-block px-2 py-0.5 bg-primary/10 rounded-md border border-primary/20">{org.role}</p>
+                    <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-3 leading-relaxed font-medium">{org.desc}</p>
                   </div>
                 </div>
               </motion.div>

@@ -20,6 +20,8 @@ const commands = [
   { id: 'email', label: 'Send Email', icon: '📧', href: 'mailto:felichpehagasaginting@gmail.com', category: 'Social', external: true },
 ];
 
+import { sounds } from '@/lib/sounds';
+
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -44,6 +46,7 @@ export default function CommandPalette() {
     setOpen(false);
     setQuery('');
     setSelectedIndex(0);
+    sounds.playPop();
     if (cmd.external) {
       window.open(cmd.href, '_blank');
     } else {
@@ -72,16 +75,20 @@ export default function CommandPalette() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setOpen(prev => !prev);
+        setOpen(prev => {
+          sounds.playSwitch();
+          return !prev;
+        });
       }
       if (e.key === 'Escape') {
+        if (open) sounds.playSwitch();
         setOpen(false);
         setQuery('');
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [open]);
 
   useEffect(() => {
     if (open) {

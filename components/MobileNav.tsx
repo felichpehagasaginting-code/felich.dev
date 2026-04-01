@@ -5,8 +5,10 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { sounds } from '@/lib/sounds';
+import { triggerImpact } from '@/lib/impact';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import Magnetic from '@/components/Magnetic';
 
 const navLinks = [
   {
@@ -27,6 +29,11 @@ const navLinks = [
   {
     href: '/projects', label: 'Projects', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+    )
+  },
+  {
+    href: '/blog', label: 'Blog', icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
     )
   },
   {
@@ -58,7 +65,7 @@ const navLinks = [
 
 export default function MobileNav() {
   const pathname = usePathname();
-  const { mobileMenuOpen, setMobileMenuOpen, theme, setTheme, language, toggleLanguage } = useLayoutStore();
+  const { mobileMenuOpen, setMobileMenuOpen, theme, setTheme, language, toggleLanguage, triggerWarp } = useLayoutStore();
 
   return (
     <>
@@ -69,6 +76,7 @@ export default function MobileNav() {
           </Link>
           <button
             onClick={() => { setMobileMenuOpen(!mobileMenuOpen); sounds.playPop(); }}
+            onMouseEnter={() => sounds.playHover()}
             className="p-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
             aria-label="Toggle menu"
           >
@@ -104,16 +112,18 @@ export default function MobileNav() {
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-neutral-200/50 dark:ring-neutral-700/50">
-                    <Image
-                      src="/images/profile.jpg"
-                      alt="Felich"
-                      fill
-                      className="object-cover"
-                      sizes="48px"
-                      priority
-                    />
-                  </div>
+                  <Magnetic>
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-neutral-200/50 dark:ring-neutral-700/50">
+                      <Image
+                        src="/images/profile.jpg"
+                        alt="Felich"
+                        fill
+                        className="object-cover"
+                        sizes="48px"
+                        priority
+                      />
+                    </div>
+                  </Magnetic>
                   <div>
                     <h2 className="font-bold flex items-center gap-1">
                       Felich
@@ -126,6 +136,7 @@ export default function MobileNav() {
 
                 <button
                   onClick={() => { setMobileMenuOpen(false); sounds.playPop(); }}
+                  onMouseEnter={() => sounds.playHover()}
                   className="p-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,6 +148,7 @@ export default function MobileNav() {
               <div className="flex items-center gap-3 mb-4">
                 <button
                   onClick={() => { toggleLanguage(); sounds.playSwitch(); }}
+                  onMouseEnter={() => sounds.playHover()}
                   className="flex items-center rounded-full border border-neutral-200 dark:border-neutral-700 overflow-hidden text-xs font-semibold"
                 >
                   <span className={`px-2.5 py-1 transition-all ${language === 'en' ? 'bg-primary text-white' : 'text-neutral-500'}`}>US</span>
@@ -145,17 +157,25 @@ export default function MobileNav() {
 
                 <div className="flex items-center gap-1">
                   {[
-                    { key: 'light' as const, icon: '☀️' },
-                    { key: 'dark' as const, icon: '🌙' },
-                    { key: 'yellow' as const, icon: '⚡' },
+                    { key: 'light' as const, icon: '☀️', color: '#ffffff' },
+                    { key: 'dark' as const, icon: '🌙', color: '#171717' },
+                    { key: 'yellow' as const, icon: '⚡', color: '#fef9ed' },
                   ].map((t) => (
-                    <button
-                      key={t.key}
-                      onClick={() => { setTheme(t.key); sounds.playSwitch(); }}
-                      className={`theme-btn ${theme === t.key ? 'active' : ''}`}
-                    >
-                      {t.icon}
-                    </button>
+                    <Magnetic key={t.key}>
+                      <button
+                        key={t.key}
+                        onClick={(e) => { 
+                          setTheme(t.key); 
+                          triggerWarp(e.clientX, e.clientY, t.color);
+                          triggerImpact();
+                          sounds.playSwitch(); 
+                        }}
+                        onMouseEnter={() => sounds.playHover()}
+                        className={`theme-btn ${theme === t.key ? 'active' : ''}`}
+                      >
+                        {t.icon}
+                      </button>
+                    </Magnetic>
                   ))}
                 </div>
               </div>
@@ -174,7 +194,8 @@ export default function MobileNav() {
                     >
                       <Link
                         href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={() => { setMobileMenuOpen(false); sounds.playPop(); }}
+                        onMouseEnter={() => sounds.playHover()}
                         className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${isActive
                             ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 font-semibold'
                             : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/50'

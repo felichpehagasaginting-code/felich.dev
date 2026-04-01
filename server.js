@@ -106,13 +106,59 @@ app.get('/api/contacts', (req, res) => {
   }
 });
 
+// GET Guestbook entries
+app.get('/api/guestbook', (req, res) => {
+  const guestbookPath = path.join(DATA_DIR, 'guestbook.json');
+  if (fs.existsSync(guestbookPath)) {
+    res.json(JSON.parse(fs.readFileSync(guestbookPath, 'utf8')));
+  } else {
+    // Default initial message
+    res.json([{ name: 'System', message: 'Welcome to the guestbook! Be the first to leave a message. 🎉', date: new Date().toISOString(), avatar: '🤖' }]);
+  }
+});
+
+// POST Guestbook entry
+app.post('/api/guestbook', (req, res) => {
+  try {
+    const { name, message } = req.body;
+    if (!name || !message) {
+      return res.status(400).json({ error: 'Name and message are required' });
+    }
+
+    const entry = {
+      id: Date.now().toString(),
+      name: name.substring(0, 50),
+      message: message.substring(0, 500),
+      date: new Date().toISOString(),
+      avatar: '👤'
+    };
+
+    const guestbookPath = path.join(DATA_DIR, 'guestbook.json');
+    let entries = [];
+    
+    if (fs.existsSync(guestbookPath)) {
+      entries = JSON.parse(fs.readFileSync(guestbookPath, 'utf8'));
+    } else {
+      entries = [{ name: 'System', message: 'Welcome to the guestbook! Be the first to leave a message. 🎉', date: new Date().toISOString(), avatar: '🤖' }];
+    }
+    
+    entries.unshift(entry); // Add to top
+    
+    fs.writeFileSync(guestbookPath, JSON.stringify(entries, null, 2));
+    res.json({ success: true, entry });
+  } catch (error) {
+    console.error('Guestbook error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Date().toISOString() }));
 
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on http://localhost:${PORT}`);
   console.log(`📧 Contact API: http://localhost:${PORT}/api/contact`);
-  console.log(`📊 View submissions: http://localhost:${PORT}/api/contacts`);
+  console.log(`📝 Guestbook API: http://localhost:${PORT}/api/guestbook`);
   console.log('💡 Copy .env.example to .env and configure email');
 });
 

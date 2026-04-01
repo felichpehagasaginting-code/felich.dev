@@ -8,10 +8,12 @@ interface LayoutState {
   language: 'en' | 'id';
   theme: Theme;
   mobileMenuOpen: boolean;
+  warp: { x: number; y: number; color: string } | null;
   toggleLayout: () => void;
   toggleLanguage: () => void;
   setTheme: (theme: Theme) => void;
   setMobileMenuOpen: (open: boolean) => void;
+  triggerWarp: (x: number, y: number, color: string) => void;
 }
 
 export const useLayoutStore = create<LayoutState>()(
@@ -21,12 +23,17 @@ export const useLayoutStore = create<LayoutState>()(
       language: 'en',
       theme: 'dark',
       mobileMenuOpen: false,
+      warp: null,
       toggleLayout: () => set((state) => ({ isSidebar: !state.isSidebar })),
       toggleLanguage: () => set((state) => ({
         language: state.language === 'en' ? 'id' : 'en'
       })),
       setTheme: (theme: Theme) => set({ theme }),
       setMobileMenuOpen: (open: boolean) => set({ mobileMenuOpen: open }),
+      triggerWarp: (x, y, color) => {
+        set({ warp: { x, y, color } });
+        setTimeout(() => set({ warp: null }), 1000);
+      },
     }),
     {
       name: 'felich-portfolio-layout',

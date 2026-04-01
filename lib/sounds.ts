@@ -72,6 +72,36 @@ class SoundController {
       // browser audio context issue, ignore
     }
   }
+
+  public playHover() {
+    if (!this.isEnabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1000, this.ctx.currentTime + 0.02);
+      
+      gain.gain.setValueAtTime(0.02, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.02);
+      
+      osc.start(this.ctx.currentTime);
+      osc.stop(this.ctx.currentTime + 0.02);
+    } catch (e) {
+      // ignore
+    }
+  }
 }
 
 export const sounds = new SoundController();
