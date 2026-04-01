@@ -98,7 +98,6 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden lg:flex flex-col w-64 min-w-[256px] h-screen sticky top-0 p-6 overflow-y-auto border-r border-neutral-200/50 dark:border-neutral-800/50">
-      {/* Profile */}
       <div className="mb-6">
         <div className="mb-4 group cursor-pointer">
           <div className="relative w-28 h-28 mx-auto rounded-full overflow-hidden ring-4 ring-neutral-200/50 dark:ring-neutral-700/50 shadow-lg transition-transform duration-500 group-hover:scale-105 group-hover:ring-primary/50">
@@ -121,7 +120,6 @@ export default function Sidebar() {
             </svg>
           </h1>
 
-          {/* Status badge */}
           <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-700 dark:text-green-400 overflow-hidden">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
             <span className="whitespace-nowrap flex gap-1">
@@ -145,19 +143,16 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Controls row */}
       <div className="flex items-center justify-center gap-3 mb-4">
         <LanguageSwitcher />
       </div>
 
-      {/* Theme row */}
       <div className="flex items-center justify-center mb-6">
         <ThemeSwitcher />
       </div>
 
       <hr className="border-neutral-200 dark:border-neutral-800 mb-4" />
 
-      {/* Navigation */}
       <nav className="flex-1 space-y-1">
         {navLinks.map((link) => {
           const isActive = pathname === link.href;
@@ -179,7 +174,6 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Command Palette hint */}
       <div className="mt-4 mb-2">
         <button
           onClick={() => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true })); }}
@@ -193,9 +187,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Footer */}
       <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 space-y-3">
-        {/* Availability */}
         <div className="flex items-center justify-center gap-2">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -206,7 +198,6 @@ export default function Sidebar() {
           </span>
         </div>
 
-        {/* Keyboard hint */}
         <p className="text-[10px] text-neutral-400 dark:text-neutral-600 text-center">
           Press <kbd className="px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 font-mono text-[9px]">⌘K</kbd> to search
         </p>
