@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
-import { Briefcase, GraduationCap, Quote, MapPin, Calendar, Verified, UserCheck, MessageSquare } from 'lucide-react';
+import { Briefcase, GraduationCap, Quote, MapPin, Calendar, Verified, ShieldCheck, MessageSquare } from 'lucide-react';
 
 const career = [
   {
@@ -37,19 +37,19 @@ const testimonials = [
   {
     name: 'Project Collaborator',
     role: 'Senior Developer',
-    avatar: '👨‍💻',
+    initials: 'PC',
     text: 'Felich demonstrates exceptional problem-solving skills and a deep understanding of modern web technologies. His code is always clean, well-documented, and scalable.',
   },
   {
     name: 'Academic Mentor',
     role: 'University Lecturer',
-    avatar: '👨‍🏫',
+    initials: 'AM',
     text: 'One of the most dedicated and talented students I\'ve had. His passion for AI and software engineering is truly inspiring, consistently going above and beyond expectations.',
   },
   {
     name: 'Client',
     role: 'Startup Founder',
-    avatar: '🧑‍💼',
+    initials: 'CL',
     text: 'Working with Felich was an excellent experience. He delivered a high-quality full-stack application on time and with great attention to detail. Highly recommended!',
   },
 ];
@@ -114,7 +114,7 @@ export default function About() {
           </div>
           <div className="w-px h-12 bg-neutral-200 dark:bg-neutral-800" />
           <div className="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex flex-col gap-1.5 leading-none">
-             <span className="flex items-center gap-1.5"><UserCheck className="w-3 h-3" /> SYS.AUTH: VERIFIED</span>
+             <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3 text-green-500" /> SYS.AUTH: VERIFIED</span>
              <span>ID: FLCH-2026-X</span>
              <span className="opacity-50">TS: {new Date().toLocaleDateString()}</span>
           </div>
@@ -240,8 +240,8 @@ export default function About() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800/50">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-lg shadow-inner ring-2 ring-white dark:ring-neutral-900">
-                    {t.avatar}
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-900 border border-neutral-700/50 flex items-center justify-center text-sm font-bold text-white shadow-inner">
+                    {t.initials}
                   </div>
                   <div>
                     <h4 className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-r from-neutral-800 to-neutral-600 dark:from-white dark:to-neutral-400 group-hover:from-purple-500 group-hover:to-blue-500 transition-all">{t.name}</h4>
