@@ -285,12 +285,12 @@ export default function Home() {
                   exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.2 } }}
                   whileHover={{ 
                     scale: 1.05, 
-                    y: -4,
-                    transition: { type: 'spring', stiffness: 400, damping: 10 }
+                    y: -2,
+                    boxShadow: "0 10px 30px -10px rgba(59, 130, 246, 0.3)"
                   }}
                   whileTap={{ scale: 0.95 }}
                   className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-semibold 
-                             bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800
+                             bg-white/50 dark:bg-neutral-900/40 backdrop-blur-md border border-neutral-200 dark:border-neutral-800
                              cursor-pointer overflow-hidden transition-all duration-300"
                   style={{
                     '--skill-color': skill.color,

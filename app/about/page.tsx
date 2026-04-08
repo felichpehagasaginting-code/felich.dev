@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
+import { Briefcase, GraduationCap, Quote, MapPin, Calendar, Verified, UserCheck, MessageSquare } from 'lucide-react';
 
 const career = [
   {
@@ -9,7 +10,7 @@ const career = [
     company: 'Self-Employed',
     location: 'Indonesia',
     period: '2024 - Present',
-    icon: '💻',
+    icon: Briefcase,
     details: 'Building production web applications, AI/ML pipelines, and FinTech solutions for clients.',
   },
   {
@@ -17,7 +18,7 @@ const career = [
     company: 'Various Projects',
     location: 'Indonesia',
     period: '2023 - 2024',
-    icon: '🔧',
+    icon: Briefcase,
     details: 'React/Next.js, Node.js, Python, database optimization, API development.',
   },
 ];
@@ -27,7 +28,7 @@ const education = [
     school: 'Politeknik Kelapa Sawit Citra Widya Edukasi',
     degree: 'D4 Software Engineering Technology',
     period: '2025 - 2029',
-    icon: '🎓',
+    icon: GraduationCap,
     location: 'Indonesia',
   },
 ];
@@ -104,17 +105,18 @@ export default function About() {
           </p>
         </motion.div>
 
-        <div className="flex items-center gap-4 mb-12">
+        <div className="flex items-center gap-6 mb-12 p-6 rounded-3xl bg-neutral-50/50 dark:bg-neutral-900/30 border border-neutral-200 dark:border-neutral-800 w-fit">
           <div className="flex flex-col">
-             <p className="text-neutral-500 dark:text-neutral-400 mb-0.5 text-xs font-mono uppercase tracking-widest">Digital Signature</p>
-             <p className="text-4xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" style={{ fontFamily: 'cursive' }}>
-               felich
+             <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400 mb-2 flex items-center gap-1.5"><Verified className="w-3 h-3 text-blue-500" /> Digital Signature</p>
+             <p className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-sm select-none" style={{ fontFamily: '"Great Vibes", cursive' }}>
+               Felich
              </p>
           </div>
-          <div className="w-px h-10 bg-neutral-200 dark:bg-neutral-800" />
-          <div className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex flex-col gap-1">
-             <span>SYS.AUTH: VERIFIED</span>
+          <div className="w-px h-12 bg-neutral-200 dark:bg-neutral-800" />
+          <div className="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex flex-col gap-1.5 leading-none">
+             <span className="flex items-center gap-1.5"><UserCheck className="w-3 h-3" /> SYS.AUTH: VERIFIED</span>
              <span>ID: FLCH-2026-X</span>
+             <span className="opacity-50">TS: {new Date().toLocaleDateString()}</span>
           </div>
         </div>
 
@@ -129,7 +131,7 @@ export default function About() {
           className="mb-12"
         >
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <span>💼</span> Career
+            <Briefcase className="w-6 h-6 text-primary" /> Career
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">My professional journey.</p>
 
@@ -145,16 +147,16 @@ export default function About() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/[0.03] to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                 <div className="flex flex-col sm:flex-row items-start gap-4 relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-blue-500/20 group-hover:to-purple-500/20 shadow-inner flex items-center justify-center text-2xl flex-shrink-0 transition-colors">
-                    {item.icon}
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-blue-500/20 group-hover:to-purple-500/20 shadow-inner flex items-center justify-center text-white flex-shrink-0 transition-colors">
+                    <item.icon className="w-6 h-6 text-neutral-500 dark:text-neutral-400 group-hover:text-primary transition-colors" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-lg">{item.role}</h3>
                     <p className="text-sm text-primary font-medium">{item.company}</p>
-                    <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                      <span>{item.location}</span>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</span>
                       <span>•</span>
-                      <span>{item.period}</span>
+                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {item.period}</span>
                     </div>
                     <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">{item.details}</p>
                   </div>
@@ -173,7 +175,7 @@ export default function About() {
           className="mb-12"
         >
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <span>🎓</span> Education
+            <GraduationCap className="w-6 h-6 text-pink-500" /> Education
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">My academic background.</p>
 
@@ -189,16 +191,16 @@ export default function About() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/[0.03] to-pink-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                 <div className="flex flex-col sm:flex-row items-start gap-4 relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-pink-500/20 group-hover:to-orange-500/20 shadow-inner flex items-center justify-center text-2xl flex-shrink-0 transition-colors">
-                    {item.icon}
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-pink-500/20 group-hover:to-orange-500/20 shadow-inner flex items-center justify-center text-white flex-shrink-0 transition-colors">
+                    <item.icon className="w-6 h-6 text-neutral-500 dark:text-neutral-400 group-hover:text-pink-500 transition-colors" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-lg">{item.school}</h3>
                     <p className="text-sm text-primary font-medium">{item.degree}</p>
-                    <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                      <span>{item.location}</span>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</span>
                       <span>•</span>
-                      <span>{item.period}</span>
+                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {item.period}</span>
                     </div>
                   </div>
                 </div>
@@ -217,7 +219,7 @@ export default function About() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <span>💬</span> Testimonials
+            <MessageSquare className="w-6 h-6 text-purple-500" /> Testimonials
           </h2>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">What people say about working with me.</p>
 
@@ -232,7 +234,7 @@ export default function About() {
                 className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-purple-500/30 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(168,85,247,0.15)] flex flex-col justify-between"
               >
                 <div>
-                  <div className="text-4xl text-purple-500/20 mb-2 font-serif">"</div>
+                  <div className="text-4xl text-purple-500/20 mb-2 font-serif group-hover:text-purple-500/40 transition-colors"><Quote className="fill-current" /></div>
                   <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6 font-medium relative z-10">
                     {t.text}
                   </p>

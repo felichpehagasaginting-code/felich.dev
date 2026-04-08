@@ -128,9 +128,9 @@ export default function Sidebar() {
         </Magnetic>
 
         <div className="text-center">
-          <h1 className="text-lg font-bold flex items-center justify-center gap-1.5">
-            Felich
-            <svg className="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+          <h1 className="text-lg font-bold flex items-center justify-center gap-1.5 group">
+            <span className="bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-white dark:to-neutral-400 bg-clip-text text-transparent">Felich</span>
+            <svg className="w-4 h-4 text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </h1>
@@ -245,7 +245,7 @@ export default function Sidebar() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
           </span>
-          <span className="text-[11px] font-medium text-green-600 dark:text-green-400">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-green-600 dark:text-green-400 group cursor-default">
             Available for Work
           </span>
         </div>
