@@ -141,9 +141,9 @@ export default function Home() {
               }}
               className="flex-1"
             >
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">
+              <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter leading-tight">
                 Hi, I&apos;m{' '}
-                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient-x pb-2 inline-block">
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent animate-gradient-x pb-4 inline-block drop-shadow-sm">
                   Felich
                 </span>
               </h1>
