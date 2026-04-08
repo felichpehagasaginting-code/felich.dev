@@ -55,6 +55,20 @@ const testimonials = [
 ];
 
 export default function About() {
+  const bioContent = `
+    I'm Felich, an Indonesia-based Software Engineer dedicated to building impactful digital solutions.
+    I specialize in developing scalable web platforms and mobile applications using a modern tech stack,
+    including Next.js, TypeScript, Python, and Node.js.
+    My primary focus is crafting software architecture that doesn't just work but is well-structured,
+    maintainable, and scalable to meet business needs. I believe that high-quality code must go hand-in-hand
+    with system efficiency and logical clarity.
+    I blend technical expertise with proactive communication, critical thinking, and effective time management.
+    I thrive in collaborative environments and leverage leadership skills to ensure every project delivers
+    optimal results and a real-world impact.
+  `;
+
+  const readingTime = Math.ceil(bioContent.split(' ').length / 200);
+
   return (
     <PageTransition>
       <div>
@@ -70,11 +84,11 @@ export default function About() {
             A brief introduction to who I am.
           </p>
           <div className="flex items-center gap-2 mt-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
-              3 min read
+              {readingTime} min read
             </span>
           </div>
         </motion.div>

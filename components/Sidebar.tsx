@@ -10,6 +10,7 @@ import { triggerImpact } from '@/lib/impact';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
+import { Volume2, VolumeX, GitBranch } from 'lucide-react';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: (
@@ -96,6 +97,31 @@ function LanguageSwitcher() {
   );
 }
 
+function SoundSwitcher() {
+  const [isEnabled, setIsEnabled] = useState(true);
+
+  useEffect(() => {
+    setIsEnabled(sounds.getStatus());
+  }, []);
+
+  const handleToggle = () => {
+    const newState = sounds.toggle();
+    setIsEnabled(newState);
+    if (newState) sounds.playSwitch();
+  };
+
+  return (
+    <button
+      onClick={handleToggle}
+      onMouseEnter={() => sounds.playHover()}
+      className={`p-2 rounded-xl border border-neutral-200 dark:border-neutral-800 transition-all ${isEnabled ? 'bg-primary/5 text-primary border-primary/20' : 'text-neutral-400 opacity-50'}`}
+      title={isEnabled ? 'Mute Sounds' : 'Unmute Sounds'}
+    >
+      {isEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+    </button>
+  );
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
   const { theme } = useLayoutStore();
@@ -162,8 +188,10 @@ export default function Sidebar() {
         <LanguageSwitcher />
       </div>
 
-      <div className="flex items-center justify-center mb-6">
+      <div className="flex items-center justify-center gap-3 mb-6">
         <ThemeSwitcher />
+        <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-800" />
+        <SoundSwitcher />
       </div>
 
       <hr className="border-neutral-200 dark:border-neutral-800 mb-4" />
@@ -253,6 +281,13 @@ export default function Sidebar() {
         <p className="text-[10px] text-neutral-400 dark:text-neutral-600 text-center">
           Press <kbd className="px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 font-mono text-[9px]">⌘K</kbd> to search
         </p>
+
+        <div className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 w-fit mx-auto group">
+           <GitBranch className="w-3 h-3 text-neutral-400 group-hover:text-primary transition-colors" />
+           <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest whitespace-nowrap">
+             v1.2.4-stable <span className="opacity-0 group-hover:opacity-100 transition-opacity ml-1">#MAIN</span>
+           </span>
+        </div>
 
         <p className="text-xs text-neutral-400 dark:text-neutral-500 text-center">
           &copy; {new Date().getFullYear()} Felich.

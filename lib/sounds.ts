@@ -4,6 +4,25 @@ class SoundController {
   private ctx: AudioContext | null = null;
   private isEnabled: boolean = true;
 
+  constructor() {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('sound-enabled');
+      this.isEnabled = stored === null ? true : stored === 'true';
+    }
+  }
+
+  public toggle() {
+    this.isEnabled = !this.isEnabled;
+    if (typeof window !== 'undefined') {
+       localStorage.setItem('sound-enabled', String(this.isEnabled));
+    }
+    return this.isEnabled;
+  }
+
+  public getStatus() {
+    return this.isEnabled;
+  }
+
   private init() {
     if (typeof window !== 'undefined' && !this.ctx) {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
