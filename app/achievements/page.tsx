@@ -3,16 +3,51 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
+import { Bot, Library, Trophy, Brain, Mic2, BookOpen, Star, Music, Globe, Medal, Scale, Microscope, GraduationCap, BarChart2, Calculator, Building2, Server, Network } from 'lucide-react';
 
 /* ============================================================
    ACHIEVEMENTS DATA
    ============================================================ */
 const achievements = [
   {
+    title: 'IBM Build an AI Agent',
+    org: 'IBM Skills Network',
+    year: '2026',
+    icon: Bot,
+    type: 'Certification',
+    color: 'from-blue-600 to-indigo-800',
+    link: 'https://skills.yourlearning.ibm.com/certificate/share/0616ad10f5ewogICJsZWFybmVyQ05VTSIgOiAiNzU2NjI3OVJFRyIsCiAgIm9iamVjdElkIiA6ICJBTE0tQ09VUlNFXzM5NDYzNTkiLAogICJvYmplY3RUeXBlIiA6ICJBQ1RJVklUWSIKfQc05d49d606-10'
+  },
+  {
+    title: 'IBM : Large Language Model',
+    org: 'IBM Skills Network',
+    year: '2026',
+    icon: Library,
+    type: 'Certification',
+    color: 'from-blue-600 to-indigo-800',
+    link: 'https://skills.yourlearning.ibm.com/certificate/share/e126387438ewogICJvYmplY3RJZCIgOiAiQUxNLUNPVVJTRV80MDU4OTE1IiwKICAib2JqZWN0VHlwZSIgOiAiQUNUSVZJVFkiLAogICJsZWFybmVyQ05VTSIgOiAiNzU2NjI3OVJFRyIKfQ5d8f3bc11b-10'
+  },
+  {
+    title: 'RedHat Certified System Administrator',
+    org: 'RedHat (In Progress)',
+    year: 'Ongoing',
+    icon: Server,
+    type: 'Certification',
+    color: 'from-red-500 to-red-700',
+  },
+  {
+    title: 'Cisco : Network Professional Track',
+    org: 'Cisco Networking Academy',
+    year: 'Ongoing',
+    icon: Network,
+    type: 'Certification',
+    color: 'from-cyan-500 to-blue-700',
+  },
+  {
     title: 'Cobra Team Leader',
     org: 'Sekolah Legislatif Nasional',
     year: '2025',
-    icon: '🏆',
+    icon: Trophy,
     type: 'Leadership',
     color: 'from-amber-500 to-yellow-600',
   },
@@ -20,7 +55,7 @@ const achievements = [
     title: '3rd Place Champion — Battle of the Brain Competition',
     org: 'Widya Science Community',
     year: '2025',
-    icon: '🧠',
+    icon: Brain,
     type: 'Academic',
     color: 'from-blue-500 to-indigo-600',
   },
@@ -28,7 +63,7 @@ const achievements = [
     title: '1st Place — Solo Vocal Competition (School Level)',
     org: 'School Competition',
     year: '',
-    icon: '🎤',
+    icon: Mic2,
     type: 'Arts',
     color: 'from-pink-500 to-rose-600',
   },
@@ -36,7 +71,7 @@ const achievements = [
     title: '1st Place Overall — GO TryOut Academic Competition',
     org: 'Batanghari Regency',
     year: '',
-    icon: '📚',
+    icon: BookOpen,
     type: 'Academic',
     color: 'from-emerald-500 to-green-600',
   },
@@ -44,7 +79,7 @@ const achievements = [
     title: '1st Rank in Top Class (Grade 1 – Grade 10)',
     org: 'Consistently Ranked 1st in Top Class',
     year: '',
-    icon: '⭐',
+    icon: Star,
     type: 'Academic',
     color: 'from-yellow-500 to-amber-600',
   },
@@ -52,7 +87,7 @@ const achievements = [
     title: 'Audience Favorite Award — Solo Vocal Competition',
     org: 'DekaFest Competition, Medan',
     year: '',
-    icon: '🎶',
+    icon: Music,
     type: 'Arts',
     color: 'from-purple-500 to-violet-600',
   },
@@ -60,7 +95,7 @@ const achievements = [
     title: '2nd Place — English Competition (PC-1 Level)',
     org: 'Harford Institute',
     year: '',
-    icon: '🇬🇧',
+    icon: Globe,
     type: 'Academic',
     color: 'from-sky-500 to-blue-600',
   },
@@ -68,7 +103,7 @@ const achievements = [
     title: 'Silver Medalist — National Science Olympiad (OSN)',
     org: 'Mathematics, Indonesia',
     year: '2022',
-    icon: '🥈',
+    icon: Medal,
     type: 'Academic',
     color: 'from-slate-400 to-gray-600',
   },
@@ -100,20 +135,20 @@ const organizations = [
   {
     name: 'Dewan Perwakilan Mahasiswa (DPM)',
     role: 'Anggota Komisi 1 — Hukum & Legislasi',
-    icon: '⚖️',
+    icon: Scale,
     color: 'from-blue-600 to-indigo-700',
     desc: 'Berpartisipasi dalam penyusunan regulasi dan kebijakan kampus, serta pengawasan organisasi kemahasiswaan.',
   },
   {
     name: 'Widya Science Community',
     role: 'Anggota Departemen Research',
-    icon: '🔬',
+    icon: Microscope,
     color: 'from-emerald-500 to-teal-600',
     desc: 'Terlibat aktif dalam riset ilmiah di bidang teknologi dan sains, kolaborasi paper, dan diskusi akademik.',
   },
 ];
 
-const filterTypes = ['All', 'Academic', 'Leadership', 'Arts'];
+const filterTypes = ['All', 'Academic', 'Leadership', 'Arts', 'Certification'];
 
 function getPredikat(ipk: number): { label: string; color: string; emoji: string } {
   if (ipk >= 3.76) return { label: 'Cum Laude', color: 'text-amber-500', emoji: '🏅' };
@@ -202,19 +237,33 @@ export default function Achievements() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
           <AnimatePresence mode="popLayout">
-            {filtered.map((item, i) => (
-              <motion.div key={item.title} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.3, delay: i * 0.05 }} layout className="group p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:bg-white dark:hover:bg-neutral-900/80 hover:shadow-[0_10px_40px_rgba(59,130,246,0.1)] hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden">
+            {filtered.map((item: any, i) => (
+              <motion.div 
+                key={item.title} 
+                initial={{ opacity: 0, scale: 0.95 }} 
+                animate={{ opacity: 1, scale: 1 }} 
+                exit={{ opacity: 0, scale: 0.95 }} 
+                transition={{ duration: 0.3, delay: i * 0.05 }} 
+                layout 
+                onClick={() => item.link && window.open(item.link, '_blank')}
+                className={`group p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:bg-white dark:hover:bg-neutral-900/80 hover:shadow-[0_10px_40px_rgba(59,130,246,0.1)] hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden ${item.link ? 'cursor-pointer' : ''}`}
+              >
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="flex items-start gap-5 relative z-10">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
-                    {item.icon}
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 ring-2 ring-white/20 dark:ring-black/20 inset-shadow-sm`}>
+                    <item.icon className="w-7 h-7 drop-shadow-md" strokeWidth={2} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-extrabold text-sm md:text-base group-hover:text-primary transition-colors leading-snug tracking-tight mb-0.5">{item.title}</h3>
                     <p className="text-xs text-primary/80 font-bold uppercase tracking-wider">{item.org}</p>
-                    <div className="flex items-center gap-2 mt-3">
+                    <div className="flex items-center gap-2 mt-3 flex-wrap">
                       <span className="px-2.5 py-1 text-[10px] font-bold rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 uppercase tracking-widest">{item.type}</span>
                       {item.year && <span className="text-[10px] font-mono font-semibold text-neutral-400 dark:text-neutral-500 bg-neutral-50 dark:bg-neutral-900/50 px-2 py-0.5 rounded">{item.year}</span>}
+                      {item.link && (
+                        <span className="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-md uppercase tracking-widest ml-auto flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                          Credential <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -226,7 +275,7 @@ export default function Achievements() {
         <hr className="dotted-divider mb-8" />
 
         <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5 }} className="mb-12">
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><span>🎓</span> Campus Academic</h2>
+          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><GraduationCap className="w-6 h-6 text-primary" /> Campus Academic</h2>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">Academic performance overview — Teknologi Rekayasa Perangkat Lunak</p>
 
           <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl mb-6 shadow-xl shadow-blue-500/5 relative overflow-hidden">
@@ -267,7 +316,7 @@ export default function Achievements() {
           </motion.div>
 
           <div className="mb-6">
-            <h3 className="text-sm font-semibold mb-4 text-neutral-600 dark:text-neutral-300 flex items-center gap-2"><span>📊</span> IPS per Semester</h3>
+            <h3 className="text-sm font-semibold mb-4 text-neutral-600 dark:text-neutral-300 flex items-center gap-2"><BarChart2 className="w-4 h-4 text-emerald-500" /> IPS per Semester</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {semesterData.map((sem, i) => {
                 const isCompleted = sem.ips !== null;
@@ -314,7 +363,7 @@ export default function Achievements() {
           </div>
 
           <motion.details initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="mt-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 overflow-hidden">
-            <summary className="px-5 py-3 text-xs font-medium text-neutral-500 dark:text-neutral-400 cursor-pointer hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors select-none">📐 Bagaimana IPK dihitung?</summary>
+            <summary className="px-5 py-3 text-xs font-medium text-neutral-500 dark:text-neutral-400 cursor-pointer hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors select-none flex items-center gap-2"><Calculator className="w-3.5 h-3.5" /> Bagaimana IPK dihitung?</summary>
             <div className="px-5 pb-4 text-xs text-neutral-500 dark:text-neutral-400 space-y-2">
               <p><span className="font-semibold text-neutral-700 dark:text-neutral-300">IPK (Indeks Prestasi Kumulatif)</span> dihitung secara weighted berdasarkan SKS:</p>
               <div className="p-3 rounded-xl bg-white dark:bg-neutral-800/50 font-mono text-center border border-neutral-200 dark:border-neutral-700">IPK = Σ(IPS<sub>i</sub> × SKS<sub>i</sub>) / Σ(SKS<sub>i</sub>)</div>
@@ -327,14 +376,16 @@ export default function Achievements() {
         <hr className="dotted-divider mb-8" />
 
         <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5 }}>
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><span>🏛️</span> Organization</h2>
+          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><Building2 className="w-6 h-6 text-purple-500" /> Organization</h2>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">Campus organizations and community involvement.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {organizations.map((org, i) => (
               <motion.div key={org.name} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1 }} whileHover={{ y: -4, scale: 1.01 }} className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl transition-all duration-300 hover:shadow-[0_10px_40px_rgba(59,130,246,0.1)] hover:border-blue-500/30 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/[0.03] to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                 <div className="flex flex-col sm:flex-row items-start gap-5 relative z-10">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${org.color} flex items-center justify-center text-2xl flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300`}>{org.icon}</div>
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${org.color} flex items-center justify-center text-white flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 ring-2 ring-white/20 dark:ring-black/20 inset-shadow-sm`}>
+                    <org.icon className="w-7 h-7 drop-shadow-md" strokeWidth={2} />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-extrabold text-base md:text-lg group-hover:text-primary transition-colors">{org.name}</h3>
                     <p className="text-[10px] font-mono uppercase tracking-widest text-primary font-bold mt-1 inline-block px-2 py-0.5 bg-primary/10 rounded-md border border-primary/20">{org.role}</p>

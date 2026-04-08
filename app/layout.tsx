@@ -4,18 +4,20 @@ import { Providers } from './providers';
 import { Metadata } from 'next';
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
-import BackToTop from '@/components/BackToTop';
-import EasterEgg from '@/components/EasterEgg';
-import CursorGlow from '@/components/CursorGlow';
+import dynamic from 'next/dynamic';
 import ThemeProvider from '@/components/ThemeProvider';
-import CommandPalette from '@/components/CommandPalette';
-import ScrollProgress from '@/components/ScrollProgress';
-import LiveTicker from '@/components/LiveTicker';
-import ThemeWarp from '@/components/ThemeWarp';
-import EngineeringGrid from '@/components/EngineeringGrid';
 import ThemeMetaSync from '@/components/ThemeMetaSync';
-import PulseSync from '@/components/PulseSync';
-import NeuralHUD from '@/components/NeuralHUD';
+import ScrollProgress from '@/components/ScrollProgress';
+
+const BackToTop = dynamic(() => import('@/components/BackToTop'), { ssr: false });
+const EasterEgg = dynamic(() => import('@/components/EasterEgg'), { ssr: false });
+const CursorGlow = dynamic(() => import('@/components/CursorGlow'), { ssr: false });
+const LiveTicker = dynamic(() => import('@/components/LiveTicker'), { ssr: false });
+const ThemeWarp = dynamic(() => import('@/components/ThemeWarp'), { ssr: false });
+const EngineeringGrid = dynamic(() => import('@/components/EngineeringGrid'), { ssr: false });
+const PulseSync = dynamic(() => import('@/components/PulseSync'), { ssr: false });
+const QuickConnect = dynamic(() => import('@/components/QuickConnect'), { ssr: false });
+const CommandPalette = dynamic(() => import('@/components/CommandPalette'), { ssr: false });
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -81,8 +83,8 @@ export default function RootLayout({
             {/* Live Monitoring Ticker */}
             <LiveTicker />
             
-            {/* Neural Log Monitor */}
-            <NeuralHUD />
+            {/* Quick Connect FAB */}
+            <QuickConnect />
           </ThemeProvider>
         </Providers>
       </body>

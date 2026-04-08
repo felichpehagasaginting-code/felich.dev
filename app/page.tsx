@@ -5,17 +5,18 @@ import { useState, useEffect } from 'react';
 import TypingAnimation from '@/components/TypingAnimation';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import PageTransition from '@/components/PageTransition';
-import Hero3D from '@/components/Hero3D';
+import dynamic from 'next/dynamic';
+const Hero3D = dynamic(() => import('@/components/Hero3D'), { ssr: false, loading: () => <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 animate-pulse rounded-full" /> });
 import AnimatedDivider from '@/components/AnimatedDivider';
 import Reveal from '@/components/Reveal';
 import { sounds } from '@/lib/sounds';
 
 const skillCategories = [
-  { name: 'All', count: 42 },
+  { name: 'All', count: 44 },
   { name: 'Frontend', count: 14 },
-  { name: 'Backend', count: 12 },
+  { name: 'Backend', count: 13 },
   { name: 'Database', count: 6 },
-  { name: 'Tools', count: 10 },
+  { name: 'Tools', count: 11 },
 ];
 
 const skills = [
@@ -61,6 +62,8 @@ const skills = [
   { name: 'Redis', color: '#dc382d', category: 'Database', slug: 'redis' },
   { name: 'Linux', color: '#fcc624', category: 'Tools', slug: 'linux' },
   { name: 'Cloudflare', color: '#f38020', category: 'Tools', slug: 'cloudflare' },
+  { name: 'IBM', color: '#0530AD', category: 'Backend', slug: 'ibm' },
+  { name: 'Langflow', color: '#1B1B1B', category: 'Tools', slug: 'langflow' },
 ];
 
 const skillLinks: Record<string, string> = {
@@ -94,7 +97,9 @@ const skillLinks: Record<string, string> = {
   'VS Code': 'https://code.visualstudio.com/',
   'Postman': 'https://www.postman.com/',
   'npm': 'https://www.npmjs.com/',
-  'Vercel': 'https://vercel.com/'
+  'Vercel': 'https://vercel.com/',
+  'IBM': 'https://www.ibm.com/',
+  'Langflow': 'https://www.langflow.org/'
 };
 
 export default function Home() {
@@ -147,10 +152,9 @@ export default function Home() {
                 <TypingAnimation
                   texts={[
                     'Software Engineer',
-                    'AI/ML Enthusiast',
-                    'Full Stack Developer',
-                    'FinTech Builder',
-                    'Open Source Contributor',
+                    'AI Engineer',
+                    'DevOps Engineer',
+                    'Fullstack Developer',
                   ]}
                 />
               </div>
@@ -180,7 +184,7 @@ export default function Home() {
 
               <div className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed relative z-10">
                 <p>
-                  A Software Engineer dedicated to building impactful digital solutions. I specialize in developing
+                  A versatile engineer (Fullstack, AI/ML, & DevOps) dedicated to building impactful digital solutions. I specialize in developing
                   scalable web platforms and AI-driven systems using a modern tech stack, primarily Next.js, TypeScript,
                   Python, and Node.js.
                 </p>

@@ -180,7 +180,7 @@ export default function Contact() {
               </p>
               <div className="flex gap-4 mb-4 text-xs font-bold text-neutral-800 dark:text-neutral-200">
                  <div><span className="text-lg">11</span> <span className="text-neutral-500 font-normal">posts</span></div>
-                 <div><span className="text-lg">498</span> <span className="text-neutral-500 font-normal">followers</span></div>
+                 <div><span className="text-lg">501</span> <span className="text-neutral-500 font-normal">followers</span></div>
               </div>
             </div>
 
