@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { Star, GitFork, BarChart2, Music, Headphones, Folder, Github } from 'lucide-react';
+import { Star, GitFork, BarChart2, Music, Headphones, Folder } from 'lucide-react';
 import PageTransition from '@/components/PageTransition';
 import AnimatedCounter from '@/components/AnimatedCounter';
 
