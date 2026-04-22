@@ -27,7 +27,28 @@ function getPost({ slug }: { slug: string }) {
   };
 }
 
-import { mdxComponents } from '@/components/MDXComponents';
+import { 
+  MdxH1, MdxH2, MdxH3, MdxP, MdxUl, MdxLi, 
+  MdxA, MdxStrong, MdxBlockquote, MdxCode, 
+  FadeIn, TimelineItem, HighlightBox, Reveal 
+} from '@/components/MDXComponents';
+
+const componentsMap = {
+  h1: MdxH1,
+  h2: MdxH2,
+  h3: MdxH3,
+  p: MdxP,
+  ul: MdxUl,
+  li: MdxLi,
+  a: MdxA,
+  strong: MdxStrong,
+  blockquote: MdxBlockquote,
+  code: MdxCode,
+  FadeIn,
+  TimelineItem,
+  HighlightBox,
+  Reveal
+};
 
 export default function Post({ params }: { params: { slug: string } }) {
   const props = getPost(params);
@@ -59,7 +80,7 @@ export default function Post({ params }: { params: { slug: string } }) {
         </div>
 
         <div className="prose prose-neutral dark:prose-invert max-w-none">
-          <MDXRemote source={props.content} components={mdxComponents} />
+          <MDXRemote source={props.content} components={componentsMap} />
         </div>
       </article>
     </PageTransition>

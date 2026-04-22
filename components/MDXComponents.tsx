@@ -43,19 +43,13 @@ export const HighlightBox = ({ children, type = 'info' }: { children: React.Reac
   </motion.div>
 );
 
-export const mdxComponents = {
-  h1: (props: any) => <Reveal><h1 className="text-4xl font-extrabold mt-12 mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600" {...props} /></Reveal>,
-  h2: (props: any) => <Reveal><h2 className="text-3xl font-bold mt-10 mb-4 text-neutral-900 dark:text-white" {...props} /></Reveal>,
-  h3: (props: any) => <FadeIn><h3 className="text-2xl font-bold mt-8 mb-3" {...props} /></FadeIn>,
-  p: (props: any) => <p className="mb-6 text-neutral-600 dark:text-neutral-300 leading-relaxed text-lg" {...props} />,
-  ul: (props: any) => <ul className="list-disc pl-6 mb-6 space-y-3 text-neutral-600 dark:text-neutral-300 text-lg" {...props} />,
-  li: (props: any) => <motion.li initial={{opacity:0, x:-10}} whileInView={{opacity:1, x:0}} viewport={{once:true}} {...props} />,
-  a: (props: any) => <a className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 underline decoration-blue-500/30 underline-offset-4 hover:decoration-blue-500 transition-all font-medium" {...props} />,
-  strong: (props: any) => <strong className="font-bold text-neutral-900 dark:text-white" {...props} />,
-  blockquote: (props: any) => <blockquote className="border-l-4 border-primary pl-6 italic text-neutral-500 dark:text-neutral-400 my-8" {...props} />,
-  code: (props: any) => <code className="bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded-md font-mono text-sm text-pink-500" {...props} />,
-  FadeIn,
-  TimelineItem,
-  HighlightBox,
-  Reveal
-};
+export const MdxH1 = (props: any) => <Reveal><h1 className="text-4xl font-extrabold mt-12 mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600" {...props} /></Reveal>;
+export const MdxH2 = (props: any) => <Reveal><h2 className="text-3xl font-bold mt-10 mb-4 text-neutral-900 dark:text-white" {...props} /></Reveal>;
+export const MdxH3 = (props: any) => <FadeIn><h3 className="text-2xl font-bold mt-8 mb-3" {...props} /></FadeIn>;
+export const MdxP = (props: any) => <p className="mb-6 text-neutral-600 dark:text-neutral-300 leading-relaxed text-lg" {...props} />;
+export const MdxUl = (props: any) => <ul className="list-disc pl-6 mb-6 space-y-3 text-neutral-600 dark:text-neutral-300 text-lg" {...props} />;
+export const MdxLi = (props: any) => <motion.li initial={{opacity:0, x:-10}} whileInView={{opacity:1, x:0}} viewport={{once:true}} {...props} />;
+export const MdxA = (props: any) => <a className="text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 underline decoration-blue-500/30 underline-offset-4 hover:decoration-blue-500 transition-all font-medium" {...props} />;
+export const MdxStrong = (props: any) => <strong className="font-bold text-neutral-900 dark:text-white" {...props} />;
+export const MdxBlockquote = (props: any) => <blockquote className="border-l-4 border-primary pl-6 italic text-neutral-500 dark:text-neutral-400 my-8" {...props} />;
+export const MdxCode = (props: any) => <code className="bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded-md font-mono text-sm text-pink-500" {...props} />;
