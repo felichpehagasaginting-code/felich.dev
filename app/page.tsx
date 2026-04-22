@@ -10,6 +10,7 @@ const Hero3D = dynamic(() => import('@/components/Hero3D'), { ssr: false, loadin
 import AnimatedDivider from '@/components/AnimatedDivider';
 import Reveal from '@/components/Reveal';
 import { sounds } from '@/lib/sounds';
+import { SkillIcons } from '@/components/SkillIcons';
 
 const skillCategories = [
   { name: 'All', count: 44 },
@@ -310,11 +311,15 @@ export default function Home() {
                       filter: `drop-shadow(0 0 5px ${skill.color}50)` 
                     }}
                   >
-                    <img 
-                      src={`https://cdn.simpleicons.org/${skill.slug}/${skill.color.replace('#', '')}`}
-                      alt={skill.name}
-                      className="w-full h-full object-contain"
-                    />
+                    {SkillIcons[skill.slug] ? (
+                      <div className="w-full h-full flex items-center justify-center" style={{ color: skill.color }}>
+                        {SkillIcons[skill.slug]}
+                      </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center font-bold text-[10px]" style={{ color: skill.color }}>
+                        {skill.name.substring(0, 2).toUpperCase()}
+                      </div>
+                    )}
                   </motion.div>
 
                   <span className="relative z-10 text-neutral-600 dark:text-neutral-300 transition-colors duration-300 group-hover:text-black dark:group-hover:text-white">

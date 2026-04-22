@@ -18,6 +18,8 @@ const EngineeringGrid = dynamic(() => import('@/components/EngineeringGrid'), { 
 const PulseSync = dynamic(() => import('@/components/PulseSync'), { ssr: false });
 const QuickConnect = dynamic(() => import('@/components/QuickConnect'), { ssr: false });
 const CommandPalette = dynamic(() => import('@/components/CommandPalette'), { ssr: false });
+const AIChatbot = dynamic(() => import('@/components/AIChatbot'), { ssr: false });
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -85,6 +87,9 @@ export default function RootLayout({
             
             {/* Quick Connect FAB */}
             <QuickConnect />
+
+            {/* AI Chatbot */}
+            <AIChatbot />
           </ThemeProvider>
         </Providers>
       </body>

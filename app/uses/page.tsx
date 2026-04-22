@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
+import { SkillIcons, Iconlenovo, Iconubuntu, Iconanthropic, Icongnometerminal, Iconfigma, Iconnotion, Icongooglechrome, Icongrammarly, Iconublockorigin, Iconapple, Iconxiaomi, Icondiscord, Iconspotify } from '@/components/SkillIcons';
 
 const categories = [
   {
@@ -95,12 +96,36 @@ export default function Uses() {
                     <div className="flex items-start gap-4 relative z-10">
                       <div className="w-12 h-12 rounded-2xl bg-white dark:bg-neutral-900 shadow-inner flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 border border-neutral-100 dark:border-neutral-800 relative overflow-hidden">
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-300" style={{ backgroundColor: item.color }} />
-                        <img 
-                           src={`https://cdn.simpleicons.org/${item.slug}/${item.color.replace('#', '')}`}
-                           alt={item.name}
-                           className="w-6 h-6 object-contain relative z-10 transition-transform duration-300 group-hover:scale-105"
-                           style={{ filter: `drop-shadow(0 4px 6px ${item.color}40)` }}
-                        />
+                        <div
+                           className="w-6 h-6 flex items-center justify-center relative z-10 transition-transform duration-300 group-hover:scale-105"
+                           style={{ color: item.color, filter: `drop-shadow(0 4px 6px ${item.color}40)` }}
+                        >
+                           {(() => {
+                             const icons: Record<string, any> = {
+                               lenovo: Iconlenovo,
+                               ubuntu: Iconubuntu,
+                               visualstudiocode: SkillIcons.visualstudiocode,
+                               anthropic: Iconanthropic,
+                               github: SkillIcons.github,
+                               docker: SkillIcons.docker,
+                               postman: SkillIcons.postman,
+                               vercel: SkillIcons.vercel,
+                               gnometerminal: Icongnometerminal,
+                               figma: Iconfigma,
+                               notion: Iconnotion,
+                               googlechrome: Icongooglechrome,
+                               react: SkillIcons.react,
+                               grammarly: Icongrammarly,
+                               ublockorigin: Iconublockorigin,
+                               apple: Iconapple,
+                               xiaomi: Iconxiaomi,
+                               discord: Icondiscord,
+                               spotify: Iconspotify,
+                             };
+                             const Icon = icons[item.slug];
+                             return Icon ? Icon : <span className="text-[10px] font-bold">{item.name.substring(0, 2).toUpperCase()}</span>;
+                           })()}
+                        </div>
                       </div>
                       <div className="flex-1 min-w-0 pt-0.5">
                         <h3 className="font-extrabold text-sm md:text-base group-hover:text-primary transition-colors tracking-tight leading-snug">{item.name}</h3>

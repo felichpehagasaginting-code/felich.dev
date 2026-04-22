@@ -2,36 +2,8 @@
 
 import { motion } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
-import { Briefcase, GraduationCap, Quote, MapPin, Calendar, Verified, ShieldCheck, MessageSquare } from 'lucide-react';
-
-const career = [
-  {
-    role: 'Freelance Software Engineer',
-    company: 'Self-Employed',
-    location: 'Indonesia',
-    period: '2024 - Present',
-    icon: Briefcase,
-    details: 'Building production web applications, AI/ML pipelines, and FinTech solutions for clients.',
-  },
-  {
-    role: 'Fullstack Developer',
-    company: 'Various Projects',
-    location: 'Indonesia',
-    period: '2023 - 2024',
-    icon: Briefcase,
-    details: 'React/Next.js, Node.js, Python, database optimization, API development.',
-  },
-];
-
-const education = [
-  {
-    school: 'Politeknik Kelapa Sawit Citra Widya Edukasi',
-    degree: 'D4 Software Engineering Technology',
-    period: '2025 - 2029',
-    icon: GraduationCap,
-    location: 'Indonesia',
-  },
-];
+import { Quote, Verified, ShieldCheck, MessageSquare, Clock, Sparkles } from 'lucide-react';
+import CareerTimeline from '@/components/CareerTimeline';
 
 const testimonials = [
   {
@@ -44,7 +16,7 @@ const testimonials = [
     name: 'Academic Mentor',
     role: 'University Lecturer',
     initials: 'AM',
-    text: 'One of the most dedicated and talented students I\'ve had. His passion for AI and software engineering is truly inspiring, consistently going above and beyond expectations.',
+    text: "One of the most dedicated and talented students I've had. His passion for AI and software engineering is truly inspiring, consistently going above and beyond expectations.",
   },
   {
     name: 'Client',
@@ -54,19 +26,19 @@ const testimonials = [
   },
 ];
 
-export default function About() {
-  const bioContent = `
-    I'm Felich, an Indonesia-based Software Engineer dedicated to building impactful digital solutions.
-    I specialize in developing scalable web platforms and mobile applications using a modern tech stack,
-    including Next.js, TypeScript, Python, and Node.js.
-    My primary focus is crafting software architecture that doesn't just work but is well-structured,
-    maintainable, and scalable to meet business needs. I believe that high-quality code must go hand-in-hand
-    with system efficiency and logical clarity.
-    I blend technical expertise with proactive communication, critical thinking, and effective time management.
-    I thrive in collaborative environments and leverage leadership skills to ensure every project delivers
-    optimal results and a real-world impact.
-  `;
+const bioContent = `
+  I'm Felich, an Indonesia-based Software Engineer dedicated to building impactful digital solutions.
+  I specialize in developing scalable web platforms and mobile applications using a modern tech stack,
+  including Next.js, TypeScript, Python, and Node.js.
+  My primary focus is crafting software architecture that doesn't just work but is well-structured,
+  maintainable, and scalable to meet business needs. I believe that high-quality code must go hand-in-hand
+  with system efficiency and logical clarity.
+  I blend technical expertise with proactive communication, critical thinking, and effective time management.
+  I thrive in collaborative environments and leverage leadership skills to ensure every project delivers
+  optimal results and a real-world impact.
+`;
 
+export default function About() {
   const readingTime = Math.ceil(bioContent.split(' ').length / 200);
 
   return (
@@ -85,9 +57,7 @@ export default function About() {
           </p>
           <div className="flex items-center gap-2 mt-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
+              <Clock className="w-3 h-3" />
               {readingTime} min read
             </span>
           </div>
@@ -121,106 +91,42 @@ export default function About() {
 
         <div className="flex items-center gap-6 mb-12 p-6 rounded-3xl bg-neutral-50/50 dark:bg-neutral-900/30 border border-neutral-200 dark:border-neutral-800 w-fit">
           <div className="flex flex-col">
-             <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400 mb-2 flex items-center gap-1.5"><Verified className="w-3 h-3 text-blue-500" /> Digital Signature</p>
-             <p className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-sm select-none" style={{ fontFamily: '"Great Vibes", cursive' }}>
-               Felich
-             </p>
+            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400 mb-2 flex items-center gap-1.5">
+              <Verified className="w-3 h-3 text-blue-500" /> Digital Signature
+            </p>
+            <p className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-sm select-none" style={{ fontFamily: '"Great Vibes", cursive' }}>
+              Felich
+            </p>
           </div>
           <div className="w-px h-12 bg-neutral-200 dark:bg-neutral-800" />
           <div className="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex flex-col gap-1.5 leading-none">
-             <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3 text-green-500" /> SYS.AUTH: VERIFIED</span>
-             <span>ID: FLCH-2026-X</span>
-             <span className="opacity-50">TS: {new Date().toLocaleDateString()}</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3 text-green-500" /> SYS.AUTH: VERIFIED</span>
+            <span>ID: FLCH-2026-X</span>
+            <span className="opacity-50">TS: {new Date().toLocaleDateString()}</span>
           </div>
         </div>
 
-        <hr className="dotted-divider mb-8" />
+        <hr className="dotted-divider mb-12" />
 
-        {/* Career */}
+        {/* Career Timeline */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <Briefcase className="w-6 h-6 text-primary" /> Career
-          </h2>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">My professional journey.</p>
-
-          <div className="space-y-4">
-            {career.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 * i }}
-                whileHover={{ y: -4, scale: 1.01 }}
-                className="group p-5 md:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl hover:bg-white dark:hover:bg-neutral-900/80 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-[0_0_30px_rgba(59,130,246,0.1)] relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/[0.03] to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                <div className="flex flex-col sm:flex-row items-start gap-4 relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-blue-500/20 group-hover:to-purple-500/20 shadow-inner flex items-center justify-center text-white flex-shrink-0 transition-colors">
-                    <item.icon className="w-6 h-6 text-neutral-500 dark:text-neutral-400 group-hover:text-primary transition-colors" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg">{item.role}</h3>
-                    <p className="text-sm text-primary font-medium">{item.company}</p>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {item.period}</span>
-                    </div>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">{item.details}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-1 flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-primary" />
+              Journey
+            </h2>
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+              My career & education timeline — scroll to explore.
+            </p>
           </div>
-        </motion.section>
 
-        {/* Education */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.5 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <GraduationCap className="w-6 h-6 text-pink-500" /> Education
-          </h2>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">My academic background.</p>
-
-          <div className="space-y-4">
-            {education.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 * i }}
-                whileHover={{ y: -4, scale: 1.01 }}
-                className="group p-5 md:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl hover:bg-white dark:hover:bg-neutral-900/80 hover:border-pink-500/30 transition-all duration-300 shadow-sm hover:shadow-[0_0_30px_rgba(236,72,153,0.1)] relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/[0.03] to-pink-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                <div className="flex flex-col sm:flex-row items-start gap-4 relative z-10">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:from-pink-500/20 group-hover:to-orange-500/20 shadow-inner flex items-center justify-center text-white flex-shrink-0 transition-colors">
-                    <item.icon className="w-6 h-6 text-neutral-500 dark:text-neutral-400 group-hover:text-pink-500 transition-colors" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-lg">{item.school}</h3>
-                    <p className="text-sm text-primary font-medium">{item.degree}</p>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {item.location}</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {item.period}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <CareerTimeline />
         </motion.section>
 
         <hr className="dotted-divider mb-8" />
@@ -229,7 +135,7 @@ export default function About() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
@@ -248,7 +154,9 @@ export default function About() {
                 className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-purple-500/30 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(168,85,247,0.15)] flex flex-col justify-between"
               >
                 <div>
-                  <div className="text-4xl text-purple-500/20 mb-2 font-serif group-hover:text-purple-500/40 transition-colors"><Quote className="fill-current" /></div>
+                  <div className="text-4xl text-purple-500/20 mb-2 font-serif group-hover:text-purple-500/40 transition-colors">
+                    <Quote className="fill-current" />
+                  </div>
                   <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6 font-medium relative z-10">
                     {t.text}
                   </p>
@@ -258,7 +166,9 @@ export default function About() {
                     {t.initials}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-r from-neutral-800 to-neutral-600 dark:from-white dark:to-neutral-400 group-hover:from-purple-500 group-hover:to-blue-500 transition-all">{t.name}</h4>
+                    <h4 className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-r from-neutral-800 to-neutral-600 dark:from-white dark:to-neutral-400 group-hover:from-purple-500 group-hover:to-blue-500 transition-all">
+                      {t.name}
+                    </h4>
                     <p className="text-[10px] font-mono uppercase tracking-wider text-neutral-500">{t.role}</p>
                   </div>
                 </div>
