@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 import Reveal from './Reveal';
+export { Reveal };
 
 export const FadeIn = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => (
   <motion.div
