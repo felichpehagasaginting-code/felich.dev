@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { sounds } from '@/lib/sounds';
 import { triggerImpact } from '@/lib/impact';
 import Reveal from '@/components/Reveal';
+import Image from 'next/image';
+import TiltCard from './TiltCard';
 
 const projectTypes = ['All', 'Web', 'Mobile'];
 const projectCategories = ['All', 'Personal Project', 'Freelance'];
@@ -70,73 +72,75 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
         <AnimatePresence mode="popLayout">
           {filtered.map((project, i) => (
-            <motion.div
-              layoutId={`project-card-${project.title}`}
-              key={project.title}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3, delay: i * 0.05 }}
-              onClick={() => { setSelectedProject(project); triggerImpact(); sounds.playPop(); }}
-              onMouseEnter={() => sounds.playHover()}
-              className="group cursor-pointer rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-            >
-              {/* Image placeholder / Real Image */}
-              <motion.div layoutId={`project-image-${project.title}`} className="h-44 bg-gradient-to-br from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 relative overflow-hidden transition-colors group-hover:from-blue-500/10 group-hover:to-purple-500/10">
-                <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#3b82f6 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
-                
-                {project.slug && (
-                  <img
-                    src={`/images/projects/${project.slug}.png`}
-                    alt={project.title}
-                    className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 z-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                )}
+            <TiltCard key={project.title}>
+              <motion.div
+                layoutId={`project-card-${project.title}`}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
+                onClick={() => { setSelectedProject(project); triggerImpact(); sounds.playPop(); }}
+                onMouseEnter={() => sounds.playHover()}
+                className="group cursor-pointer rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {/* Image placeholder / Real Image */}
+                <motion.div layoutId={`project-image-${project.title}`} className="h-44 bg-gradient-to-br from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 relative overflow-hidden transition-colors group-hover:from-blue-500/10 group-hover:to-purple-500/10" style={{ transform: "translateZ(30px)" }}>
+                  <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#3b82f6 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+                  
+                  {project.slug && (
+                    <img
+                      src={`/images/projects/${project.slug}.png`}
+                      alt={project.title}
+                      className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 z-0"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  )}
 
-                {project.featured && (
-                  <span className="absolute top-3 right-3 px-2.5 py-1 bg-gradient-to-r from-pink-500 to-orange-400 text-white text-[10px] uppercase font-bold tracking-widest rounded-md flex items-center gap-1.5 shadow-lg shadow-pink-500/20 z-10">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Featured
-                  </span>
-                )}
-                {!project.slug && (
-                  <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700 ease-out z-0">
-                    <svg className="w-16 h-16 text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-                    </svg>
-                  </div>
-                )}
-              </motion.div>
-
-              {/* Content */}
-              <div className="p-5">
-                <motion.h3 layoutId={`project-title-${project.title}`} className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">
-                  {project.title}
-                </motion.h3>
-                <div className="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 mb-4">
-                  {project.description}
-                </div>
-
-                {/* Tech stack */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {(project.techStack || []).map((tech: string) => (
-                    <span
-                      key={tech}
-                      className="px-2.5 py-1 text-[10px] rounded-full bg-neutral-100 dark:bg-neutral-800/80 text-neutral-600 dark:text-neutral-400 font-bold tracking-tight border border-neutral-200/50 dark:border-neutral-700/50 group-hover:border-primary/30 transition-colors"
-                    >
-                      {tech}
+                  {project.featured && (
+                    <span className="absolute top-3 right-3 px-2.5 py-1 bg-gradient-to-r from-pink-500 to-orange-400 text-white text-[10px] uppercase font-bold tracking-widest rounded-md flex items-center gap-1.5 shadow-lg shadow-pink-500/20 z-10">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Featured
                     </span>
-                  ))}
-                </div>
+                  )}
+                  {!project.slug && (
+                    <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700 ease-out z-0">
+                      <svg className="w-16 h-16 text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                      </svg>
+                    </div>
+                  )}
+                </motion.div>
 
-                <div className="text-xs font-semibold text-primary flex items-center gap-1">
-                  View Case Study
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+                {/* Content */}
+                <div className="p-5 flex-1 flex flex-col" style={{ transform: "translateZ(40px)" }}>
+                  <motion.h3 layoutId={`project-title-${project.title}`} className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">
+                    {project.title}
+                  </motion.h3>
+                  <div className="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 mb-4">
+                    {project.description}
+                  </div>
+
+                  {/* Tech stack */}
+                  <div className="flex flex-wrap gap-1.5 mb-4 mt-auto">
+                    {(project.techStack || []).map((tech: string) => (
+                      <span
+                        key={tech}
+                        className="px-2.5 py-1 text-[10px] rounded-full bg-neutral-100 dark:bg-neutral-800/80 text-neutral-600 dark:text-neutral-400 font-bold tracking-tight border border-neutral-200/50 dark:border-neutral-700/50 group-hover:border-primary/30 transition-colors"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="text-xs font-semibold text-primary flex items-center gap-1 mt-2">
+                    View Case Study
+                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </TiltCard>
           ))}
         </AnimatePresence>
       </div>
