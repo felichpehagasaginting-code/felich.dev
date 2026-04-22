@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { sounds } from '@/lib/sounds';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -133,12 +136,24 @@ export default function AIChatbot() {
     }
   };
 
-  // Simple bold markdown renderer
-  const renderText = (text: string) => {
-    const parts = text.split(/\*\*(.*?)\*\*/g);
-    return parts.map((part, i) =>
-      i % 2 === 1 ? <strong key={i} className="font-semibold">{part}</strong> : part
-    );
+  const speak = (text: string) => {
+    if (typeof window === 'undefined') return;
+    
+    // Stop any existing speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text.replace(/\*\*/g, ''));
+    
+    // Try to find a good English/Indonesian voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => v.name.includes('Google') || v.name.includes('Premium')) || voices[0];
+    
+    if (preferredVoice) utterance.voice = preferredVoice;
+    utterance.pitch = 1.1;
+    utterance.rate = 1;
+    
+    window.speechSynthesis.speak(utterance);
+    sounds.playSwitch();
   };
 
   return (
@@ -198,19 +213,42 @@ export default function AIChatbot() {
                         className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                       >
                         {msg.role === 'assistant' && (
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-lg shadow-blue-500/20">
                             🤖
                           </div>
                         )}
                         <div
-                          className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                          className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed relative group/msg ${
                             msg.role === 'user'
-                              ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-tr-sm'
-                              : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-tl-sm'
+                              ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-tr-sm shadow-md'
+                              : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-tl-sm border border-neutral-200/50 dark:border-neutral-700/50'
                           }`}
                         >
-                          {renderText(msg.content)}
-                          <p className={`text-[9px] mt-1 font-mono ${msg.role === 'user' ? 'text-white/50 text-right' : 'text-neutral-400'}`}>
+                          {msg.role === 'assistant' && (
+                            <button 
+                              onClick={() => speak(msg.content)}
+                              className="absolute -right-10 top-0 p-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400 hover:text-blue-500 opacity-0 group-hover/msg:opacity-100 transition-all shadow-sm"
+                              title="Listen to response"
+                            >
+                              <Volume2 size={12} />
+                            </button>
+                          )}
+
+                          <ReactMarkdown 
+                            remarkPlugins={[remarkGfm]}
+                            className="markdown-content prose-invert text-sm"
+                            components={{
+                              p: ({children}) => <p className="mb-1 last:mb-0">{children}</p>,
+                              strong: ({children}) => <strong className="font-extrabold text-blue-500 dark:text-blue-400">{children}</strong>,
+                              ul: ({children}) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
+                              li: ({children}) => <li className="mb-0.5">{children}</li>,
+                              code: ({children}) => <code className="bg-black/10 dark:bg-black/30 px-1 rounded font-mono text-[11px]">{children}</code>
+                            }}
+                          >
+                            {msg.content}
+                          </ReactMarkdown>
+
+                          <p className={`text-[9px] mt-1.5 font-mono ${msg.role === 'user' ? 'text-white/50 text-right' : 'text-neutral-400'}`}>
                             {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>

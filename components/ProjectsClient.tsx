@@ -81,19 +81,33 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
               onMouseEnter={() => sounds.playHover()}
               className="group cursor-pointer rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
             >
-              {/* Image placeholder */}
+              {/* Image placeholder / Real Image */}
               <motion.div layoutId={`project-image-${project.title}`} className="h-44 bg-gradient-to-br from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 relative overflow-hidden transition-colors group-hover:from-blue-500/10 group-hover:to-purple-500/10">
                 <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#3b82f6 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+                
+                {project.slug && (
+                  <img
+                    src={`/images/projects/${project.slug}.png`}
+                    alt={project.title}
+                    className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 z-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                )}
+
                 {project.featured && (
                   <span className="absolute top-3 right-3 px-2.5 py-1 bg-gradient-to-r from-pink-500 to-orange-400 text-white text-[10px] uppercase font-bold tracking-widest rounded-md flex items-center gap-1.5 shadow-lg shadow-pink-500/20 z-10">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Featured
                   </span>
                 )}
-                <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700 ease-out z-0">
-                  <svg className="w-16 h-16 text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-                  </svg>
-                </div>
+                {!project.slug && (
+                  <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-70 group-hover:scale-110 transition-all duration-700 ease-out z-0">
+                    <svg className="w-16 h-16 text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                    </svg>
+                  </div>
+                )}
               </motion.div>
 
               {/* Content */}
@@ -145,14 +159,25 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
             >
               <div className="sm:w-2/5 relative h-64 sm:h-auto border-b sm:border-b-0 sm:border-r border-neutral-200/50 dark:border-neutral-800/50 overflow-hidden bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent">
                 <div className="absolute inset-0 opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#3b82f6 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-neutral-900/80 to-transparent sm:hidden"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-neutral-900/80 to-transparent sm:hidden z-10"></div>
                 
-                <div className="h-full flex items-center justify-center p-12">
+                {selectedProject.slug && (
+                  <img
+                    src={`/images/projects/${selectedProject.slug}.png`}
+                    alt={selectedProject.title}
+                    className="absolute inset-0 w-full h-full object-cover z-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                )}
+
+                <div className="absolute inset-0 flex items-center justify-center p-12 pointer-events-none z-0">
                    <motion.div
                      initial={{ rotateY: 45, rotateX: -20, scale: 0.8, opacity: 0 }}
                      animate={{ rotateY: 0, rotateX: 0, scale: 1, opacity: 1 }}
                      transition={{ duration: 1, type: 'spring', bounce: 0.4 }}
-                     className="relative"
+                     className={`relative ${selectedProject.slug ? 'opacity-0' : 'opacity-100'}`}
                    >
                      <div className="absolute -inset-4 bg-blue-500/20 blur-2xl rounded-full animate-pulse"></div>
                      <svg className="w-24 h-24 text-blue-500 drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
