@@ -1,32 +1,86 @@
 ---
-title: "Building My Personal Portfolio with Next.js and Tailwind"
-date: "2026-04-01"
-description: "A deep dive into how I built my portfolio from scratch, including custom animations, 3D elements, and real-time features."
-topics: ["Next.js", "Tailwind", "Three.js"]
+title: "Building My Personal Portfolio with Next.js, Tailwind, and Gemini 2.0 AI"
+date: "2026-04-22"
+description: "A highly argumentative deep dive into why I engineered my portfolio from scratch, why CDNs are terrible for icons, and why Gemini 2.0 powers my AI assistant."
+topics: ["Next.js", "AI Engineering", "PWA", "Performance"]
 ---
 
-Welcome to my very first blog post! In this article, I want to share my journey of building a completely custom and highly interactive portfolio website.
+<FadeIn>
+Welcome to the absolute breakdown of how and *why* this portfolio exists in its current form. In an era where most developers spin up a basic React app or use a generic template, I decided to engineer a platform that actually reflects what I do: building robust, high-performance, and AI-driven applications.
+</FadeIn>
 
-## Why Build from Scratch?
+<FadeIn>
+Let's get one thing straight: **your portfolio is your ultimate product**. It shouldn't just list your skills; it should *demonstrate* them. Here is a deep dive into the architecture, the controversial design choices, and the cutting-edge tech that powers `felich.dev`.
+</FadeIn>
 
-There are countless templates available online, but as a Software Engineer, I wanted my portfolio to be a true representation of my skills. Building from scratch allowed me to:
+## Why Next.js App Router? (And Why SPAs are Dead)
 
-1.  **Fully control the architecture**: Using Next.js App Router for optimal performance.
-2.  **Experiment with micro-interactions**: Implementing custom cursors and smooth page transitions with Framer Motion.
-3.  **Integrate 3D Elements**: Using \`@react-three/fiber\` to add a unique flavor to the hero section.
+<FadeIn>
+I've seen far too many portfolios built as pure Single Page Applications (SPAs) using standard Vite or Create React App. Here is the brutal truth: for a content-heavy, SEO-reliant site like a portfolio, pure SPAs are a terrible choice.
 
-## The Tech Stack
+By utilizing the **Next.js 14 App Router**, I get Server-Side Rendering (SSR) and Static Site Generation (SSG) out of the box. This means my site loads instantly, crawlers can actually read my content, and I don't force the user's device to download megabytes of JavaScript just to render a header. 
+</FadeIn>
 
--   **Framework**: Next.js 14
--   **Styling**: Tailwind CSS
--   **Animations**: Framer Motion
--   **3D Rendering**: Three.js & React Three Fiber
--   **Backend**: Express.js (for Guestbook & Contact APIs)
+<HighlightBox type="info">
+The performance difference is night and day. With Next.js, the First Contentful Paint (FCP) is near zero. Add in the dynamic **Progressive Web App (PWA)** integration, and this site installs directly on your mobile device as a native app—something a basic SPA simply cannot match.
+</HighlightBox>
 
-### The Guestbook
+## The "SimpleIcons" CDN Disaster & Inline SVGs
 
-One of my favorite features is the real-time guestbook. Instead of relying on a heavy third-party database, I built a lightweight JSON-backed storage system using Node.js \`fs\` module. It ensures the site remains fast while allowing visitors to leave permanent remarks.
+<FadeIn>
+Initially, I used a CDN (`simpleicons.org`) to load all the technology logos on my "Uses" and "Skills" pages. It seemed smart. It wasn't.
+
+Relying on external CDNs for core UI assets introduces latency, relies on a third-party DNS resolving quickly, and totally breaks offline PWA capabilities. Every time the page loaded, the browser had to make 60+ individual HTTP requests to fetch those icons. **Unacceptable.**
+</FadeIn>
+
+<FadeIn>
+**The Fix:** I migrated every single logo into a highly optimized, local inline SVG library (`SkillIcons.tsx`). 
+- **Zero external network requests.**
+- **Perfect offline support.**
+- **Instant rendering.**
+If you care about performance, stop relying on external CDNs for your vector graphics.
+</FadeIn>
+
+## The AI Chatbot: Why Gemini 2.0 Flash over OpenAI?
+
+<FadeIn>
+If you look at the bottom-left corner, you'll see **Felich AI**—a highly intelligent assistant built directly into this site. It doesn't just read static text; it can parse Markdown, render code blocks, and even **speak to you using Text-to-Speech (TTS)**.
+</FadeIn>
+
+<FadeIn>
+Many would ask: *"Why not use GPT-4?"*
+
+Because **Gemini 2.0 Flash** is undeniably superior for this specific use case. It provides incredibly fast streaming responses with virtually zero latency. When a user asks a question, they want an answer *now*, not in 5 seconds. Furthermore, the integration with Google's ecosystem and the superior context window deduplication ensures the bot never hallucinates or loses track of its role. It's fast, it's smart, and it's built to impress.
+</FadeIn>
+
+## Build Timeline & Evolution
+
+<FadeIn>
+Here is the step-by-step evolution of how this platform was built, from a blank canvas to a production-grade application:
+</FadeIn>
+
+<div className="pl-4">
+  <TimelineItem date="Phase 1: Architecture & UI Setup" title="The Foundation">
+    Configured Next.js App Router, Tailwind CSS, and Framer Motion. Built the core `EngineeringGrid` and glassmorphism layouts. Ensured strict responsive grids across mobile and desktop.
+  </TimelineItem>
+
+  <TimelineItem date="Phase 2: Content & Migrations" title="The SVG Overhaul">
+    Realized external CDNs were bottlenecking performance. Created a local, offline-ready SVG asset library to replace over 60 external icon requests. Built the dynamic `Projects` and `Blog` MDX systems.
+  </TimelineItem>
+
+  <TimelineItem date="Phase 3: The AI Integration" title="Injecting Intelligence">
+    Integrated Gemini 2.0 Flash via API Routes. Handled edge cases, role-alternation bugs, and implemented local deduplication to ensure perfect API stability. Built the animated Chat Window UI.
+  </TimelineItem>
+
+  <TimelineItem date="Phase 4: Elite Upgrades" title="Going Premium">
+    Added **Text-to-Speech (TTS)** for the AI, generated dynamic premium **Mockups** for the projects using AI image generation, configured full **PWA support**, and enhanced OpenGraph (OG) images for SEO.
+  </TimelineItem>
+</div>
 
 ## Conclusion
 
-Building this portfolio was an incredibly rewarding experience. It allowed me to push the boundaries of frontend engineering and design. If you have any feedback or just want to say hi, feel free to sign the Guestbook!
+<FadeIn>
+Building this portfolio wasn't just about putting my resume online; it was an exercise in *doing things right*. Every animation, every network request, and every AI prompt was meticulously crafted. If you're a developer reading this, I urge you to look at your own site and ask: *Is this truly the best I can build?*
+
+If you have feedback, or just want to test out the AI Assistant, click that glowing button on the bottom left and let's talk!
+</FadeIn>

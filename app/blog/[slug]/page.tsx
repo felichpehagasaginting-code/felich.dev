@@ -27,16 +27,7 @@ function getPost({ slug }: { slug: string }) {
   };
 }
 
-// Custom components to pass to MDX
-const components = {
-  h1: (props: any) => <h1 className="text-3xl font-bold mt-8 mb-4" {...props} />,
-  h2: (props: any) => <h2 className="text-2xl font-bold mt-8 mb-4 text-primary" {...props} />,
-  h3: (props: any) => <h3 className="text-xl font-bold mt-6 mb-3" {...props} />,
-  p: (props: any) => <p className="mb-4 text-neutral-600 dark:text-neutral-300 leading-relaxed" {...props} />,
-  ul: (props: any) => <ul className="list-disc pl-6 mb-4 space-y-2 text-neutral-600 dark:text-neutral-300" {...props} />,
-  li: (props: any) => <li {...props} />,
-  a: (props: any) => <a className="text-primary hover:underline" {...props} />
-};
+import { mdxComponents } from '@/components/MDXComponents';
 
 export default function Post({ params }: { params: { slug: string } }) {
   const props = getPost(params);
@@ -68,7 +59,7 @@ export default function Post({ params }: { params: { slug: string } }) {
         </div>
 
         <div className="prose prose-neutral dark:prose-invert max-w-none">
-          <MDXRemote source={props.content} components={components} />
+          <MDXRemote source={props.content} components={mdxComponents} />
         </div>
       </article>
     </PageTransition>
