@@ -153,7 +153,7 @@ export default function AIChatbot() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.92, y: 20 }}
               transition={{ type: 'spring', damping: 24, stiffness: 280 }}
-              className="w-[360px] sm:w-[400px] rounded-3xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-2xl shadow-black/20 flex flex-col"
+              className="w-[calc(100vw-3rem)] sm:w-[400px] rounded-3xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-2xl shadow-black/20 flex flex-col"
               style={{ height: minimized ? 'auto' : '520px', marginBottom: '0.5rem' }}
             >
               {/* Header */}

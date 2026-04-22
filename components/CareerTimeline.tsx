@@ -83,7 +83,7 @@ function TimelineCard({ event, index }: { event: TimelineEvent; index: number })
   const isLeft = index % 2 === 0;
 
   return (
-    <div className={`relative flex items-start gap-8 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}>
+    <div className={`relative flex items-start gap-4 md:gap-8 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}>
       {/* Year label (desktop) */}
       <div className={`hidden md:flex flex-col items-${isLeft ? 'end' : 'start'} w-32 flex-shrink-0 pt-6`}>
         <motion.span
