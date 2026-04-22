@@ -234,19 +234,20 @@ export default function AIChatbot() {
                             </button>
                           )}
 
-                          <ReactMarkdown 
-                            remarkPlugins={[remarkGfm]}
-                            className="markdown-content prose-invert text-sm"
-                            components={{
-                              p: ({children}) => <p className="mb-1 last:mb-0">{children}</p>,
-                              strong: ({children}) => <strong className="font-extrabold text-blue-500 dark:text-blue-400">{children}</strong>,
-                              ul: ({children}) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
-                              li: ({children}) => <li className="mb-0.5">{children}</li>,
-                              code: ({children}) => <code className="bg-black/10 dark:bg-black/30 px-1 rounded font-mono text-[11px]">{children}</code>
-                            }}
-                          >
-                            {msg.content}
-                          </ReactMarkdown>
+                          <div className="markdown-content prose-invert text-sm">
+                            <ReactMarkdown 
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                p: ({children}) => <p className="mb-1 last:mb-0">{children}</p>,
+                                strong: ({children}) => <strong className="font-extrabold text-blue-500 dark:text-blue-400">{children}</strong>,
+                                ul: ({children}) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
+                                li: ({children}) => <li className="mb-0.5">{children}</li>,
+                                code: ({children}) => <code className="bg-black/10 dark:bg-black/30 px-1 rounded font-mono text-[11px]">{children}</code>
+                              }}
+                            >
+                              {msg.content}
+                            </ReactMarkdown>
+                          </div>
 
                           <p className={`text-[9px] mt-1.5 font-mono ${msg.role === 'user' ? 'text-white/50 text-right' : 'text-neutral-400'}`}>
                             {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
