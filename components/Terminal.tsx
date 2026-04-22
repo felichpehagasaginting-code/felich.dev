@@ -35,8 +35,12 @@ export default function Terminal() {
             <span>Available commands:</span>
             <span className="text-blue-400">whoami  <span className="text-neutral-500">- Display info about the author</span></span>
             <span className="text-blue-400">skills  <span className="text-neutral-500">- List core technologies</span></span>
+            <span className="text-blue-400">projects<span className="text-neutral-500">- List featured projects</span></span>
+            <span className="text-blue-400">contact <span className="text-neutral-500">- Show contact information</span></span>
+            <span className="text-blue-400">fetch   <span className="text-neutral-500">- System information summary</span></span>
+            <span className="text-blue-400">echo    <span className="text-neutral-500">- Print text to terminal</span></span>
+            <span className="text-blue-400">date    <span className="text-neutral-500">- Print current system date and time</span></span>
             <span className="text-blue-400">clear   <span className="text-neutral-500">- Clear terminal output</span></span>
-            <span className="text-blue-400">sudo    <span className="text-neutral-500">- Execute command as superuser</span></span>
           </div>
         );
         break;
@@ -44,7 +48,54 @@ export default function Terminal() {
         output = 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer.';
         break;
       case 'skills':
-        output = 'Next.js, React, Node.js, Python, PostgreSQL, Three.js, TailwindCSS.';
+        output = 'Next.js, React, Node.js, Python, PostgreSQL, Three.js, TailwindCSS, Docker, Go.';
+        break;
+      case 'projects':
+        output = (
+          <div className="flex flex-col gap-1">
+            <span className="text-green-400">1. FinTech Dashboard (Fullstack Web)</span>
+            <span className="text-purple-400">2. AI/ML Platform (Data Engineering)</span>
+            <span className="text-pink-400">3. Felich.dev (Next.js Portfolio)</span>
+          </div>
+        );
+        break;
+      case 'contact':
+        output = (
+          <div className="flex flex-col gap-1">
+            <span>Email: <a href="mailto:hello@felich.dev" className="text-blue-400 hover:underline">hello@felich.dev</a></span>
+            <span>GitHub: <a href="https://github.com/felichpehagasaginting-code" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">github.com/felichpehagasaginting-code</a></span>
+          </div>
+        );
+        break;
+      case 'date':
+        output = new Date().toString();
+        break;
+      case 'fetch':
+        output = (
+          <div className="flex gap-4">
+            <div className="text-blue-500 font-bold hidden sm:block whitespace-pre leading-tight">
+              {`
+   /\\   
+  /  \\  
+ /____\\ 
+/      \\
+              `}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-purple-400 font-bold">felich@dev-machine</span>
+              <span>--------------</span>
+              <span><span className="text-blue-400 font-bold">OS:</span> Next.js/Linux</span>
+              <span><span className="text-blue-400 font-bold">Kernel:</span> React 18</span>
+              <span><span className="text-blue-400 font-bold">Uptime:</span> ∞ days</span>
+              <span><span className="text-blue-400 font-bold">Packages:</span> 1337 (npm)</span>
+              <span><span className="text-blue-400 font-bold">Shell:</span> bash 5.1</span>
+              <span><span className="text-blue-400 font-bold">Memory:</span> 16GB / 64GB</span>
+              <div className="flex gap-1 mt-2">
+                <div className="w-3 h-3 bg-red-500"></div><div className="w-3 h-3 bg-green-500"></div><div className="w-3 h-3 bg-yellow-500"></div><div className="w-3 h-3 bg-blue-500"></div><div className="w-3 h-3 bg-purple-500"></div><div className="w-3 h-3 bg-cyan-500"></div>
+              </div>
+            </div>
+          </div>
+        );
         break;
       case 'clear':
         setHistory([]);
@@ -54,7 +105,9 @@ export default function Terminal() {
         output = <span className="text-red-500">Nice try! You do not have permission.</span>;
         break;
       default:
-        if (cmd.startsWith('sudo ')) {
+        if (cmd.startsWith('echo ')) {
+          output = cmd.substring(5);
+        } else if (cmd.startsWith('sudo ')) {
           output = <span className="text-yellow-500">Password required for felich. (Just kidding, permission denied).</span>;
         } else {
           output = <span className="text-red-400">Command not found: {cmd}. Type 'help' for available commands.</span>;
