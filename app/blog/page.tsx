@@ -3,6 +3,12 @@ import path from 'path';
 import matter from 'gray-matter';
 import Link from 'next/link';
 import PageTransition from '@/components/PageTransition';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Blog',
+  description: 'Writings on software engineering, AI/ML, and building digital products. Explore technical articles and insights by Felich.',
+};
 
 export default function BlogList() {
   const files = fs.readdirSync(path.join(process.cwd(), 'content', 'blog'));

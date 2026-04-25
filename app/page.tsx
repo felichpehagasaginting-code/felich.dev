@@ -14,6 +14,8 @@ import { SkillIcons } from '@/components/SkillIcons';
 import Terminal from '@/components/Terminal';
 import SpotifyWidget from '@/components/SpotifyWidget';
 import LiveVisitorBadge from '@/components/LiveVisitorBadge';
+import Script from 'next/script';
+
 
 const skillCategories = [
   { name: 'All', count: 44 },
@@ -129,6 +131,25 @@ export default function Home() {
 
   return (
     <PageTransition>
+      <Script
+        id="structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Person',
+            name: 'Felich',
+            url: 'https://felich.dev',
+            jobTitle: 'Software Engineer',
+            knowsAbout: ['AI Engineering', 'FinTech', 'Next.js', 'TypeScript', 'Machine Learning'],
+            sameAs: [
+              'https://github.com/felichpehagasaginting-code',
+              'https://www.linkedin.com/in/felich-pehagasa-ginting-b6a8a32a6/',
+              'https://www.instagram.com/fel.comp',
+            ],
+          }),
+        }}
+      />
       <div>
         {/* Hero Section */}
         <Reveal width="100%">

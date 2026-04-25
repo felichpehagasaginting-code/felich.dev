@@ -2,10 +2,38 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import { Metadata } from 'next';
 import PageTransition from '@/components/PageTransition';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 const BlogViewCounter = dynamic(() => import('@/components/BlogViewCounter'), { ssr: false });
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const post = getPost(params);
+  return {
+    title: post.frontMatter.title,
+    description: post.frontMatter.description,
+    openGraph: {
+      title: post.frontMatter.title,
+      description: post.frontMatter.description,
+      type: 'article',
+      publishedTime: post.frontMatter.date,
+      authors: ['Felich'],
+      images: [
+        {
+          url: `/api/og?title=${encodeURIComponent(post.frontMatter.title)}&description=${encodeURIComponent(post.frontMatter.description || '')}&type=blog`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.frontMatter.title,
+      description: post.frontMatter.description,
+    },
+  };
+}
 
 export async function generateStaticParams() {
   const files = fs.readdirSync(path.join(process.cwd(), 'content', 'blog'));

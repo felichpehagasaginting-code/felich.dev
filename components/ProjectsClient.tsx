@@ -91,13 +91,13 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                   <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#3b82f6 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
                   
                   {project.slug && (
-                    <img
+                    <Image
                       src={`/images/projects/${project.slug}.png`}
                       alt={project.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500 z-0"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
+                      priority={i < 2}
                     />
                   )}
 
@@ -168,13 +168,13 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-neutral-900/80 to-transparent sm:hidden z-10"></div>
                 
                 {selectedProject.slug && (
-                  <img
+                  <Image
                     src={`/images/projects/${selectedProject.slug}.png`}
                     alt={selectedProject.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 40vw"
                     className="absolute inset-0 w-full h-full object-cover z-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
+                    priority
                   />
                 )}
 
