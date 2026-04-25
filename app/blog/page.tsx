@@ -4,16 +4,17 @@ import matter from 'gray-matter';
 import Link from 'next/link';
 import PageTransition from '@/components/PageTransition';
 import { Metadata } from 'next';
+import { getPosts } from '@/lib/sanity';
 
 export const metadata: Metadata = {
   title: 'Blog',
   description: 'Writings on software engineering, AI/ML, and building digital products. Explore technical articles and insights by Felich.',
 };
 
-export default function BlogList() {
+export default async function BlogList() {
+  // 1. Fetch Local Posts (MDX)
   const files = fs.readdirSync(path.join(process.cwd(), 'content', 'blog'));
-  
-  const posts = files.map((filename) => {
+  const localPosts = files.map((filename) => {
     const slug = filename.replace('.mdx', '');
     const markdownWithMeta = fs.readFileSync(
       path.join(process.cwd(), 'content', 'blog', filename),
@@ -23,8 +24,34 @@ export default function BlogList() {
     return {
       slug,
       frontMatter,
+      source: 'local' as const,
     };
-  }).sort((a: any, b: any) => new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime());
+  });
+
+  // 2. Fetch Sanity Posts (if configured)
+  let sanityPosts: any[] = [];
+  if (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
+    try {
+      const remotePosts = await getPosts();
+      sanityPosts = remotePosts.map((p: any) => ({
+        slug: p.slug,
+        frontMatter: {
+          title: p.title,
+          date: p.date,
+          description: p.description,
+          topics: p.topics,
+        },
+        source: 'sanity' as const,
+      }));
+    } catch (error) {
+      console.error('Failed to fetch from Sanity:', error);
+    }
+  }
+
+  // 3. Combine and Sort
+  const posts = [...localPosts, ...sanityPosts].sort((a: any, b: any) => 
+    new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime()
+  );
 
   return (
     <PageTransition>
@@ -38,7 +65,7 @@ export default function BlogList() {
 
         <hr className="dotted-divider mb-8" />
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {posts.map((post) => (
             <Link 
               key={post.slug} 

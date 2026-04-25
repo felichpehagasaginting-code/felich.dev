@@ -1,9 +1,11 @@
-'use client';
-
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, OrbitControls, Points, PointMaterial, Environment, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 function ParticleSwarm(props: any) {
   const ref = useRef<THREE.Points>(null);
@@ -115,10 +117,52 @@ function InnerCore() {
 }
 
 export default function Hero3D() {
+  const groupRef = useRef<THREE.Group>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (!groupRef.current) return;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top center',
+        end: 'bottom top',
+        scrub: 1,
+      }
+    });
+
+    tl.to(groupRef.current.rotation, {
+      y: Math.PI * 1.5,
+      x: Math.PI / 6,
+      ease: 'none'
+    })
+    .to(groupRef.current.scale, {
+      x: isMobile ? 0.4 : 0.6,
+      y: isMobile ? 0.4 : 0.6,
+      z: isMobile ? 0.4 : 0.6,
+      ease: 'none'
+    }, 0);
+
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
+  }, [isMobile]);
+
   return (
-    <div className="w-full h-[350px] md:h-[450px] lg:h-[500px] relative pointer-events-auto interactive-element cursor-grab active:cursor-grabbing">
+    <div ref={containerRef} className="w-full h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px] relative pointer-events-auto interactive-element cursor-grab active:cursor-grabbing">
       <Canvas
-        camera={{ position: [0, 0, 5], fov: 45 }}
+        camera={{ position: [0, 0, isMobile ? 6 : 5], fov: isMobile ? 50 : 45 }}
         className="w-full h-full !absolute inset-0 focus:outline-none"
         dpr={[1, 2]}
       >
@@ -129,7 +173,7 @@ export default function Hero3D() {
         
         <Environment preset="city" />
 
-        <group position={[0, 0, 0]}>
+        <group ref={groupRef} position={[0, 0, 0]} scale={isMobile ? 0.8 : 1}>
           <ParticleSwarm />
           <CoreShape />
           <InnerCore />

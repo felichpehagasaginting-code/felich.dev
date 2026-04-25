@@ -3,9 +3,17 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Fluid Typography: 16px -> 18px */
+    --font-size-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    /* Fluid Spacing */
+    --space-base: clamp(1rem, 0.8rem + 1vw, 2rem);
+  }
+
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    font-size: var(--font-size-base);
   }
 
   /* Dark theme */
@@ -148,7 +156,7 @@
     background-color: rgba(217, 119, 6, 0.2);
     color: #d97706;
     border-color: #d97706;
-    ring-color: rgba(217, 119, 6, 0.3);
+    @apply ring-[rgba(217,119,6,0.3)];
   }
 
   /* Social card */

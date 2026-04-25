@@ -36,7 +36,7 @@ export default function BackToTop() {
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.9 }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-white dark:bg-neutral-900 shadow-xl border border-neutral-200 dark:border-neutral-700 flex items-center justify-center group"
+          className="fixed bottom-10 right-6 md:bottom-6 md:right-24 z-40 w-12 h-12 rounded-full bg-white dark:bg-neutral-900 shadow-xl border border-neutral-200 dark:border-neutral-700 flex items-center justify-center group"
           aria-label="Back to top"
         >
           {/* SVG Progress Ring */}

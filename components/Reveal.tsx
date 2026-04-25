@@ -5,11 +5,12 @@ import { useEffect, useRef } from 'react';
 
 interface RevealProps {
   children: React.ReactNode;
-  width?: "fit-content" | "100%";
+  width?: "fit-content" | "100%" | "auto";
   delay?: number;
+  overflow?: "hidden" | "visible";
 }
 
-export default function Reveal({ children, width = "fit-content", delay = 0.25 }: RevealProps) {
+export default function Reveal({ children, width = "fit-content", delay = 0.25, overflow = "visible" }: RevealProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const mainControls = useAnimation();
@@ -21,7 +22,7 @@ export default function Reveal({ children, width = "fit-content", delay = 0.25 }
   }, [isInView, mainControls]);
 
   return (
-    <div ref={ref} style={{ position: "relative", width, overflow: "hidden" }}>
+    <div ref={ref} style={{ position: "relative", width, overflow }}>
       <motion.div
         variants={{
           hidden: { opacity: 0, y: 75 },

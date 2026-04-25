@@ -23,6 +23,8 @@ const categories = [
       { name: 'Postman', desc: 'API testing & documentation', slug: 'postman', color: '#FF6C37' },
       { name: 'Vercel', desc: 'Deployment & hosting', slug: 'vercel', color: '#000000' },
       { name: 'Terminal / CLI', desc: 'Daily bash & system operations', slug: 'gnometerminal', color: '#4E9A06' },
+      { name: 'Gemini AI', desc: 'Advanced reasoning & creative coding', slug: 'geminiai', color: '#1A73E8' },
+      { name: 'Sanity CMS', desc: 'Structured content management', slug: 'sanity', color: '#F03E2F' },
     ],
   },
   {
@@ -121,6 +123,8 @@ export default function Uses() {
                                xiaomi: Iconxiaomi,
                                discord: Icondiscord,
                                spotify: Iconspotify,
+                               geminiai: SkillIcons.geminiai,
+                               sanity: SkillIcons.sanity,
                              };
                              const Icon = icons[item.slug];
                              return Icon ? Icon : <span className="text-[10px] font-bold">{item.name.substring(0, 2).toUpperCase()}</span>;

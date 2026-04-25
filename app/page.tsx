@@ -18,11 +18,11 @@ import Script from 'next/script';
 
 
 const skillCategories = [
-  { name: 'All', count: 44 },
-  { name: 'Frontend', count: 14 },
-  { name: 'Backend', count: 13 },
+  { name: 'All', count: 50 },
+  { name: 'Frontend', count: 16 },
+  { name: 'Backend', count: 14 },
   { name: 'Database', count: 6 },
-  { name: 'Tools', count: 11 },
+  { name: 'Tools', count: 14 },
 ];
 
 const skills = [
@@ -38,6 +38,8 @@ const skills = [
   { name: 'Vite', color: '#646cff', category: 'Frontend', slug: 'vite' },
   { name: 'Redux', color: '#764abc', category: 'Frontend', slug: 'redux' },
   { name: 'Shadcn UI', color: '#000000', category: 'Frontend', slug: 'shadcnui' },
+  { name: 'GSAP', color: '#88ce02', category: 'Frontend', slug: 'gsap' },
+  { name: 'Canvas API', color: '#ff6b6b', category: 'Frontend', slug: 'canvas' },
   { name: 'Node.js', color: '#339933', category: 'Backend', slug: 'nodedotjs' },
   { name: 'Express.js', color: '#000000', category: 'Backend', slug: 'express' },
   { name: 'Python', color: '#3776ab', category: 'Backend', slug: 'python' },
@@ -45,7 +47,7 @@ const skills = [
   { name: 'PHP', color: '#777bb4', category: 'Backend', slug: 'php' },
   { name: 'Laravel', color: '#ff2d20', category: 'Backend', slug: 'laravel' },
   { name: 'Prisma', color: '#2d3748', category: 'Backend', slug: 'prisma' },
-  { name: 'REST API', color: '#009688', category: 'Backend', slug: 'postman' },
+  { name: 'Sanity CMS', color: '#f03e2f', category: 'Backend', slug: 'sanity' },
   { name: 'PostgreSQL', color: '#4169e1', category: 'Database', slug: 'postgresql' },
   { name: 'MySQL', color: '#4479a1', category: 'Database', slug: 'mysql' },
   { name: 'MongoDB', color: '#47a248', category: 'Database', slug: 'mongodb' },
@@ -58,6 +60,9 @@ const skills = [
   { name: 'Postman', color: '#ff6c37', category: 'Tools', slug: 'postman' },
   { name: 'npm', color: '#cb3837', category: 'Tools', slug: 'npm' },
   { name: 'Vercel', color: '#000000', category: 'Tools', slug: 'vercel' },
+  { name: 'Vitest', color: '#729b1b', category: 'Tools', slug: 'vitest' },
+  { name: 'Playwright', color: '#2ead33', category: 'Tools', slug: 'playwright' },
+  { name: 'Gemini AI', color: '#1a73e8', category: 'Tools', slug: 'geminiai' },
   { name: 'Rust', color: '#dea584', category: 'Backend', slug: 'rust' },
   { name: 'PyTorch', color: '#ee4c2c', category: 'Backend', slug: 'pytorch' },
   { name: 'TensorFlow', color: '#ff6f00', category: 'Backend', slug: 'tensorflow' },
@@ -70,6 +75,7 @@ const skills = [
   { name: 'Cloudflare', color: '#f38020', category: 'Tools', slug: 'cloudflare' },
   { name: 'IBM', color: '#0530AD', category: 'Backend', slug: 'ibm' },
   { name: 'Langflow', color: '#1B1B1B', category: 'Tools', slug: 'langflow' },
+  { name: 'REST API', color: '#009688', category: 'Backend', slug: 'postman' },
 ];
 
 const skillLinks: Record<string, string> = {
@@ -105,7 +111,13 @@ const skillLinks: Record<string, string> = {
   'npm': 'https://www.npmjs.com/',
   'Vercel': 'https://vercel.com/',
   'IBM': 'https://www.ibm.com/',
-  'Langflow': 'https://www.langflow.org/'
+  'Langflow': 'https://www.langflow.org/',
+  'GSAP': 'https://gsap.com/',
+  'Sanity CMS': 'https://www.sanity.io/',
+  'Vitest': 'https://vitest.dev/',
+  'Playwright': 'https://playwright.dev/',
+  'Gemini AI': 'https://deepmind.google/technologies/gemini/',
+  'Canvas API': 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API'
 };
 
 export default function Home() {
@@ -152,8 +164,8 @@ export default function Home() {
       />
       <div>
         {/* Hero Section */}
-        <Reveal width="100%">
-          <section className="mb-12 flex flex-col md:flex-row items-center gap-8">
+        <Reveal width="auto">
+          <section className="mb-12 flex flex-col md:flex-row items-center gap-8 overflow-visible">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -166,14 +178,14 @@ export default function Home() {
               }}
               className="flex-1"
             >
-              <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter leading-tight">
+              <h1 className="text-4xl md:text-7xl font-black mb-4 tracking-tighter leading-[1.1] md:leading-tight px-0.5 overflow-visible">
                 Hi, I&apos;m{' '}
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent animate-gradient-x pb-4 inline-block drop-shadow-sm">
                   Felich
                 </span>
               </h1>
 
-              <div className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 font-medium mb-4 h-8 relative z-10">
+              <div className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 font-medium mb-6 min-h-[2rem] relative z-10 px-0.5 overflow-visible">
                 <TypingAnimation
                   texts={[
                     'Software Engineer',
@@ -184,32 +196,32 @@ export default function Home() {
                 />
               </div>
 
-              <div className="flex items-center gap-6 text-sm text-neutral-500 dark:text-neutral-400 mb-6 relative z-10">
-                <div className="flex items-center gap-2 group cursor-help relative">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                  </span>
-                  <span>Based in Indonesia 🇮🇩</span>
+                <div className="flex flex-wrap items-center gap-y-4 gap-x-6 text-sm text-neutral-500 dark:text-neutral-400 mb-8 relative z-10">
+                  <div className="flex items-center gap-2 group cursor-help relative">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    <span>Based in Indonesia 🇮🇩</span>
+                    
+                    {/* Time Tooltip */}
+                    <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-3 py-1 rounded-lg text-xs font-mono shadow-xl whitespace-nowrap pointer-events-none z-50">
+                      Local Time: {localTime} (WIB)
+                    </div>
+                  </div>
                   
-                  {/* Time Tooltip */}
-                  <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-3 py-1 rounded-lg text-xs font-mono shadow-xl whitespace-nowrap pointer-events-none z-50">
-                    Local Time: {localTime} (WIB)
+                  <div className="flex items-center gap-2 group cursor-default">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <span>Available for Onsite</span>
+                  </div>
+                  
+                  <div className="w-full sm:w-auto">
+                    <SpotifyWidget />
                   </div>
                 </div>
-                
-                <div className="flex items-center gap-2 group cursor-default mb-6">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                  </span>
-                  <span>Available for Onsite</span>
-                </div>
-                
-                <div className="mb-6">
-                  <SpotifyWidget />
-                </div>
-              </div>
 
               <div className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed relative z-10">
                 <p>

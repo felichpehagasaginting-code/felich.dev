@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 export default function EngineeringGrid() {
@@ -10,14 +10,25 @@ export default function EngineeringGrid() {
   const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
   const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
 
+  const [showGlow, setShowGlow] = useState(false);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
     };
 
+    const checkDevice = () => {
+      setShowGlow(window.innerWidth >= 1024 && !('ontouchstart' in window));
+    };
+
+    checkDevice();
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', checkDevice);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', checkDevice);
+    };
   }, [mouseX, mouseY]);
 
   return (
@@ -27,11 +38,11 @@ export default function EngineeringGrid() {
         className="absolute inset-0"
         style={{
           backgroundImage: `
-            linear-gradient(to right, currentColor 1px, transparent 1px),
-            linear-gradient(to bottom, currentColor 1px, transparent 1px)
+            linear-gradient(to right, currentColor 1.5px, transparent 1.5px),
+            linear-gradient(to bottom, currentColor 1.5px, transparent 1.5px)
           `,
-          backgroundSize: '40px 40px',
-          color: 'rgba(0, 0, 0, 0.05)',
+          backgroundSize: 'clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px)',
+          color: 'rgba(0, 0, 0, 0.04)',
         }}
       />
       
@@ -40,25 +51,27 @@ export default function EngineeringGrid() {
           className="absolute inset-0"
           style={{
             backgroundImage: `
-              linear-gradient(to right, currentColor 1px, transparent 1px),
-              linear-gradient(to bottom, currentColor 1px, transparent 1px)
+              linear-gradient(to right, currentColor 1.5px, transparent 1.5px),
+              linear-gradient(to bottom, currentColor 1.5px, transparent 1.5px)
             `,
-            backgroundSize: '40px 40px',
-            color: 'rgba(255, 255, 255, 0.03)',
+            backgroundSize: 'clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px)',
+            color: 'rgba(255, 255, 255, 0.02)',
           }}
         />
       </div>
 
       {/* Radial Gradient Glow following mouse */}
-      <motion.div
-        className="absolute inset-0 z-10"
-        style={{
-          background: `radial-gradient(600px circle at var(--x) var(--y), rgba(59, 130, 246, 0.06), transparent 40%)`,
-          // @ts-ignore
-          '--x': springX,
-          '--y': springY,
-        }}
-      />
+      {showGlow && (
+        <motion.div
+          className="absolute inset-0 z-10"
+          style={{
+            background: `radial-gradient(600px circle at var(--x) var(--y), rgba(59, 130, 246, 0.08), transparent 40%)`,
+            // @ts-ignore
+            '--x': springX,
+            '--y': springY,
+          }}
+        />
+      )}
 
       {/* Subtle Dot Pattern Overlay */}
       <div 
