@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
-import { SkillIcons, Iconlenovo, Iconubuntu, Iconanthropic, Icongnometerminal, Iconfigma, Iconnotion, Icongooglechrome, Icongrammarly, Iconublockorigin, Iconapple, Iconxiaomi, Icondiscord, Iconspotify } from '@/components/SkillIcons';
+import { SkillIcons, Iconlenovo, Iconubuntu, Iconanthropic, Icongnometerminal, Iconfigma, Iconnotion, Icongooglechrome, Icongrammarly, Iconublockorigin, Iconapple, Iconxiaomi, Icondiscord, Iconspotify, Iconvirtualbox, Iconkalilinux, Iconalmalinux, Iconmikrotik } from '@/components/SkillIcons';
 
 const categories = [
   {
@@ -11,6 +11,15 @@ const categories = [
       { name: 'Lenovo LOQ 15', desc: 'Primary development machine', slug: 'lenovo', color: '#E2231A' },
       { name: 'Ubuntu', desc: 'Primary Operating System', slug: 'ubuntu', color: '#E95420' },
       { name: 'Legion Mouse', desc: 'Ergonomic for daily use', slug: 'lenovo', color: '#E2231A' },
+    ],
+  },
+  {
+    title: '🛡️ Virtualization & Systems',
+    items: [
+      { name: 'VirtualBox', desc: 'Primary Hypervisor for testing', slug: 'virtualbox', color: '#183A61' },
+      { name: 'Kali Linux', desc: 'Penetration testing environment', slug: 'kalilinux', color: '#268BEE' },
+      { name: 'AlmaLinux', desc: 'Server & Enterprise testing', slug: 'almalinux', color: '#F04D22' },
+      { name: 'MikroTikOS', desc: 'Network simulation & routing', slug: 'mikrotik', color: '#ED1C24' },
     ],
   },
   {

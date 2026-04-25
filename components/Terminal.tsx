@@ -131,11 +131,27 @@ export default function Terminal() {
         break;
       case 'theme':
         output = (
-          <div className="text-yellow-400 italic">
-            [System] Theme switching is controlled by the global ThemeWarp engine. 
-            Use the top-right toggle for the full shader transition.
+          <div className="flex flex-col gap-1">
+            <span className="text-yellow-400 font-bold">[ SYSTEM THEMES ]</span>
+            <span>1. <span className="text-blue-400">Dark</span> (Default)</span>
+            <span>2. <span className="text-neutral-400">Light</span> (High Contrast)</span>
+            <span>3. <span className="text-orange-400">Yellow</span> (Elite Amber)</span>
+            <span className="text-[10px] mt-1 opacity-70">Use the UI toggle to switch instantly.</span>
           </div>
         );
+        break;
+      case 'unlock-elite':
+        output = (
+          <div className="text-primary font-black animate-pulse">
+            [!] ACCESS GRANTED. ELITE PROTOCOLS INITIALIZED. 🏆
+            <div className="text-[10px] text-neutral-500 mt-1 font-mono">
+              You've discovered the hidden layer of felich.dev. 
+              The system is now running at 110% capacity.
+            </div>
+          </div>
+        );
+        // Trigger a custom event or store change if needed, 
+        // for now just visual feedback in terminal
         break;
       case 'ls':
         output = (
@@ -263,6 +279,12 @@ export default function Terminal() {
     setInput('');
   };
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Auto scroll to bottom
   useEffect(() => {
     if (containerRef.current) {
@@ -299,7 +321,7 @@ export default function Terminal() {
 
         <div className="mb-4 text-green-400/80 flex items-center gap-2">
           <span className="animate-pulse">●</span>
-          <span>Session started: {new Date().toLocaleTimeString()} - Type 'help' to explore.</span>
+          <span>Session started: {mounted ? new Date().toLocaleTimeString() : '--:--:--'} - Type 'help' to explore.</span>
         </div>
 
         {history.map((cmd, i) => (
@@ -332,7 +354,6 @@ export default function Terminal() {
               className="w-full bg-transparent outline-none text-white border-none focus:ring-0 p-0 caret-transparent"
               autoComplete="off"
               spellCheck="false"
-              autoFocus
             />
             {/* Custom Blinking Cursor */}
             <motion.div 

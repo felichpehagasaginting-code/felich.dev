@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 interface TypingAnimationProps {
   texts: string[];
@@ -10,64 +11,58 @@ interface TypingAnimationProps {
   className?: string;
 }
 
-import { motion } from 'framer-motion';
-
 export default function TypingAnimation({
   texts,
-  typingSpeed = 80,
-  deletingSpeed = 50,
-  pauseDuration = 2000,
+  typingSpeed = 60,
+  deletingSpeed = 40,
+  pauseDuration = 1000,
   className = '',
 }: TypingAnimationProps) {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const animate = useCallback(() => {
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
     const currentFullText = texts[currentTextIndex];
 
-    if (!isDeleting) {
+    if (isDeleting) {
+      // Deleting phase
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => {
+          setDisplayText(prev => prev.slice(0, -1));
+        }, deletingSpeed);
+      } else {
+        // Finished deleting, move to next text
+        setIsDeleting(false);
+        setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+      }
+    } else {
+      // Typing phase
       if (displayText.length < currentFullText.length) {
-        return setTimeout(() => {
+        timeout = setTimeout(() => {
           setDisplayText(currentFullText.slice(0, displayText.length + 1));
         }, typingSpeed);
       } else {
-        return setTimeout(() => {
+        // Finished typing, wait before deleting
+        timeout = setTimeout(() => {
           setIsDeleting(true);
         }, pauseDuration);
       }
-    } else {
-      if (displayText.length > 0) {
-        return setTimeout(() => {
-          setDisplayText(displayText.slice(0, -1));
-        }, deletingSpeed);
-      } else {
-        setIsDeleting(false);
-        setCurrentTextIndex((prev) => (prev + 1) % texts.length);
-        return undefined;
-      }
     }
-  }, [currentTextIndex, displayText, isDeleting, texts, typingSpeed, deletingSpeed, pauseDuration]);
 
-  useEffect(() => {
-    const timeout = animate();
-    return () => {
-      if (timeout) clearTimeout(timeout);
-    };
-  }, [animate]);
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting, currentTextIndex, texts, typingSpeed, deletingSpeed, pauseDuration]);
 
   return (
-    <span className={className}>
-      {displayText}
+    <span className={`inline-flex items-center ${className}`}>
+      <span>{displayText}</span>
       <motion.span
-        key={displayText.length}
-        initial={{ opacity: 1, scale: 1 }}
-        animate={{ scale: [1, 1.3, 1] }}
-        transition={{ duration: 0.15 }}
-        className="inline-block"
-      >
-        <span className="animate-pulse text-primary font-bold">|</span>
-      </motion.span>
+        key={isDeleting ? 'deleting' : 'typing'}
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{ duration: 0.8, repeat: Infinity }}
+        className="ml-0.5 inline-block w-1 h-5 bg-primary/80"
+      />
     </span>
   );
 }

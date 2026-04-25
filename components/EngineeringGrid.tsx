@@ -32,7 +32,7 @@ export default function EngineeringGrid() {
   }, [mouseX, mouseY]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-20 dark:opacity-40">
+    <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden opacity-20 dark:opacity-40">
       {/* Base Grid */}
       <div 
         className="absolute inset-0"

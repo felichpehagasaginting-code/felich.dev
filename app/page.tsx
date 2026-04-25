@@ -165,7 +165,7 @@ export default function Home() {
       <div>
         {/* Hero Section */}
         <Reveal width="auto">
-          <section className="mb-12 flex flex-col md:flex-row items-center gap-8 overflow-visible">
+          <section className="mb-12 flex flex-col md:flex-row items-center gap-12 md:gap-8 overflow-visible">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -176,16 +176,16 @@ export default function Home() {
                 rotateY: -1,
                 transition: { type: 'spring', stiffness: 400, damping: 20 }
               }}
-              className="flex-1"
+              className="flex-1 relative z-20"
             >
-              <h1 className="text-4xl md:text-7xl font-black mb-4 tracking-tighter leading-[1.1] md:leading-tight px-0.5 overflow-visible">
+              <h1 className="text-4xl md:text-7xl font-black mb-6 tracking-tighter leading-[1.1] md:leading-tight px-0.5 overflow-visible">
                 Hi, I&apos;m{' '}
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent animate-gradient-x pb-4 inline-block drop-shadow-sm">
                   Felich
                 </span>
               </h1>
 
-              <div className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 font-medium mb-6 min-h-[2rem] relative z-10 px-0.5 overflow-visible">
+              <div className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 font-medium mb-8 min-h-[3.5rem] md:min-h-[2rem] relative z-10 px-0.5 overflow-visible">
                 <TypingAnimation
                   texts={[
                     'Software Engineer',
@@ -242,7 +242,7 @@ export default function Home() {
               </div>
             </motion.div>
             
-            <div className="w-full md:w-1/3 flex-shrink-0 animate-fade-in pointer-events-auto z-20 hover:cursor-grab active:cursor-grabbing interactive-element">
+            <div className="w-full md:w-1/3 flex-shrink-0 animate-fade-in pointer-events-auto z-10 hover:cursor-grab active:cursor-grabbing interactive-element">
               <Hero3D />
             </div>
           </section>
