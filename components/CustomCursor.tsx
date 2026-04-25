@@ -18,9 +18,9 @@ export default function CustomCursor() {
       setPosition({ x: e.clientX, y: e.clientY });
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
-      
+
       if (!isVisible) setIsVisible(true);
-      
+
       const target = e.target as HTMLElement;
       setIsPointer(
         window.getComputedStyle(target).cursor === 'pointer' ||
@@ -66,7 +66,7 @@ export default function CustomCursor() {
           opacity: isVisible ? 1 : 0
         }}
       />
-      
+
       {/* Outer ring */}
       <motion.div
         className="fixed top-0 left-0 rounded-full border pointer-events-none z-[99998]"
