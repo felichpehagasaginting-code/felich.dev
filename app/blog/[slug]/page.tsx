@@ -4,6 +4,8 @@ import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import PageTransition from '@/components/PageTransition';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+const BlogViewCounter = dynamic(() => import('@/components/BlogViewCounter'), { ssr: false });
 
 export async function generateStaticParams() {
   const files = fs.readdirSync(path.join(process.cwd(), 'content', 'blog'));
@@ -68,8 +70,9 @@ export default function Post({ params }: { params: { slug: string } }) {
         
         <h1 className="text-3xl md:text-5xl font-bold mb-4">{props.frontMatter.title}</h1>
         
-        <div className="flex items-center gap-4 text-sm text-neutral-500 dark:text-neutral-400 mb-8 border-b border-neutral-200 dark:border-neutral-800 pb-8">
+        <div className="flex items-center flex-wrap gap-4 text-sm text-neutral-500 dark:text-neutral-400 mb-8 border-b border-neutral-200 dark:border-neutral-800 pb-8">
           <span>{new Date(props.frontMatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          <BlogViewCounter slug={params.slug} />
           <div className="flex gap-2">
             {props.frontMatter.topics?.map((topic: string) => (
               <span key={topic} className="px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded-full text-[10px] font-semibold">

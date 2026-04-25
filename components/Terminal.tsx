@@ -126,7 +126,7 @@ export default function Terminal() {
   }, [history]);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -144,7 +144,7 @@ export default function Terminal() {
       </div>
 
       {/* Terminal Body */}
-      <div 
+      <div
         ref={containerRef}
         className="p-4 h-64 overflow-y-auto scrollbar-hide text-neutral-300"
         onClick={() => inputRef.current?.focus()}
@@ -152,7 +152,7 @@ export default function Terminal() {
         <div className="mb-4 text-green-400 opacity-80">
           Connected to felich.dev. Type 'help' to get started.
         </div>
-        
+
         {history.map((cmd, i) => (
           <div key={i} className="mb-3">
             <div className="flex items-center gap-2 mb-1">

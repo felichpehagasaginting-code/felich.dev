@@ -2,3 +2,6 @@
 
 ## Information Gathered
 - index
+- about
+- projects
+- contact

@@ -13,6 +13,7 @@ import { sounds } from '@/lib/sounds';
 import { SkillIcons } from '@/components/SkillIcons';
 import Terminal from '@/components/Terminal';
 import SpotifyWidget from '@/components/SpotifyWidget';
+import LiveVisitorBadge from '@/components/LiveVisitorBadge';
 
 const skillCategories = [
   { name: 'All', count: 44 },
@@ -200,6 +201,11 @@ export default function Home() {
                   business goals. I combine technical expertise with proactive communication and leadership to ensure
                   every project delivers logical clarity and a meaningful real-world impact.
                 </p>
+              </div>
+
+              {/* Live Visitor Badge */}
+              <div className="mt-6">
+                <LiveVisitorBadge path="home" showViews />
               </div>
             </motion.div>
             

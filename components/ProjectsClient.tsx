@@ -7,6 +7,7 @@ import { triggerImpact } from '@/lib/impact';
 import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import TiltCard from './TiltCard';
+import { useProjectLikes } from '@/lib/useProjectLikes';
 
 const projectTypes = ['All', 'Web', 'Mobile'];
 const projectCategories = ['All', 'Personal Project', 'Freelance'];
@@ -15,6 +16,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
   const [activeType, setActiveType] = useState('All');
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
+
 
   const filtered = projects.filter(p =>
     (activeType === 'All' || p.type === activeType) &&
@@ -248,12 +250,48 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                       )}
                     </div>
                   </div>
+
+                  {/* Like Button */}
+                  <ProjectLikeButton slug={selectedProject.slug || selectedProject.title?.toLowerCase().replace(/\s+/g, '-')} />
                 </div>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+// ── Sub-component: Like button per project ──────────────────────────────────
+function ProjectLikeButton({ slug }: { slug: string }) {
+  const { likes, hasLiked, loading, toggleLike } = useProjectLikes(slug);
+
+  return (
+    <div className="pt-6 border-t border-neutral-200 dark:border-neutral-800 flex items-center gap-3">
+      <motion.button
+        onClick={toggleLike}
+        disabled={hasLiked || loading}
+        whileHover={!hasLiked ? { scale: 1.06 } : {}}
+        whileTap={!hasLiked ? { scale: 0.92 } : {}}
+        className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all ${
+          hasLiked
+            ? 'bg-pink-50 dark:bg-pink-950/30 text-pink-500 border border-pink-200 dark:border-pink-800/50 cursor-default'
+            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 hover:bg-pink-50 dark:hover:bg-pink-950/20 hover:text-pink-500 hover:border-pink-200'
+        }`}
+      >
+        <motion.span
+          animate={hasLiked ? { scale: [1, 1.4, 1] } : {}}
+          transition={{ duration: 0.4 }}
+        >
+          {hasLiked ? '❤️' : '🤍'}
+        </motion.span>
+        <span>{loading ? '—' : likes}</span>
+        <span className="font-normal opacity-70">{hasLiked ? 'Liked!' : 'Like this project'}</span>
+      </motion.button>
+      {hasLiked && (
+        <span className="text-xs text-neutral-400 font-mono">Synced to Firebase ✓</span>
+      )}
     </div>
   );
 }
