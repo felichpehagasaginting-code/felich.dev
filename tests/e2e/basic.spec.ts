@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
-test('homepage has title and hero text', async ({ page }) => {
+test('homepage has title and hero text', async ({ page }: { page: Page }) => {
   await page.goto('/');
 
   // Check title
@@ -11,7 +11,7 @@ test('homepage has title and hero text', async ({ page }) => {
   await expect(hero).toContainText('Felich');
 });
 
-test('navigation works', async ({ page }) => {
+test('navigation works', async ({ page }: { page: Page }) => {
   await page.goto('/');
   
   // Click about link in sidebar/mobile nav
