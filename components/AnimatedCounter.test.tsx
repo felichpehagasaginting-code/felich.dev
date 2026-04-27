@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import AnimatedCounter from './AnimatedCounter';
@@ -9,7 +10,9 @@ vi.mock('framer-motion', async () => {
     ...actual,
     useInView: () => true, // Force to be in view for testing
     motion: {
-      span: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+      span: React.forwardRef(({ children, ...props }: any, ref: any) => (
+        <span {...props} ref={ref}>{children}</span>
+      )),
     },
   };
 });
@@ -17,7 +20,7 @@ vi.mock('framer-motion', async () => {
 describe('AnimatedCounter', () => {
   it('renders initial state with prefix and suffix', () => {
     render(<AnimatedCounter end={100} prefix="$" suffix="k" />);
-    expect(screen.getByText(/$/)).toBeInTheDocument();
+    expect(screen.getByText(/\$/)).toBeInTheDocument();
     expect(screen.getByText(/k/)).toBeInTheDocument();
   });
 
