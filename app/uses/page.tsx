@@ -134,6 +134,10 @@ export default function Uses() {
                                spotify: Iconspotify,
                                geminiai: SkillIcons.geminiai,
                                sanity: SkillIcons.sanity,
+                               virtualbox: Iconvirtualbox,
+                               kalilinux: Iconkalilinux,
+                               almalinux: Iconalmalinux,
+                               mikrotik: Iconmikrotik,
                              };
                              const Icon = icons[item.slug];
                              return Icon ? Icon : <span className="text-[10px] font-bold">{item.name.substring(0, 2).toUpperCase()}</span>;

@@ -125,6 +125,10 @@ export default function Home() {
   const [localTime, setLocalTime] = useState('');
   
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setLocalTime(new Intl.DateTimeFormat('en-US', {
         timeZone: 'Asia/Jakarta',
