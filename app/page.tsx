@@ -228,15 +228,36 @@ export default function Home() {
 
               <div className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed relative z-10">
                 <p>
-                  A versatile engineer (Fullstack, AI/ML, & DevOps) dedicated to building impactful digital solutions. I specialize in developing
-                  scalable web platforms and AI-driven systems using a modern tech stack, primarily Next.js, TypeScript,
-                  Python, and Node.js.
+                  Currently a Software Engineering student and <span className="text-primary font-bold">BPDP Full Scholar</span>, 
+                  I work at the intersection of AI, data, and long-term 
+                  thinking. My focus is on building intelligent systems 
+                  using Machine Learning and Data Analytics that solve 
+                  real, scalable problems.
                 </p>
                 <p>
-                  My focus is on crafting software architecture that is well-structured, maintainable, and aligned with
-                  business goals. I combine technical expertise with proactive communication and leadership to ensure
-                  every project delivers logical clarity and a meaningful real-world impact.
+                  Beyond code, I&apos;m deeply interested in capital allocation 
+                  and financial independence — because the best engineers 
+                  don&apos;t just build products, they build wealth.
                 </p>
+                <div className="py-2">
+                  <p className="font-bold text-neutral-900 dark:text-white mb-2">What I bring to the table:</p>
+                  <ul className="space-y-1.5 ml-1">
+                    <li className="flex items-center gap-2">
+                      <span className="text-primary">→</span> AI & Machine Learning development
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-primary">→</span> Data-driven decision making
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-primary">→</span> Systems thinking & long-term strategy
+                    </li>
+                  </ul>
+                </div>
+                <p>
+                  Open to internships, collaborations, and conversations 
+                  about tech, data, and building the future.
+                </p>
+                <p className="font-bold text-primary">Let&apos;s connect 🔥</p>
               </div>
 
               {/* Live Visitor Badge */}

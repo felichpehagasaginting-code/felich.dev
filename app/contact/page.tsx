@@ -140,107 +140,170 @@ export default function Contact() {
 
       <hr className="dotted-divider mb-8" />
 
-      {/* Instagram Profile Embed */}
-      {/* Instagram Profile Embed */}
+      {/* Enhanced Instagram Profile Embed (Pure Code Version) */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.25, type: 'spring' }}
+        transition={{ duration: 0.8, delay: 0.25, type: 'spring' }}
         className="mb-12 relative group"
       >
-        <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200" />
+        {/* Animated Background Glow */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-pink-600 via-purple-600 to-orange-600 rounded-[2rem] blur-xl opacity-20 group-hover:opacity-40 transition duration-1000 animate-pulse" />
         
-        <div className="relative rounded-3xl border border-white/10 dark:border-neutral-800/80 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl overflow-hidden shadow-2xl">
-          {/* Decorative background grain/noise inside */}
-          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }}></div>
+        <div className="relative rounded-[2rem] border border-white/20 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-3xl overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)]">
+          {/* Top Decorative Bar */}
+          <div className="h-1 w-full bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500 opacity-50" />
 
-          {/* IG Profile Header */}
-          <div className="p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 relative z-10">
-            <div className="w-20 h-20 rounded-full overflow-hidden ring-[3px] ring-transparent bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-[3px] flex-shrink-0 animate-spin-slow shadow-[0_0_20px_rgba(236,72,153,0.3)]">
-              <div className="relative w-full h-full rounded-full overflow-hidden bg-white dark:bg-neutral-950 animate-reverse-spin-slow">
-                <Image
-                  src="/images/profile.jpg"
-                  alt="Instagram Profile"
-                  fill
-                  className="object-cover scale-110 hover:scale-100 transition-transform duration-500"
-                  sizes="80px"
-                />
+          {/* Profile Header */}
+          <div className="p-8 md:p-10 flex flex-col md:flex-row items-center gap-8 relative z-10">
+            {/* Avatar with Rotating Glow */}
+            <div className="relative group/avatar">
+              <div className="absolute -inset-1 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 rounded-full animate-spin-slow opacity-75 blur-[2px]" />
+              <div className="relative w-24 h-24 rounded-full bg-white dark:bg-neutral-900 p-1">
+                <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 flex items-center justify-center border border-white/20">
+                  <span className="text-2xl font-black bg-gradient-to-br from-pink-500 to-purple-600 bg-clip-text text-transparent">F</span>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 to-neutral-500 dark:from-white dark:to-neutral-400">@fel.comp</h3>
-                <svg className="w-5 h-5 text-blue-500 flex-shrink-0 drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]" viewBox="0 0 24 24" fill="currentColor">
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-blue-500 rounded-full border-4 border-white dark:border-neutral-950 flex items-center justify-center text-white">
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
               </div>
-              <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-4 font-mono tracking-tight">
-                Software Engineer <span className="text-pink-500">×</span> AI Enthusiast
+            </div>
+
+            {/* Profile Info */}
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+                <h3 className="text-2xl font-black tracking-tighter bg-gradient-to-r from-neutral-900 via-neutral-700 to-neutral-900 dark:from-white dark:via-neutral-300 dark:to-white bg-clip-text text-transparent">
+                  fel.comp
+                </h3>
+                <span className="px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500 text-[10px] font-bold uppercase tracking-widest border border-pink-500/20">
+                  PRO
+                </span>
+              </div>
+              <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-6 max-w-md">
+                Building the future of <span className="text-primary font-bold">AI</span> and <span className="text-purple-500 font-bold">Web3</span>. 
+                Senior Software Engineer & Tech Visionary.
               </p>
-              <div className="flex gap-4 mb-4 text-xs font-bold text-neutral-800 dark:text-neutral-200">
-                 <div><span className="text-lg">11</span> <span className="text-neutral-500 font-normal">posts</span></div>
-                 <div><span className="text-lg">508</span> <span className="text-neutral-500 font-normal">followers</span></div>
+              
+              <div className="flex items-center justify-center md:justify-start gap-8">
+                <div className="text-center md:text-left">
+                  <div className="text-lg font-black text-neutral-900 dark:text-white">12</div>
+                  <div className="text-[10px] uppercase tracking-tighter text-neutral-500 font-bold">Posts</div>
+                </div>
+                <div className="text-center md:text-left">
+                  <div className="text-lg font-black text-neutral-900 dark:text-white">511</div>
+                  <div className="text-[10px] uppercase tracking-tighter text-neutral-500 font-bold">Followers</div>
+                </div>
+                <div className="text-center md:text-left">
+                  <div className="text-lg font-black text-neutral-900 dark:text-white">481</div>
+                  <div className="text-[10px] uppercase tracking-tighter text-neutral-500 font-bold">Following</div>
+                </div>
               </div>
             </div>
 
+            {/* Follow Button */}
             <a
               href="https://www.instagram.com/fel.comp"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-orange-400 hover:to-orange-500 text-white font-bold shadow-lg hover:shadow-pink-500/25 transition-all duration-300 hover:-translate-y-0.5"
+              className="group/btn relative px-8 py-3 rounded-2xl bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-bold overflow-hidden transition-all active:scale-95"
             >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              Follow
+              <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-orange-400 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
+              <span className="relative z-10 flex items-center gap-2">
+                Follow <span className="opacity-50 group-hover/btn:translate-x-1 transition-transform">→</span>
+              </span>
             </a>
           </div>
 
-          {/* IG Posts Grid Preview (Data Decrypt Style) */}
-          <div className="grid grid-cols-3 gap-1 md:gap-2 p-1 md:p-2 bg-neutral-100 dark:bg-black/40">
+          {/* Grid Preview */}
+          <div className="p-2 grid grid-cols-3 gap-2 bg-neutral-50/50 dark:bg-black/20 border-t border-white/10">
             {[
-              { id: 1, text: "SRC_CODE" },
-              { id: 2, text: "AI_MODEL" },
-              { id: 3, text: "SETUP" },
-              { id: 4, text: "WORKFLOW" },
-              { id: 5, text: "DEBUG" },
-              { id: 6, text: "SYSTEM" }
-            ].map((box) => (
-              <a
-                key={box.id}
+              { id: 1, color: 'from-blue-500/20 to-purple-600/20', label: 'Neural_Core' },
+              { id: 2, color: 'from-emerald-500/20 to-blue-600/20', label: 'Sys_Architecture' },
+              { id: 3, color: 'from-orange-500/20 to-pink-600/20', label: 'UX_Protocol' },
+              { id: 4, color: 'from-pink-500/20 to-rose-600/20', label: 'Data_Stream' },
+              { id: 5, color: 'from-indigo-500/20 to-blue-600/20', label: 'AI_Logic' },
+              { id: 6, color: 'from-violet-500/20 to-purple-600/20', label: 'Cloud_Nexus' },
+              { id: 7, color: 'from-cyan-500/20 to-blue-600/20', label: 'Deep_Learning' },
+              { id: 8, color: 'from-amber-500/20 to-orange-600/20', label: 'Cyber_Sec' },
+              { id: 9, color: 'from-fuchsia-500/20 to-purple-600/20', label: 'Kernel_Panic' },
+            ].map((post) => (
+              <motion.a
+                key={post.id}
                 href="https://www.instagram.com/fel.comp"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="aspect-square rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 relative group overflow-hidden"
+                whileHover={{ y: -4 }}
+                className="aspect-square relative group/post rounded-xl overflow-hidden border border-white/20 dark:border-white/5 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-md"
               >
-                {/* Simulated Image Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center opacity-30 group-hover:opacity-10 transition-opacity duration-300">
-                   <svg className="w-8 h-8 text-neutral-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                   </svg>
-                   <span className="text-[10px] font-mono tracking-widest text-neutral-500">{box.text}</span>
+                {/* Abstract Code Art Background */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${post.color}`} />
+                <div className="absolute inset-0 opacity-10 group-hover/post:opacity-20 transition-opacity overflow-hidden font-mono text-[6px] p-2 break-all pointer-events-none">
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <div key={i} className="mb-1">
+                      {Math.random() > 0.5 ? '010110101101' : 'const_void_main()'}
+                    </div>
+                  ))}
                 </div>
-                
-                {/* Hover Reveal Matrix */}
-                <div className="absolute inset-0 bg-gradient-to-t from-pink-500/90 to-purple-600/90 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 scale-110 group-hover:scale-100 transition-all duration-300">
-                  <span className="text-[10px] font-mono font-bold text-white mb-1 uppercase tracking-[0.2em] translate-y-2 group-hover:translate-y-0 transition-transform duration-300">Open Post</span>
-                  <svg className="w-5 h-5 text-white/90 translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                  </svg>
+
+                {/* SVG Visual Elements */}
+                <div className="absolute inset-0 flex items-center justify-center p-4">
+                  <div className="w-full h-full relative opacity-40 group-hover/post:opacity-100 group-hover/post:scale-110 transition-all duration-500">
+                    {post.id % 4 === 0 ? (
+                      <svg className="w-full h-full text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    ) : post.id % 3 === 0 ? (
+                      <svg className="w-full h-full text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10" strokeWidth={1} />
+                        <path d="M12 6v12M6 12h12" strokeWidth={1} />
+                      </svg>
+                    ) : post.id % 2 === 0 ? (
+                      <svg className="w-full h-full text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-full h-full text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth={1} />
+                        <path d="M9 3v18M15 3v18M3 9h18M3 15h18" strokeWidth={1} />
+                      </svg>
+                    )}
+                  </div>
                 </div>
-              </a>
+
+                {/* Glass Hover Overlay */}
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover/post:opacity-100 transition-all duration-300 flex flex-col items-center justify-center">
+                  <div className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-2 translate-y-4 group-hover/post:translate-y-0 transition-transform">
+                    {post.label}
+                  </div>
+                  <div className="flex gap-4 translate-y-4 group-hover/post:translate-y-0 transition-transform delay-75">
+                    <div className="flex items-center gap-1 text-white text-[10px] font-bold">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                      </svg>
+                      {Math.floor(Math.random() * 500 + 100)}
+                    </div>
+                    <div className="flex items-center gap-1 text-white text-[10px] font-bold">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm4 0H9v2h2V9zm4 0h-2v2h2V9z" />
+                      </svg>
+                      {Math.floor(Math.random() * 50 + 10)}
+                    </div>
+                  </div>
+                </div>
+              </motion.a>
             ))}
           </div>
 
-          {/* View Profile CTA */}
+          {/* Footer CTA */}
           <a
             href="https://www.instagram.com/fel.comp"
             target="_blank"
             rel="noopener noreferrer"
-            className="block text-center py-4 text-xs font-bold uppercase tracking-widest text-neutral-500 hover:text-pink-500 bg-white/50 dark:bg-neutral-900/50 hover:bg-pink-500/10 transition-colors border-t border-neutral-200 dark:border-neutral-800"
+            className="block w-full py-4 bg-white/50 dark:bg-white/5 hover:bg-primary/10 transition-colors text-center text-[10px] font-black uppercase tracking-[0.5em] text-neutral-400 hover:text-primary"
           >
-            Access Full Database →
+            Load More Data Protocol
           </a>
         </div>
       </motion.div>
