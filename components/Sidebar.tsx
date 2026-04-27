@@ -153,7 +153,7 @@ export default function Sidebar() {
       setStatusIndex((prev) => (prev + 1) % statuses.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [statuses.length]);
 
   return (
     <aside className="hidden lg:flex flex-col w-64 min-w-[256px] h-screen sticky top-0 p-6 overflow-y-auto border-r border-neutral-200/50 dark:border-neutral-800/50">

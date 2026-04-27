@@ -9,18 +9,11 @@ import ThemeProvider from '@/components/ThemeProvider';
 import ThemeMetaSync from '@/components/ThemeMetaSync';
 import ScrollProgress from '@/components/ScrollProgress';
 import CustomCursor from '@/components/CustomCursor';
-import DynamicFavicon from '@/components/DynamicFavicon';
 import HoverSound from '@/components/HoverSound';
+import DynamicFavicon from '@/components/DynamicFavicon';
+import DynamicClientComponents from '@/components/DynamicClientComponents';
 
-const BackToTop = dynamic(() => import('@/components/BackToTop'), { ssr: false });
-const EasterEgg = dynamic(() => import('@/components/EasterEgg'), { ssr: false });
-const LiveTicker = dynamic(() => import('@/components/LiveTicker'), { ssr: false });
-const ThemeWarp = dynamic(() => import('@/components/ThemeWarp'), { ssr: false });
-const EngineeringGrid = dynamic(() => import('@/components/EngineeringGrid'), { ssr: false });
-const PulseSync = dynamic(() => import('@/components/PulseSync'), { ssr: false });
-const QuickConnect = dynamic(() => import('@/components/QuickConnect'), { ssr: false });
-const CommandPalette = dynamic(() => import('@/components/CommandPalette'), { ssr: false });
-const AIChatbot = dynamic(() => import('@/components/AIChatbot'), { ssr: false });
+
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
@@ -73,11 +66,8 @@ export default function RootLayout({
             <DynamicFavicon />
             <CustomCursor />
             <ThemeMetaSync />
-            <PulseSync />
-            <EngineeringGrid />
-            <ThemeWarp />
+            <DynamicClientComponents />
             <ScrollProgress />
-            <CommandPalette />
 
             <div className="min-h-screen flex">
               <Sidebar />
@@ -91,11 +81,7 @@ export default function RootLayout({
               </main>
             </div>
 
-            <BackToTop />
-            <EasterEgg />
-            <LiveTicker />
-            <QuickConnect />
-            <AIChatbot />
+
           </ThemeProvider>
         </Providers>
       </body>

@@ -29,7 +29,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Projects</h1>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm">
-            A showcase of both private and open-source projects I've built or contributed to.
+            A showcase of both private and open-source projects I&apos;ve built or contributed to.
           </p>
         </div>
       </Reveal>

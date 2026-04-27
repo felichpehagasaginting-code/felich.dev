@@ -10,9 +10,13 @@ vi.mock('framer-motion', async () => {
     ...actual,
     useInView: () => true, // Force to be in view for testing
     motion: {
-      span: React.forwardRef(({ children, ...props }: any, ref: any) => (
-        <span {...props} ref={ref}>{children}</span>
-      )),
+      span: (() => {
+        const Span = React.forwardRef(({ children, ...props }: any, ref: any) => (
+          <span {...props} ref={ref}>{children}</span>
+        ));
+        Span.displayName = 'MotionSpan';
+        return Span;
+      })(),
     },
   };
 });

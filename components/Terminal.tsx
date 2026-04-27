@@ -145,7 +145,7 @@ export default function Terminal() {
           <div className="text-primary font-black animate-pulse">
             [!] ACCESS GRANTED. ELITE PROTOCOLS INITIALIZED. 🏆
             <div className="text-[10px] text-neutral-500 mt-1 font-mono">
-              You've discovered the hidden layer of felich.dev. 
+              You&apos;ve discovered the hidden layer of felich.dev. 
               The system is now running at 110% capacity.
             </div>
           </div>
@@ -167,7 +167,7 @@ export default function Terminal() {
         if (args[0] === 'about.md') {
           output = 'Software Engineer focused on high-performance web systems and AI integration.';
         } else if (args[0] === 'secret.txt') {
-          output = <span className="text-yellow-500 italic">"The best way to predict the future is to invent it." - Alan Kay</span>;
+          output = <span className="text-yellow-500 italic">&quot;The best way to predict the future is to invent it.&quot; - Alan Kay</span>;
         } else {
           output = `cat: ${args[0] || 'no file specified'}: No such file or directory`;
         }
@@ -264,14 +264,14 @@ export default function Terminal() {
         if (args[0] === 'rm' && args[1] === '-rf' && args[2] === '/') {
           output = <span className="text-red-500">Critical Error: System protection prevents absolute destruction. 🛡️</span>;
         } else {
-          output = <span className="text-yellow-500">Permission denied. Password for 'felich' is encrypted with 256-bit AES.</span>;
+          output = <span className="text-yellow-500">Permission denied. Password for &apos;felich&apos; is encrypted with 256-bit AES.</span>;
         }
         break;
       default:
         if (cmd.startsWith('echo')) {
           output = args.join(' ');
         } else {
-          output = <span className="text-red-400">Command not found: {cmd}. Type 'help' for available commands.</span>;
+          output = <span className="text-red-400">Command not found: {cmd}. Type &apos;help&apos; for available commands.</span>;
         }
     }
 
@@ -321,7 +321,7 @@ export default function Terminal() {
 
         <div className="mb-4 text-green-400/80 flex items-center gap-2">
           <span className="animate-pulse">●</span>
-          <span>Session started: {mounted ? new Date().toLocaleTimeString() : '--:--:--'} - Type 'help' to explore.</span>
+          <span>Session started: {mounted ? new Date().toLocaleTimeString() : '--:--:--'} - Type &apos;help&apos; to explore.</span>
         </div>
 
         {history.map((cmd, i) => (

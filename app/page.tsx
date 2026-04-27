@@ -5,8 +5,7 @@ import { useState, useEffect } from 'react';
 import TypingAnimation from '@/components/TypingAnimation';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import PageTransition from '@/components/PageTransition';
-import dynamic from 'next/dynamic';
-const Hero3D = dynamic(() => import('@/components/Hero3D'), { ssr: false, loading: () => <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900 animate-pulse rounded-full" /> });
+import Hero3DWrapper from '@/components/Hero3DWrapper';
 import AnimatedDivider from '@/components/AnimatedDivider';
 import Reveal from '@/components/Reveal';
 import { sounds } from '@/lib/sounds';
@@ -247,7 +246,7 @@ export default function Home() {
             </motion.div>
             
             <div className="w-full md:w-1/3 flex-shrink-0 animate-fade-in pointer-events-auto z-10 hover:cursor-grab active:cursor-grabbing interactive-element">
-              <Hero3D />
+              <Hero3DWrapper />
             </div>
           </section>
         </Reveal>
