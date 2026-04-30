@@ -75,7 +75,7 @@ export default function RootLayout({
             <ScrollProgress />
             <AdaptiveBackground />
             <AppleDock />
-            <LiveVisitorBadge />
+            <LiveVisitorBadge showViews={true} />
 
             <SmoothScroll>
               <div className="min-h-screen flex">

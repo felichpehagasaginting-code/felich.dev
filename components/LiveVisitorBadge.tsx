@@ -9,12 +9,16 @@ interface Props {
   className?: string;
 }
 
+import { usePathname } from 'next/navigation';
+
 export default function LiveVisitorBadge({
-  path = 'home',
+  path,
   showViews = false,
   className = '',
 }: Props) {
-  const { onlineCount, totalViews } = useVisitorTracking(path);
+  const pathname = usePathname();
+  const currentPath = path || pathname.replace(/^\//, '') || 'home';
+  const { onlineCount, totalViews } = useVisitorTracking(currentPath);
 
   return (
     <div className={`fixed top-20 right-4 md:top-6 md:right-8 z-[70] pointer-events-auto ${className}`}>
@@ -37,7 +41,7 @@ export default function LiveVisitorBadge({
               animate={{ opacity: 1, y: 0 }}
               className="text-[11px] font-bold text-green-500 dark:text-green-400 uppercase tracking-widest font-mono"
             >
-              {onlineCount} LIVE
+              {Math.max(onlineCount, 1)} LIVE
             </motion.span>
           </AnimatePresence>
         </div>
