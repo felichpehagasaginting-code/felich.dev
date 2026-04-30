@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { sounds } from '@/lib/sounds';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Bot, Sparkles, X, Mic, Send, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -35,6 +35,7 @@ export default function AIChatbot() {
   const [loading, setLoading] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [isListening, setIsListening] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -136,6 +137,28 @@ export default function AIChatbot() {
     }
   };
 
+  const startListening = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Your browser does not support Voice Recognition.');
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US'; 
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+    recognition.onerror = () => setIsListening(false);
+    recognition.onend = () => setIsListening(false);
+    
+    recognition.start();
+  };
+
   const speak = (text: string) => {
     if (typeof window === 'undefined') return;
     
@@ -158,8 +181,8 @@ export default function AIChatbot() {
 
   return (
     <>
-      {/* Floating Button - Bottom LEFT to avoid conflict with QuickConnect (bottom-right) */}
-      <div className="fixed bottom-6 left-6 z-[90] flex flex-col items-start gap-3">
+      {/* Floating Button - Positioned to avoid QuickConnect */}
+      <div className="fixed bottom-[110px] right-6 md:bottom-[90px] md:right-6 z-[90] flex flex-col items-end gap-3">
         <AnimatePresence>
           {open && (
             <motion.div
@@ -174,8 +197,8 @@ export default function AIChatbot() {
               {/* Header */}
               <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 flex-shrink-0">
                 <div className="relative">
-                  <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-lg">
-                    🤖
+                  <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white">
+                    <Bot size={20} />
                   </div>
                   <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse" />
                 </div>
@@ -189,13 +212,13 @@ export default function AIChatbot() {
                     className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-sm"
                     title={minimized ? 'Expand' : 'Minimize'}
                   >
-                    {minimized ? '▲' : '▼'}
+                    {minimized ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
                   <button
                     onClick={() => { setOpen(false); sounds.playSwitch(); }}
                     className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-sm"
                   >
-                    ✕
+                    <X size={16} />
                   </button>
                 </div>
               </div>
@@ -213,8 +236,8 @@ export default function AIChatbot() {
                         className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                       >
                         {msg.role === 'assistant' && (
-                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs flex-shrink-0 mt-0.5 shadow-lg shadow-blue-500/20">
-                            🤖
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5 shadow-lg shadow-blue-500/20">
+                            <Bot size={14} />
                           </div>
                         )}
                         <div
@@ -262,8 +285,8 @@ export default function AIChatbot() {
                         animate={{ opacity: 1 }}
                         className="flex gap-2.5"
                       >
-                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs flex-shrink-0">
-                          🤖
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center flex-shrink-0">
+                          <Bot size={14} />
                         </div>
                         <div className="bg-neutral-100 dark:bg-neutral-800 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1">
                           {[0, 1, 2].map((i) => (
@@ -297,7 +320,14 @@ export default function AIChatbot() {
 
                   {/* Input */}
                   <div className="px-4 pb-4 pt-2 border-t border-neutral-100 dark:border-neutral-800 flex-shrink-0">
-                    <div className="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800 rounded-2xl px-4 py-2.5 border border-neutral-200 dark:border-neutral-700 focus-within:border-blue-500/50 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] transition-all">
+                    <div className="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800 rounded-2xl px-3 py-2 border border-neutral-200 dark:border-neutral-700 focus-within:border-blue-500/50 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] transition-all">
+                      <button
+                        onClick={startListening}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${isListening ? 'bg-red-500 text-white animate-pulse' : 'text-neutral-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-neutral-700'}`}
+                        title="Voice Input"
+                      >
+                        <Mic size={16} />
+                      </button>
                       <input
                         ref={inputRef}
                         type="text"
@@ -305,7 +335,7 @@ export default function AIChatbot() {
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Ask about Felich..."
-                        disabled={loading}
+                        disabled={loading || isListening}
                         className="flex-1 bg-transparent text-sm outline-none placeholder:text-neutral-400 disabled:opacity-50"
                       />
                       <button
@@ -313,12 +343,10 @@ export default function AIChatbot() {
                         disabled={!input.trim() || loading}
                         className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center disabled:opacity-30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 shadow-md"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
+                        <Send size={14} />
                       </button>
                     </div>
-                    <p className="text-[9px] text-neutral-400 text-center mt-2 font-mono">Powered by Gemini AI ✨</p>
+                    <p className="text-[9px] text-neutral-400 text-center mt-2 font-mono flex items-center justify-center gap-1">Powered by Gemini AI <Sparkles size={10} /></p>
                   </div>
                 </>
               )}
@@ -341,12 +369,12 @@ export default function AIChatbot() {
         >
           <AnimatePresence mode="wait">
             {open ? (
-              <motion.span key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }} className="text-lg">
-                ✕
+              <motion.span key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }} className="flex items-center justify-center">
+                <X size={24} />
               </motion.span>
             ) : (
-              <motion.span key="open" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ duration: 0.2 }}>
-                ✨
+              <motion.span key="open" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ duration: 0.2 }} className="flex items-center justify-center">
+                <Bot size={24} />
               </motion.span>
             )}
           </AnimatePresence>

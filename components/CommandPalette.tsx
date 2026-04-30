@@ -105,14 +105,14 @@ export default function CommandPalette() {
 
   const filtered = query
     ? allCommands.filter((c) => {
-        const q = query.toLowerCase();
-        return (
-          c.label.toLowerCase().includes(q) ||
-          c.category.toLowerCase().includes(q) ||
-          c.description?.toLowerCase().includes(q) ||
-          c.keywords?.some((k) => k.includes(q))
-        );
-      })
+      const q = query.toLowerCase();
+      return (
+        c.label.toLowerCase().includes(q) ||
+        c.category.toLowerCase().includes(q) ||
+        c.description?.toLowerCase().includes(q) ||
+        c.keywords?.some((k) => k.includes(q))
+      );
+    })
     : allCommands;
 
   const grouped = filtered.reduce((acc, cmd) => {
@@ -259,11 +259,10 @@ export default function CommandPalette() {
                           data-selected={isSelected}
                           onClick={() => handleSelect(cmd)}
                           onMouseEnter={() => { setSelectedIndex(globalIndex); sounds.playHover(); }}
-                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-left ${
-                            isSelected
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-left ${isSelected
                               ? 'bg-neutral-100 dark:bg-neutral-800 ring-1 ring-primary/30'
                               : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
-                          }`}
+                            }`}
                         >
                           <span className="text-base w-6 text-center flex-shrink-0">{cmd.icon}</span>
                           <span className="flex-1 min-w-0">

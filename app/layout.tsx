@@ -12,6 +12,7 @@ import CustomCursor from '@/components/CustomCursor';
 import HoverSound from '@/components/HoverSound';
 import DynamicFavicon from '@/components/DynamicFavicon';
 import DynamicClientComponents from '@/components/DynamicClientComponents';
+import AdaptiveBackground from '@/components/AdaptiveBackground';
 
 
 
@@ -68,6 +69,7 @@ export default function RootLayout({
             <ThemeMetaSync />
             <DynamicClientComponents />
             <ScrollProgress />
+            <AdaptiveBackground />
 
             <div className="min-h-screen flex">
               <Sidebar />
