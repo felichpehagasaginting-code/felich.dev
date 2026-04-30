@@ -12,6 +12,7 @@ export default function ThemeMetaSync() {
       light: '#ffffff',
       dark: '#0a0a0a',
       yellow: '#fef9ed',
+      apple: '#000000',
     };
 
     if (metaThemeColor) {

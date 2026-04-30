@@ -208,9 +208,9 @@ export default function Hero3D() {
       ease: 'none'
     })
     .to(groupRef.current.scale, {
-      x: isMobile ? 0.5 : 0.7,
-      y: isMobile ? 0.5 : 0.7,
-      z: isMobile ? 0.5 : 0.7,
+      x: isMobile ? 0.4 : 0.55,
+      y: isMobile ? 0.4 : 0.55,
+      z: isMobile ? 0.4 : 0.55,
       ease: 'none'
     }, 0);
 
@@ -241,7 +241,7 @@ export default function Hero3D() {
         
         <Environment preset="city" />
 
-        <group ref={groupRef} position={[0, 0, 0]} scale={isMobile ? 0.8 : 1}>
+        <group ref={groupRef} position={[0, 0, 0]} scale={isMobile ? 0.6 : 0.85}>
           <ParticleSwarm />
           <OrbitRings />
           <CoreShape />
