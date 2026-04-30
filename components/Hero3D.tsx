@@ -15,6 +15,7 @@ function ParticleSwarm() {
   const particleColor = useMemo(() => {
     if (theme === 'yellow') return '#d97706';
     if (theme === 'light') return '#3b82f6';
+    if (theme === 'apple') return '#ffffff';
     return '#8b5cf6';
   }, [theme]);
 
@@ -70,6 +71,7 @@ function OrbitRings() {
 
   const ringColor = useMemo(() => {
     if (theme === 'yellow') return '#fbbf24';
+    if (theme === 'apple') return '#ffffff';
     return '#6366f1';
   }, [theme]);
 
@@ -103,6 +105,7 @@ function CoreShape() {
 
   const coreColor = useMemo(() => {
     if (theme === 'yellow') return '#d97706';
+    if (theme === 'apple') return '#ffffff';
     return '#3b82f6';
   }, [theme]);
   
@@ -117,15 +120,22 @@ function CoreShape() {
   return (
     <Float floatIntensity={1.5} speed={3}>
       <mesh ref={coreRef}>
-        <icosahedronGeometry args={[1.2, 0]} />
+        <sphereGeometry args={[1.3, 64, 64]} />
         <meshPhysicalMaterial 
-          color={coreColor} 
-          wireframe={true} 
-          emissive={coreColor}
-          emissiveIntensity={0.5}
+          color={theme === 'apple' ? '#ffffff' : coreColor} 
+          wireframe={theme !== 'apple' && theme !== 'light'} 
+          emissive={theme === 'apple' ? '#ffffff' : coreColor}
+          emissiveIntensity={theme === 'apple' ? 0.2 : 0.5}
           roughness={0}
-          transmission={1}
-          thickness={0.5}
+          metalness={0}
+          transmission={theme === 'apple' ? 1 : 0.5}
+          thickness={1.5}
+          ior={1.5}
+          reflectivity={1}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          opacity={1}
+          transparent={true}
         />
       </mesh>
     </Float>
@@ -138,6 +148,7 @@ function InnerCore() {
   
   const colors = useMemo(() => {
     if (theme === 'yellow') return { default: new THREE.Color('#fbbf24'), hover: new THREE.Color('#f59e0b') };
+    if (theme === 'apple') return { default: new THREE.Color('#0A84FF'), hover: new THREE.Color('#ffffff') };
     return {
       default: new THREE.Color('#ec4899'),
       hover: new THREE.Color('#f43f5e')
@@ -146,7 +157,7 @@ function InnerCore() {
 
   return (
     <Sphere 
-      args={[0.6, 64, 64]} 
+      args={[0.5, 64, 64]} 
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}
     >
@@ -215,10 +226,18 @@ export default function Hero3D() {
         className="w-full h-full !absolute inset-0 focus:outline-none"
         dpr={[1, 2]}
       >
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 10]} intensity={2} />
-        <pointLight position={[-10, -10, -10]} intensity={1} color={theme === 'yellow' ? '#fbbf24' : '#8b5cf6'} />
-        <pointLight position={[0, 0, 0]} intensity={2} color={theme === 'yellow' ? '#f59e0b' : '#ec4899'} />
+        <ambientLight intensity={theme === 'apple' ? 0.8 : 0.5} />
+        <directionalLight position={[10, 10, 10]} intensity={theme === 'apple' ? 3 : 2} />
+        <pointLight 
+          position={[-10, -10, -10]} 
+          intensity={1} 
+          color={theme === 'yellow' ? '#fbbf24' : theme === 'apple' ? '#ffffff' : '#8b5cf6'} 
+        />
+        <pointLight 
+          position={[0, 0, 0]} 
+          intensity={2} 
+          color={theme === 'yellow' ? '#f59e0b' : theme === 'apple' ? '#0A84FF' : '#ec4899'} 
+        />
         
         <Environment preset="city" />
 
