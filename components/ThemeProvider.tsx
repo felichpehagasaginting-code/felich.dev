@@ -9,9 +9,12 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     const html = document.documentElement;
     // Remove all theme classes
-    html.classList.remove('light', 'dark', 'yellow');
+    html.classList.remove('light', 'dark', 'yellow', 'apple');
     // Add current theme
     html.classList.add(theme);
+    if (theme === 'apple') {
+      html.classList.add('dark');
+    }
   }, [theme]);
 
   return <>{children}</>;

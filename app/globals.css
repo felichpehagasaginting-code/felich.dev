@@ -32,6 +32,18 @@
     --border: #B68C6A;
   }
 
+  /* Apple (iOS Control Center) theme */
+  .apple {
+    --bg-primary: #000000;
+    --bg-secondary: #1c1c1e;
+    --text-primary: #ffffff;
+    --text-secondary: #ebebf5;
+    --accent: #0A84FF;
+    --accent-light: #5E5CE6;
+    --border: rgba(255, 255, 255, 0.15);
+    color-scheme: dark;
+  }
+
   body {
     @apply bg-white text-neutral-900 transition-colors duration-300;
     position: relative;
@@ -69,17 +81,116 @@
     opacity: 0.12; /* Richer texture for coffee theme */
     filter: contrast(180%) brightness(90%) sepia(30%);
   }
+
+  .apple body {
+    background-color: #000000;
+    color: #ffffff;
+    /* Mimicking a blurred iOS wallpaper */
+    background-image: 
+      radial-gradient(ellipse at 10% 10%, rgba(255, 59, 48, 0.35) 0%, transparent 40%),
+      radial-gradient(ellipse at 90% 20%, rgba(10, 132, 255, 0.35) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 80%, rgba(48, 209, 88, 0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(94, 92, 230, 0.3) 0%, transparent 45%);
+    background-size: 100vw 100vh;
+    background-attachment: fixed;
+  }
+
+  .apple body::before {
+    opacity: 0.1;
+    mix-blend-mode: overlay;
+    filter: none;
+  }
 }
 
 @layer components {
+  /* Apple-like Glass Panel */
+  .glass-panel {
+    @apply bg-white/60 dark:bg-black/40 backdrop-blur-3xl border border-white/30 dark:border-white/10 rounded-3xl;
+  }
+
+  /* Apple-like Soft Shadow */
+  .shadow-apple {
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.08), 0 0 12px rgba(0, 0, 0, 0.02);
+  }
+  .dark .shadow-apple {
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.4), 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .apple .glass-panel {
+    background: rgba(80, 80, 80, 0.35); /* Slightly darker for better text contrast */
+    backdrop-filter: blur(50px) saturate(180%);
+    -webkit-backdrop-filter: blur(50px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Universal Apple Glass Override for ALL Cards & Containers */
+  .apple .border-neutral-200.rounded-3xl,
+  .apple .border-neutral-200.rounded-2xl,
+  .apple .border-neutral-200.rounded-xl,
+  .apple .border-neutral-200.rounded-lg {
+    background-color: rgba(80, 80, 80, 0.35) !important; /* Slightly darker */
+    backdrop-filter: blur(50px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(50px) saturate(180%) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    color: #ffffff !important;
+  }
+
+  .apple .border-neutral-200.rounded-3xl:hover,
+  .apple .border-neutral-200.rounded-2xl:hover,
+  .apple .border-neutral-200.rounded-xl:hover,
+  .apple .border-neutral-200.rounded-lg:hover {
+    background-color: rgba(130, 130, 130, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
   /* Sidebar link active state */
   .sidebar-link-active {
-    @apply bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200;
+    @apply bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-200 shadow-sm;
   }
 
   .yellow .sidebar-link-active {
     background-color: rgba(176, 94, 26, 0.15);
     color: #4A2E15;
+  }
+
+  .apple .sidebar-link-active {
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border-color: transparent !important;
+    font-weight: 600 !important;
+  }
+  
+  .apple .sidebar-link-active *,
+  .apple .sidebar-link-active span {
+    color: #000000 !important;
+  }
+
+  /* Text Readability Overrides for Apple Theme */
+  .apple .text-neutral-400:not(.active),
+  .apple .text-neutral-500:not(.active),
+  .apple .text-neutral-600:not(.active),
+  .apple .dark\:text-neutral-400:not(.active),
+  .apple .dark\:text-neutral-500:not(.active),
+  .apple .dark\:text-neutral-600:not(.active) {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  .apple p, .apple span, .apple h1, .apple h2, .apple h3, .apple h4 {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .apple .text-neutral-900,
+  .apple .dark\:text-neutral-100,
+  .apple .dark\:text-neutral-200 {
+    color: #ffffff !important;
+    font-weight: 500;
   }
 
   /* Skill tag */
@@ -94,6 +205,14 @@
     background-color: rgba(232, 216, 196, 0.8);
     border-color: rgba(182, 140, 106, 0.5);
     color: #4A2E15;
+  }
+
+  .apple .skill-tag {
+    background: rgba(100, 100, 100, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: none;
   }
 
   /* Filter pill */
@@ -115,9 +234,23 @@
     color: white;
   }
 
+  .apple .filter-pill.active {
+    background: #0A84FF;
+    border-color: transparent;
+    color: white;
+    box-shadow: none;
+  }
+
   .yellow .filter-pill:not(.active) {
     border-color: rgba(182, 140, 106, 0.5);
     color: #6B4423;
+  }
+
+  .apple .filter-pill:not(.active) {
+    background: rgba(100, 100, 100, 0.25);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    backdrop-filter: blur(20px) saturate(180%);
   }
 
   /* Nav link */
@@ -145,6 +278,23 @@
     color: #4A2E15;
   }
 
+  .apple .nav-link.active {
+    background: #ffffff !important;
+    color: #000000 !important;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .apple .nav-link.active *,
+  .apple .nav-link.active span,
+  .apple .nav-link.active svg {
+    color: #000000 !important;
+  }
+
+  .apple .nav-link:hover:not(.active) {
+    background: rgba(150, 150, 150, 0.25) !important;
+  }
+
   /* Theme button */
   .theme-btn {
     @apply w-9 h-9 rounded-full flex items-center justify-center
@@ -167,6 +317,13 @@
     color: #B05E1A;
     border-color: #B05E1A;
     @apply ring-[rgba(176,94,26,0.3)];
+  }
+
+  .apple .theme-btn.active {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: transparent;
+    @apply shadow-[0_0_15px_rgba(255,255,255,0.3)];
   }
 
   /* Social card */
@@ -194,6 +351,20 @@
   .yellow .form-input:focus {
     border-color: #B05E1A;
     box-shadow: 0 0 0 3px rgba(176, 94, 26, 0.15);
+  }
+
+  .apple .form-input {
+    background: rgba(100, 100, 100, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: none;
+  }
+
+  .apple .form-input:focus {
+    border-color: #0A84FF;
+    background: rgba(150, 150, 150, 0.35);
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
   }
 
   @keyframes shake-impact {

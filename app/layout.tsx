@@ -61,7 +61,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${outfit.variable} ${mono.variable} antialiased bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300 selection:bg-primary/30`}>
+      <body className={`${inter.variable} ${outfit.variable} ${mono.variable} antialiased tracking-tight bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300 selection:bg-primary/30`}>
         <Providers>
           <ThemeProvider>
             <DynamicFavicon />

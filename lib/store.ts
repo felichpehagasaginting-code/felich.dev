@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type Theme = 'light' | 'dark' | 'yellow';
+type Theme = 'light' | 'dark' | 'yellow' | 'apple';
 
 interface LayoutState {
   isSidebar: boolean;
