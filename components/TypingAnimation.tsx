@@ -13,9 +13,9 @@ interface TypingAnimationProps {
 
 export default function TypingAnimation({
   texts,
-  typingSpeed = 40,
-  deletingSpeed = 20,
-  pauseDuration = 100,
+  typingSpeed = 80,
+  deletingSpeed = 40,
+  pauseDuration = 2000,
   className = '',
 }: TypingAnimationProps) {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);

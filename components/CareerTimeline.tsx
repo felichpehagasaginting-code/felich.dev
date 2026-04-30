@@ -119,7 +119,7 @@ function TimelineCard({ event, index }: { event: TimelineEvent; index: number })
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
         whileHover={{ y: -4 }}
-        className={`flex-1 mb-12 group p-5 md:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/50 backdrop-blur-xl hover:shadow-[0_10px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)] transition-all duration-300 relative overflow-hidden`}
+        className={`flex-1 mb-12 group p-5 md:p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/50 backdrop-blur-xl hover:shadow-[0_10px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_10px_40px_rgba(0,0,0,0.4)] transition-all duration-300 relative overflow-hidden liquid-glass`}
       >
         {/* Gradient shimmer on hover */}
         <div className={`absolute inset-0 bg-gradient-to-r ${event.color} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-500 rounded-2xl`} />

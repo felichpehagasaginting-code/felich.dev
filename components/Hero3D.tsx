@@ -121,22 +121,43 @@ function CoreShape() {
     <Float floatIntensity={1.5} speed={3}>
       <mesh ref={coreRef}>
         <sphereGeometry args={[1.3, 64, 64]} />
-        <meshPhysicalMaterial 
-          color={theme === 'apple' ? '#ffffff' : coreColor} 
-          wireframe={theme !== 'apple' && theme !== 'light'} 
-          emissive={theme === 'apple' ? '#ffffff' : coreColor}
-          emissiveIntensity={theme === 'apple' ? 0.2 : 0.5}
-          roughness={0}
-          metalness={0}
-          transmission={theme === 'apple' ? 1 : 0.5}
-          thickness={1.5}
-          ior={1.5}
-          reflectivity={1}
-          clearcoat={1}
-          clearcoatRoughness={0}
-          opacity={1}
-          transparent={true}
-        />
+        {theme === 'apple' ? (
+          <MeshDistortMaterial
+            color="#ffffff"
+            speed={2}
+            distort={0.2}
+            radius={1}
+            transmission={1}
+            thickness={2}
+            ior={1.4}
+            reflectivity={0.5}
+            roughness={0}
+            metalness={0.05}
+            transparent={true}
+            opacity={1}
+            clearcoat={1}
+            clearcoatRoughness={0}
+            attenuationDistance={0.5}
+            attenuationColor="#ffffff"
+          />
+        ) : (
+          <meshPhysicalMaterial 
+            color={coreColor} 
+            wireframe={theme !== 'light'} 
+            emissive={coreColor}
+            emissiveIntensity={0.5}
+            roughness={0}
+            metalness={0}
+            transmission={0.5}
+            thickness={1.5}
+            ior={1.5}
+            reflectivity={1}
+            clearcoat={1}
+            clearcoatRoughness={0}
+            opacity={1}
+            transparent={true}
+          />
+        )}
       </mesh>
     </Float>
   );
@@ -224,7 +245,12 @@ export default function Hero3D() {
       <Canvas
         camera={{ position: [0, 0, isMobile ? 7 : 5], fov: isMobile ? 55 : 45 }}
         className="w-full h-full !absolute inset-0 focus:outline-none"
-        dpr={[1, 2]}
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        gl={{ 
+          antialias: !isMobile, 
+          powerPreference: "high-performance",
+          alpha: true 
+        }}
       >
         <ambientLight intensity={theme === 'apple' ? 0.8 : 0.5} />
         <directionalLight position={[10, 10, 10]} intensity={theme === 'apple' ? 3 : 2} />

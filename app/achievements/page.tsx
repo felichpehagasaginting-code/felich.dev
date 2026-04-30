@@ -298,7 +298,7 @@ export default function Achievements() {
           >
             <div className="absolute inset-0 bg-grid-white/10 [mask-image:radial-gradient(ellipse_at_center,black,transparent)] pointer-events-none" />
             
-            <div className="relative p-6 md:p-10 rounded-[2.5rem] bg-white/70 dark:bg-neutral-900/60 backdrop-blur-3xl border border-white/20 dark:border-white/5 overflow-hidden shadow-2xl shadow-blue-500/5">
+            <div className="relative p-6 md:p-10 rounded-[2.5rem] bg-white/70 dark:bg-neutral-900/60 backdrop-blur-3xl border border-white/20 dark:border-white/5 overflow-hidden shadow-2xl shadow-blue-500/5 liquid-glass">
               <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
               
               <div className="flex flex-col lg:flex-row items-center gap-10 relative z-10">
@@ -397,7 +397,7 @@ export default function Achievements() {
                     transition={{ delay: i * 0.05 }} 
                     className={`relative p-6 rounded-3xl border transition-all duration-500 group ${
                       isCompleted 
-                        ? 'border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-emerald-500/30' 
+                        ? 'border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-emerald-500/30 liquid-glass' 
                         : isCurrent 
                         ? 'border-blue-500/30 bg-blue-500/5 ring-1 ring-blue-500/20 shadow-xl shadow-blue-500/5' 
                         : 'border-neutral-100 dark:border-neutral-900 bg-neutral-50/20 dark:bg-neutral-900/10 opacity-50'

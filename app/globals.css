@@ -528,6 +528,87 @@
   }
 }
 
+/* Apple System Typography Priority */
+:root {
+  --font-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  --text-xs: clamp(0.65rem, 0.6rem + 0.25vw, 0.75rem);
+  --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
+  --text-base: clamp(0.95rem, 0.9rem + 0.25vw, 1rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);
+  --text-3xl: clamp(1.875rem, 1.65rem + 1vw, 2.25rem);
+  
+  /* Apple-Spec Spring Physics */
+  --spring-stiffness: 300;
+  --spring-damping: 30;
+  --spring-mass: 1;
+}
+
+/* iOS Performance Optimization for Glass */
+@media (max-width: 768px) {
+  .liquid-glass {
+    /* Reduced blur and saturation for mobile GPU efficiency */
+    backdrop-filter: blur(20px) saturate(140%) brightness(1.05) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) brightness(1.05) !important;
+  }
+}
+
+/* Liquid Glass - High Fidelity iOS Style with Performance Guards */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(40px) saturate(180%) brightness(1.1);
+  -webkit-backdrop-filter: blur(40px) saturate(180%) brightness(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 10px 40px -10px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  will-change: transform, opacity; /* Avoid will-change: backdrop-filter as it can be heavy */
+  transform: translateZ(0); /* Force GPU layer */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Apple-style Grain/Noise Texture on Glass */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.dark .liquid-glass {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(45px) saturate(190%) brightness(0.9);
+  -webkit-backdrop-filter: blur(45px) saturate(190%) brightness(0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 15px 50px -12px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.apple .liquid-glass {
+  background: rgba(28, 28, 30, 0.45);
+  backdrop-filter: blur(60px) saturate(210%) brightness(1);
+  -webkit-backdrop-filter: blur(60px) saturate(210%) brightness(1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Subtle shine overlay for glass */
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.02) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
 /* Lenis Smooth Scroll Styles */
 html.lenis,
 html.lenis body {

@@ -70,9 +70,9 @@ export default function MobileNav() {
   return (
     <>
       <div className="fixed top-3 left-3 right-3 z-50 lg:hidden pointer-events-none">
-        <div className="flex items-center justify-between px-5 py-3 glass-panel shadow-apple pointer-events-auto">
-          <Link href="/" className="text-lg font-bold">
-            Felich
+        <div className="flex items-center justify-between px-5 py-3 glass-panel shadow-apple pointer-events-auto liquid-glass !rounded-[1.5rem]">
+          <Link href="/" className="text-lg font-bold tracking-tighter">
+            Felich<span className="text-primary">.dev</span>
           </Link>
           <button
             onClick={() => { setMobileMenuOpen(!mobileMenuOpen); sounds.playPop(); }}
@@ -108,7 +108,7 @@ export default function MobileNav() {
               animate={{ x: 0, scale: 1 }}
               exit={{ x: '-100%', scale: 0.95 }}
               transition={{ type: 'spring', damping: 24, stiffness: 250 }}
-              className="fixed left-3 top-3 bottom-3 w-[calc(100vw-1.5rem)] max-w-sm z-50 overflow-y-auto p-6 lg:hidden glass-panel shadow-apple custom-scrollbar"
+              className="fixed left-3 top-3 bottom-3 w-[calc(100vw-1.5rem)] max-w-sm z-50 overflow-y-auto p-6 lg:hidden glass-panel shadow-apple custom-scrollbar liquid-glass !rounded-[2.5rem]"
               data-lenis-prevent
             >
               <div className="flex items-center justify-between mb-6">

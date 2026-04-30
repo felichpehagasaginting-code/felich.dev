@@ -13,6 +13,7 @@
 - [x] **Documentation**: Overhauled README.md and Firebase Setup Guide.
 - [x] **Premium Smooth Scroll**: Lenis implementation with GSAP Ticker sync.
 - [x] **UI Redesign**: High-fidelity Dashboard & Campus Academic ID cards.
+- [x] **Apple Liquid Glass Theme**: Interactive macOS Dock, Siri Aura, and system typography.
 
 ## 🔜 Next Steps
 - [ ] **Accessibility**: Conduct a full WCAG audit.

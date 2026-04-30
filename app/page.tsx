@@ -187,7 +187,7 @@ export default function Home() {
             >
               <h1 className="text-4xl md:text-7xl font-black mb-6 tracking-tighter leading-[1.1] md:leading-tight px-0.5 overflow-visible">
                 Hi, I&apos;m{' '}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent animate-gradient-x pb-4 inline-block drop-shadow-sm">
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent animate-gradient-x pb-4 inline-block md:drop-shadow-sm">
                   Felich
                 </span>
               </h1>
@@ -264,10 +264,7 @@ export default function Home() {
                 <p className="font-bold text-primary">Let&apos;s connect 🔥</p>
               </div>
 
-              {/* Live Visitor Badge */}
-              <div className="mt-6">
-                <LiveVisitorBadge path="home" showViews />
-              </div>
+              {/* Live Monitor moved to global fixed position */}
             </motion.div>
             
             <div className="w-full md:w-1/3 flex-shrink-0 animate-fade-in pointer-events-auto z-10 hover:cursor-grab active:cursor-grabbing interactive-element">
@@ -388,7 +385,7 @@ export default function Home() {
                   <motion.div
                     className="relative w-4 h-4 md:w-5 md:h-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-0.5"
                     style={{ 
-                      filter: `drop-shadow(0 0 5px ${skill.color}50)` 
+                      filter: typeof window !== 'undefined' && window.innerWidth < 768 ? 'none' : `drop-shadow(0 0 5px ${skill.color}50)` 
                     }}
                   >
                     {SkillIcons[skill.slug] ? (

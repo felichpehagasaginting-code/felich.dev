@@ -139,7 +139,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="group relative p-6 rounded-[2rem] border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-2xl transition-all duration-300"
+              className="group relative p-6 rounded-[2rem] border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-2xl transition-all duration-300 liquid-glass"
             >
               <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 rounded-[2rem]`} />
               <div className="relative z-10">
@@ -174,7 +174,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <div className="p-6 rounded-[2rem] border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl overflow-x-auto shadow-sm">
+          <div className="p-6 rounded-[2rem] border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl overflow-x-auto shadow-sm liquid-glass">
             <div className="flex gap-[4px] min-w-fit">
               {contribData.map((week, wi) => (
                 <div key={wi} className="flex flex-col gap-[4px]">
@@ -224,7 +224,7 @@ export default function Dashboard() {
           className="mb-10"
         >
           <div className="group p-1 rounded-[2.5rem] bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-transparent p-[1px]">
-            <div className="p-6 rounded-[2.5rem] bg-white/60 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-2xl shadow-green-500/5">
+            <div className="p-6 rounded-[2.5rem] bg-white/60 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-2xl shadow-green-500/5 liquid-glass">
               <div className="flex flex-col md:flex-row items-center gap-6">
                 <div className="relative group">
                   <div className="w-24 h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-green-500/20 group-hover:scale-105 transition-transform duration-500 ring-2 ring-white/20">
@@ -298,7 +298,7 @@ export default function Dashboard() {
               initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-blue-500/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.1)] transition-all duration-500 relative overflow-hidden"
+              className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-blue-500/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.1)] transition-all duration-500 relative overflow-hidden liquid-glass"
             >
               {/* Animated Border Gradient */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

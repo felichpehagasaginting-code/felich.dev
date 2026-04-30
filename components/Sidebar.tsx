@@ -158,7 +158,7 @@ export default function Sidebar() {
 
   return (
     <aside 
-      className="hidden lg:flex flex-col w-64 min-w-[256px] h-[calc(100vh-2rem)] sticky top-4 ml-4 my-4 p-6 overflow-y-auto glass-panel shadow-apple z-40 custom-scrollbar"
+      className="hidden lg:flex flex-col w-64 min-w-[256px] h-[calc(100vh-2rem)] sticky top-4 ml-4 my-4 p-6 overflow-y-auto glass-panel shadow-apple z-40 custom-scrollbar liquid-glass !rounded-[2.5rem]"
       data-lenis-prevent
     >
       <div className="mb-6">

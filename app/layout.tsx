@@ -20,6 +20,7 @@ import SmoothScroll from '@/components/SmoothScroll';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
+import AppleDock from '@/components/AppleDock';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://felich.dev'),
@@ -55,6 +56,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+import LiveVisitorBadge from '@/components/LiveVisitorBadge';
+
 export default function RootLayout({
   children,
 }: {
@@ -62,7 +65,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${outfit.variable} ${mono.variable} antialiased tracking-tight bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300 selection:bg-primary/30`}>
+      <body className={`${inter.variable} ${outfit.variable} ${mono.variable} antialiased tracking-tight bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300 selection:bg-primary/30 font-[family-name:var(--font-apple)]`}>
         <Providers>
           <ThemeProvider>
             <DynamicFavicon />
@@ -71,6 +74,8 @@ export default function RootLayout({
             <DynamicClientComponents />
             <ScrollProgress />
             <AdaptiveBackground />
+            <AppleDock />
+            <LiveVisitorBadge />
 
             <SmoothScroll>
               <div className="min-h-screen flex">
