@@ -11,9 +11,15 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto !important;
     overflow-x: hidden;
     font-size: var(--font-size-base);
+  }
+
+  body {
+    @apply bg-white text-neutral-900 transition-colors duration-300;
+    position: relative;
+    scroll-behavior: auto !important;
   }
 
   /* Dark theme */
@@ -44,10 +50,6 @@
     color-scheme: dark;
   }
 
-  body {
-    @apply bg-white text-neutral-900 transition-colors duration-300;
-    position: relative;
-  }
 
   body::before {
     content: "";
@@ -524,4 +526,26 @@
     border-color: var(--skill-color) !important;
     box-shadow: 0 8px 24px -6px var(--skill-glow) !important;
   }
+}
+
+/* Lenis Smooth Scroll Styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }

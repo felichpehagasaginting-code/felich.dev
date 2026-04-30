@@ -242,7 +242,7 @@ export default function CommandPalette() {
               </div>
 
               {/* Results */}
-              <div ref={listRef} className="max-h-80 overflow-y-auto p-2">
+              <div ref={listRef} className="max-h-80 overflow-y-auto p-2" data-lenis-prevent>
                 {sortedCategories.map((category) => (
                   <div key={category}>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 px-3 py-2 flex items-center gap-2">

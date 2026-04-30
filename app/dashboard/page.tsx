@@ -9,8 +9,8 @@ import AnimatedCounter from '@/components/AnimatedCounter';
 
 function GithubIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0C5.37 0 0 5.37 0 12C0 17.31 3.438 21.8 8.205 23.385C8.805 23.49 9.025 23.13 9.025 22.815C9.025 22.53 9.015 21.78 9.01 20.78C5.672 21.504 4.968 19.17 4.968 19.17C4.422 17.784 3.633 17.415 3.633 17.415C2.546 16.671 3.717 16.686 3.717 16.686C4.922 16.771 5.555 17.923 5.555 17.923C6.625 19.757 8.364 19.227 9.05 18.92C9.158 18.144 9.467 17.615 9.81 17.315C7.145 17.015 4.344 15.982 4.344 11.385C4.344 10.075 4.809 9.005 5.579 8.165C5.444 7.862 5.039 6.642 5.684 4.989C5.684 4.989 6.689 4.667 8.984 6.219C9.939 5.952 10.959 5.82 11.979 5.814C12.999 5.82 14.019 5.952 14.974 6.219C17.269 4.667 18.274 4.989 18.274 4.989C18.919 6.642 18.514 7.862 18.379 8.165C19.149 9.005 19.614 10.075 19.614 11.385C19.614 15.992 16.809 17.012 14.144 17.306C14.574 17.676 14.959 18.411 14.959 19.536C14.959 21.141 14.944 22.431 14.944 22.821C14.944 23.139 15.159 23.514 15.774 23.394C20.565 21.8 24 17.31 24 12C24 5.37 18.63 0 12 0Z" fill="currentColor"/>
     </svg>
   );
 }
@@ -97,184 +97,270 @@ export default function Dashboard() {
 
   return (
     <PageTransition>
-      <div>
+      <div className="relative">
+        {/* Holographic Glow Background */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse" />
+        <div className="absolute top-1/2 -right-24 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none" />
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          className="mb-8 relative"
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 flex items-center gap-3">
-            <GithubIcon className="w-8 h-8" />
-            Dashboard
-          </h1>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm">
-            GitHub repository overview & activity.
-          </p>
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-black dark:bg-white text-white dark:text-black shadow-xl shadow-black/10 dark:shadow-white/10">
+              <GithubIcon className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-neutral-900 via-neutral-600 to-neutral-900 dark:from-white dark:via-neutral-400 dark:to-white bg-clip-text text-transparent">
+                Dashboard
+              </h1>
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mt-1">
+                Real-time metrics & GitHub activity index.
+              </p>
+            </div>
+          </div>
         </motion.div>
 
-        <hr className="dotted-divider mb-8" />
+        <hr className="dotted-divider mb-10 opacity-50" />
 
-        {/* Stats overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="group p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl text-center hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/50 to-blue-500/0 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            <AnimatedCounter end={repos.length} className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br from-blue-500 to-purple-600 block mb-1" />
-            <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-bold">Repositories</p>
-          </div>
-          <div className="group p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl text-center hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-[0_0_30px_rgba(245,158,11,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-amber-500/0 via-amber-500/50 to-amber-500/0 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            <AnimatedCounter end={repos.reduce((a, r) => a + r.stargazers_count, 0)} className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br from-amber-400 to-orange-500 block mb-1" />
-            <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-bold">Total Stars</p>
-          </div>
-          <div className="group p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl text-center hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500/50 to-emerald-500/0 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            <AnimatedCounter end={repos.reduce((a, r) => a + r.forks_count, 0)} className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br from-emerald-400 to-teal-500 block mb-1" />
-            <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-bold">Total Forks</p>
-          </div>
-          <div className="group p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl text-center hover:-translate-y-1 hover:border-pink-500/30 hover:shadow-[0_0_30px_rgba(236,72,153,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-pink-500/0 via-pink-500/50 to-pink-500/0 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            <AnimatedCounter end={new Set(repos.map(r => r.language).filter(Boolean)).size} className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br from-pink-500 to-rose-500 block mb-1" />
-            <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-bold">Languages</p>
-          </div>
+        {/* Stats overview - Elite Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          {[
+            { label: 'Repositories', value: repos.length, color: 'from-blue-500 to-indigo-600', shadow: 'shadow-blue-500/20' },
+            { label: 'Total Stars', value: repos.reduce((a, r) => a + r.stargazers_count, 0), color: 'from-amber-400 to-orange-500', shadow: 'shadow-amber-500/20' },
+            { label: 'Total Forks', value: repos.reduce((a, r) => a + r.forks_count, 0), color: 'from-emerald-400 to-teal-500', shadow: 'shadow-emerald-500/20' },
+            { label: 'Languages', value: new Set(repos.map(r => r.language).filter(Boolean)).size, color: 'from-pink-500 to-rose-500', shadow: 'shadow-pink-500/20' }
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="group relative p-6 rounded-[2rem] border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-2xl transition-all duration-300"
+            >
+              <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 rounded-[2rem]`} />
+              <div className="relative z-10">
+                <AnimatedCounter 
+                  end={stat.value} 
+                  className={`text-4xl font-black bg-gradient-to-br ${stat.color} bg-clip-text text-transparent block mb-1`} 
+                />
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 group-hover:text-neutral-600 dark:group-hover:text-neutral-200 transition-colors">
+                  {stat.label}
+                </p>
+              </div>
+              <div className={`absolute -bottom-2 -right-2 w-12 h-12 bg-gradient-to-br ${stat.color} blur-2xl opacity-0 group-hover:opacity-40 transition-opacity`} />
+            </motion.div>
+          ))}
         </div>
 
-        {/* GitHub Contribution Graph */}
+        {/* GitHub Contribution Graph - Modern Grid */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="mb-8"
+          transition={{ delay: 0.4 }}
+          className="mb-10"
         >
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-blue-500" /> Contribution Graph
-          </h2>
-          <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 overflow-x-auto">
-            <div className="flex gap-[3px] min-w-fit">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <BarChart2 className="w-5 h-5 text-blue-500" /> 
+              Contribution Activity
+            </h2>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+               <span className="text-[10px] font-bold font-mono text-neutral-500">LIVE_FEED</span>
+            </div>
+          </div>
+          
+          <div className="p-6 rounded-[2rem] border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl overflow-x-auto shadow-sm">
+            <div className="flex gap-[4px] min-w-fit">
               {contribData.map((week, wi) => (
-                <div key={wi} className="flex flex-col gap-[3px]">
+                <div key={wi} className="flex flex-col gap-[4px]">
                   {week.map((level, di) => (
-                    <div
+                    <motion.div
                       key={`${wi}-${di}`}
-                      className={`w-3 h-3 contrib-cell ${contribColors[level]}`}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 + (wi * 0.01) }}
+                      whileHover={{ scale: 1.5, zIndex: 10 }}
+                      className={`w-3 h-3 rounded-[2px] transition-colors duration-300 ${
+                        level === 0 ? 'bg-neutral-100 dark:bg-neutral-800/50' :
+                        level === 1 ? 'bg-emerald-200 dark:bg-emerald-900/40' :
+                        level === 2 ? 'bg-emerald-400 dark:bg-emerald-700/60' :
+                        level === 3 ? 'bg-emerald-500 dark:bg-emerald-500/80' :
+                        'bg-emerald-600 dark:bg-emerald-400'
+                      }`}
                       title={`${level} contributions`}
                     />
                   ))}
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-2 mt-3 text-[10px] text-neutral-500">
-              <span>Less</span>
-              {contribColors.map((color, i) => (
-                <div key={i} className={`w-3 h-3 rounded-sm ${color}`} />
-              ))}
-              <span>More</span>
+            <div className="flex items-center justify-end gap-3 mt-4 text-[10px] font-bold font-mono text-neutral-400">
+              <span className="uppercase tracking-widest">Less</span>
+              <div className="flex gap-1">
+                {[0, 1, 2, 3, 4].map(i => (
+                  <div key={i} className={`w-3 h-3 rounded-[2px] ${
+                    i === 0 ? 'bg-neutral-100 dark:bg-neutral-800/50' :
+                    i === 1 ? 'bg-emerald-200 dark:bg-emerald-900/40' :
+                    i === 2 ? 'bg-emerald-400 dark:bg-emerald-700/60' :
+                    i === 3 ? 'bg-emerald-500 dark:bg-emerald-500/80' :
+                    'bg-emerald-600 dark:bg-emerald-400'
+                  }`} />
+                ))}
+              </div>
+              <span className="uppercase tracking-widest">More</span>
             </div>
           </div>
         </motion.section>
 
-        {/* Spotify Now Playing */}
+        {/* Spotify Now Playing - Premium Player */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8"
+          transition={{ delay: 0.5 }}
+          className="mb-10"
         >
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Music className="w-5 h-5 text-green-500" /> Now Playing
-          </h2>
-          <div className="group p-5 rounded-3xl border border-green-500/20 dark:border-green-500/20 bg-gradient-to-r from-green-500/5 to-emerald-500/5 dark:from-green-500/10 dark:to-emerald-500/10 backdrop-blur-xl hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] transition-all">
-            <div className="flex items-center gap-5">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white text-3xl flex-shrink-0 shadow-lg shadow-green-500/30 group-hover:scale-105 transition-transform duration-300 ring-2 ring-white/20">
-                <Headphones className="w-8 h-8 drop-shadow-md" />
+          <div className="group p-1 rounded-[2.5rem] bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-transparent p-[1px]">
+            <div className="p-6 rounded-[2.5rem] bg-white/60 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-2xl shadow-green-500/5">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="relative group">
+                  <div className="w-24 h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-green-500/20 group-hover:scale-105 transition-transform duration-500 ring-2 ring-white/20">
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white">
+                      <Headphones className="w-10 h-10 animate-bounce" />
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 bg-white dark:bg-black p-2 rounded-full shadow-lg">
+                    <Music className="w-4 h-4 text-green-500 animate-spin-slow" />
+                  </div>
+                </div>
+                
+                <div className="flex-1 w-full text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <span className="flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-green-600 dark:text-green-400">
+                      Now Streaming
+                    </p>
+                  </div>
+                  <h3 className="text-2xl font-black tracking-tighter mb-1 truncate">Coding Flow & Lo-Fi</h3>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium mb-4">Deep Focus • 24/7 Beats</p>
+                  
+                  {/* Progress Bar Simulation */}
+                  <div className="w-full h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden mb-2">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: '65%' }}
+                      transition={{ duration: 2, ease: "easeOut" }}
+                      className="h-full bg-gradient-to-r from-green-500 to-emerald-400"
+                    />
+                  </div>
+                  <div className="flex justify-between text-[8px] font-mono font-bold text-neutral-400 tracking-widest">
+                    <span>02:45</span>
+                    <span>04:20</span>
+                  </div>
+                </div>
+                
+                <a
+                  href="https://open.spotify.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-8 py-3 rounded-2xl bg-green-500 text-white text-xs font-black uppercase tracking-widest hover:bg-green-600 transition-all shadow-xl shadow-green-500/20 hover:-translate-y-1 active:scale-95"
+                >
+                  Listen
+                </a>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] text-green-600 dark:text-green-400 font-bold mb-1 flex items-center gap-2 font-mono tracking-widest uppercase">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                  </span>
-                  Lve Audio Stream
-                </p>
-                <h3 className="font-extrabold text-base md:text-lg truncate tracking-tight">Coding Lo-Fi Mix</h3>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium truncate">Lo-Fi Beats • Focus Flow</p>
-              </div>
-              <a
-                href="https://open.spotify.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 rounded-xl bg-green-500 text-white text-xs font-bold hover:bg-green-600 transition-all shadow-md hover:shadow-green-500/30 hover:-translate-y-0.5 flex-shrink-0"
-              >
-                Open
-              </a>
             </div>
           </div>
         </motion.section>
 
-        {/* Repositories */}
-        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <Star className="w-5 h-5" />
-          Repositories
-        </h2>
+        {/* Repositories - Elite Grid */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+            <Folder className="w-7 h-7 text-blue-500" />
+            Active Repositories
+          </h2>
+          <div className="h-px flex-1 bg-neutral-100 dark:bg-neutral-800 mx-6 hidden md:block" />
+          <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Sort: Updated</p>
+        </div>
 
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {repos.map((repo, index) => (
             <motion.a
               key={repo.name}
               href={repo.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.08 }}
-              className="group flex items-start gap-4 p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl hover:shadow-[0_10px_30px_rgba(59,130,246,0.1)] hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden"
+              initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-blue-500/30 hover:shadow-[0_20px_50px_rgba(59,130,246,0.1)] transition-all duration-500 relative overflow-hidden"
             >
-              <div className="absolute inset-y-0 left-0 w-1 bg-blue-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-bottom" />
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 flex items-center justify-center flex-shrink-0 group-hover:from-blue-500/20 group-hover:to-purple-500/20 transition-colors shadow-inner ring-1 ring-neutral-200 dark:ring-neutral-700">
-                <Folder className="w-6 h-6 text-neutral-500 dark:text-neutral-400 group-hover:text-blue-500 transition-colors drop-shadow-sm" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-lg group-hover:text-primary transition-colors truncate tracking-tight">{repo.name}</h3>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400 line-clamp-2 mt-1">{repo.description || 'No description'}</p>
-                <div className="flex items-center gap-5 mt-3 text-xs font-semibold text-neutral-500">
-                  <span className="flex items-center gap-1.5 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-md">
-                    <Star className="w-3.5 h-3.5 text-amber-500" />
-                    {repo.stargazers_count}
-                  </span>
-                  <span className="flex items-center gap-1.5 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-md">
-                    <GitFork className="w-3.5 h-3.5 text-blue-500" />
-                    {repo.forks_count}
-                  </span>
-                  {repo.language && (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-md capitalize">
-                      <span className="w-2 h-2 rounded-full bg-primary" />
-                      {repo.language}
-                    </span>
-                  )}
+              {/* Animated Border Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <div className="flex items-start gap-5 relative z-10">
+                <div className="w-14 h-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 shadow-inner group-hover:rotate-3">
+                  <Folder className="w-7 h-7" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-black text-xl mb-1 truncate group-hover:text-primary transition-colors tracking-tight">
+                    {repo.name}
+                  </h3>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-2 leading-relaxed mb-4">
+                    {repo.description || 'No description provided for this technical architecture.'}
+                  </p>
+                  
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 text-[10px] font-black text-neutral-500 group-hover:border-blue-500/20 group-hover:bg-blue-500/5 transition-all">
+                      <Star className="w-3.5 h-3.5 text-amber-500" />
+                      {repo.stargazers_count}
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 text-[10px] font-black text-neutral-500 group-hover:border-blue-500/20 group-hover:bg-blue-500/5 transition-all">
+                      <GitFork className="w-3.5 h-3.5 text-blue-500" />
+                      {repo.forks_count}
+                    </div>
+                    {repo.language && (
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 text-[10px] font-black text-neutral-500 group-hover:border-blue-500/20 group-hover:bg-blue-500/5 transition-all">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                        {repo.language}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.a>
           ))}
         </div>
 
-        {/* Footer note */}
+        {/* Footer Technical Note */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8 p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 text-center"
+          transition={{ delay: 0.8 }}
+          className="mt-12 p-8 rounded-[2.5rem] border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/20 text-center relative overflow-hidden"
         >
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-3">
-            Add to <code className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 rounded text-xs font-mono">.env.local</code>: <code className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 rounded text-xs font-mono">NEXT_PUBLIC_GITHUB_TOKEN=ghp_...</code>
+          <div className="absolute inset-0 bg-grid-neutral-200/50 dark:bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+          <p className="text-sm font-bold text-neutral-600 dark:text-neutral-400 mb-4 relative z-10">
+             To unlock full API performance, configure your GitHub Token in <code className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 rounded font-mono text-xs">.env.local</code>
           </p>
-          <a
-            href="https://github.com/settings/tokens"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary-dark transition-colors"
-          >
-            Generate Token
-          </a>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 relative z-10">
+            <a
+              href="https://github.com/settings/tokens"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-2.5 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-black text-xs font-black uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
+            >
+              Get Token
+            </a>
+            <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
+              NEXT_PUBLIC_GITHUB_TOKEN
+            </div>
+          </div>
         </motion.div>
       </div>
     </PageTransition>

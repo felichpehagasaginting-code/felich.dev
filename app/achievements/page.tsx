@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
-import { Bot, Library, Trophy, Brain, Mic2, BookOpen, Star, Music, Globe, Medal, Scale, Microscope, GraduationCap, BarChart2, Calculator, Building2, Server, Network } from 'lucide-react';
+import { Bot, Library, Trophy, Brain, Mic2, BookOpen, Star, Music, Globe, Medal, Scale, Microscope, GraduationCap, BarChart2, Calculator, Building2, Server, Network, Verified } from 'lucide-react';
 
 /* ============================================================
    ACHIEVEMENTS DATA
@@ -275,67 +275,161 @@ export default function Achievements() {
         <hr className="dotted-divider mb-8" />
 
         <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.5 }} className="mb-12">
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2"><GraduationCap className="w-6 h-6 text-primary" /> Campus Academic</h2>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">Academic performance overview — Teknologi Rekayasa Perangkat Lunak</p>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-black tracking-tighter flex items-center gap-3">
+                <GraduationCap className="w-8 h-8 text-primary" /> 
+                Campus Academic
+              </h2>
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm font-medium">Teknologi Rekayasa Perangkat Lunak — Academic Index</p>
+            </div>
+            <div className="hidden sm:flex flex-col items-end">
+               <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">Auth Level</span>
+               <span className="text-xs font-black text-emerald-500 uppercase">Administrator</span>
+            </div>
+          </div>
 
-          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="p-6 md:p-8 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/70 dark:bg-neutral-900/40 backdrop-blur-xl mb-6 shadow-xl shadow-blue-500/5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
-              <div className="space-y-4 text-sm flex-1">
-                <div className="flex items-center gap-2.5 inline-flex px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full w-fit">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                  </span>
-                  <span className="text-emerald-700 dark:text-emerald-400 font-bold text-xs uppercase tracking-widest">Aktif — Semester {currentSemester}</span>
+          {/* Student Digital ID Card */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }} 
+            whileInView={{ opacity: 1, scale: 1 }} 
+            viewport={{ once: true }} 
+            className="relative p-1 rounded-[2.5rem] bg-gradient-to-br from-blue-500/20 via-purple-500/10 to-transparent mb-10 group"
+          >
+            <div className="absolute inset-0 bg-grid-white/10 [mask-image:radial-gradient(ellipse_at_center,black,transparent)] pointer-events-none" />
+            
+            <div className="relative p-6 md:p-10 rounded-[2.5rem] bg-white/70 dark:bg-neutral-900/60 backdrop-blur-3xl border border-white/20 dark:border-white/5 overflow-hidden shadow-2xl shadow-blue-500/5">
+              <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-tr from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+              
+              <div className="flex flex-col lg:flex-row items-center gap-10 relative z-10">
+                {/* ID Photo & IPK */}
+                <div className="flex flex-col items-center gap-6">
+                  <div className="relative">
+                    <div className="w-32 h-32 rounded-3xl bg-neutral-200 dark:bg-neutral-800 p-1 ring-4 ring-white/30 dark:ring-white/10 shadow-2xl">
+                      <div className="w-full h-full rounded-2xl bg-gradient-to-br from-neutral-800 to-black flex items-center justify-center text-white overflow-hidden">
+                         <img src="/images/profile.jpg" alt="Student" className="w-full h-full object-cover opacity-80" />
+                      </div>
+                    </div>
+                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-full border-4 border-white dark:border-neutral-900 flex items-center justify-center shadow-lg">
+                       <Verified className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <IPKRing value={academicStats.ipk} size={140} />
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }} 
+                      animate={{ opacity: 1, y: 0 }} 
+                      transition={{ delay: 0.8 }}
+                      className="mt-4 px-4 py-1.5 rounded-full bg-black dark:bg-white text-white dark:text-black flex items-center gap-2 shadow-xl"
+                    >
+                      <span className="text-base">{predikat.emoji}</span>
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em]">{predikat.label}</span>
+                    </motion.div>
+                  </div>
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 bg-white/50 dark:bg-neutral-900/50 p-4 rounded-2xl border border-white/20 dark:border-neutral-800/50 backdrop-blur-sm">
-                  <div>
-                    <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 mb-1">Nama Mahasiswa</p>
-                    <p className="font-bold text-base text-neutral-800 dark:text-neutral-200">Felich Pehagasa Ginting</p>
+
+                {/* ID Details */}
+                <div className="flex-1 w-full space-y-8">
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-6">
+                    <div>
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-1">Student Name</p>
+                      <h3 className="text-2xl md:text-3xl font-black tracking-tight text-neutral-900 dark:text-white uppercase">Felich Pehagasa Ginting</h3>
+                    </div>
+                    <div className="text-right hidden sm:block">
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-1">Student ID</p>
+                      <p className="font-bold text-neutral-800 dark:text-neutral-200 font-mono tracking-tighter">FLCH-2025-REXP</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 mb-1">Tahun Akademik</p>
-                    <p className="font-bold text-base text-neutral-800 dark:text-neutral-200">2025 \u2013 2029</p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+                    <div>
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-1">Major & Program</p>
+                      <p className="font-bold text-neutral-800 dark:text-neutral-200">D4 Teknologi Rekayasa Perangkat Lunak</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-1">Academic Year</p>
+                      <p className="font-bold text-neutral-800 dark:text-neutral-200">2025 — 2029 (Cohort X)</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-1">Active Status</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">Regular Semester {currentSemester}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 mb-1">Total Credits Earned</p>
+                      <p className="font-bold text-neutral-800 dark:text-neutral-200">{academicStats.totalSKS} SKS Completed</p>
+                    </div>
                   </div>
-                  <div className="sm:col-span-2">
-                    <p className="text-[10px] font-mono uppercase tracking-widest text-neutral-400 mb-1">Program Studi & Jenjang</p>
-                    <p className="font-bold text-base text-neutral-800 dark:text-neutral-200">D4 Teknologi Rekayasa Perangkat Lunak</p>
+                  
+                  {/* Barcode Deco */}
+                  <div className="pt-6 flex items-center justify-between opacity-30 grayscale hover:grayscale-0 transition-all">
+                     <div className="flex flex-col">
+                        <div className="h-8 w-48 bg-black dark:bg-white [mask-image:repeating-linear-gradient(90deg,black,black_2px,transparent_2px,transparent_4px)]" />
+                        <span className="text-[8px] font-mono mt-1 text-neutral-600 dark:text-neutral-400 tracking-[0.5em]">AUTH-SECURE-256-AES</span>
+                     </div>
+                     <Building2 className="w-10 h-10 text-neutral-400" />
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col items-center gap-3 bg-neutral-50 dark:bg-neutral-900/80 p-6 rounded-3xl border border-neutral-100 dark:border-neutral-800/80 shadow-inner">
-                <IPKRing value={academicStats.ipk} size={130} />
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2 }} className="flex items-center gap-2 bg-white dark:bg-black px-4 py-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 shadow-sm mt-1">
-                  <span className="text-base">{predikat.emoji}</span>
-                  <span className={`text-xs font-black uppercase tracking-widest ${predikat.color}`}>{predikat.label}</span>
-                </motion.div>
               </div>
             </div>
           </motion.div>
 
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold mb-4 text-neutral-600 dark:text-neutral-300 flex items-center gap-2"><BarChart2 className="w-4 h-4 text-emerald-500" /> IPS per Semester</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {/* Semester Progress Cards */}
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-6">
+               <h3 className="text-xl font-black tracking-tight">Academic Milestone</h3>
+               <div className="h-px flex-1 bg-neutral-100 dark:bg-neutral-800" />
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {semesterData.map((sem, i) => {
                 const isCompleted = sem.ips !== null;
                 const isCurrent = i === currentSemester;
                 return (
-                  <motion.div key={sem.semester} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ type: 'spring', duration: 0.6, delay: i * 0.08 }} className={`relative p-5 rounded-3xl border transition-all duration-300 ${isCompleted ? 'border-emerald-200 dark:border-emerald-800/50 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md shadow-sm hover:shadow-[0_10px_30px_rgba(16,185,129,0.15)] hover:-translate-y-1 hover:border-emerald-500/40' : isCurrent ? 'border-blue-300 dark:border-blue-700/50 bg-blue-50/50 dark:bg-blue-900/10 backdrop-blur-md border-dashed shadow-inner' : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50/30 dark:bg-neutral-900/10 opacity-60 backdrop-blur-sm'}`}>
-                    <div className={`inline-flex items-center justify-center w-8 h-8 rounded-xl text-xs font-black mb-3 shadow-sm ${isCompleted ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' : isCurrent ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white animate-pulse' : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'}`}>S{sem.semester}</div>
+                  <motion.div 
+                    key={sem.semester} 
+                    initial={{ opacity: 0, y: 20 }} 
+                    whileInView={{ opacity: 1, y: 0 }} 
+                    viewport={{ once: true }} 
+                    transition={{ delay: i * 0.05 }} 
+                    className={`relative p-6 rounded-3xl border transition-all duration-500 group ${
+                      isCompleted 
+                        ? 'border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-emerald-500/30' 
+                        : isCurrent 
+                        ? 'border-blue-500/30 bg-blue-500/5 ring-1 ring-blue-500/20 shadow-xl shadow-blue-500/5' 
+                        : 'border-neutral-100 dark:border-neutral-900 bg-neutral-50/20 dark:bg-neutral-900/10 opacity-50'
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black mb-4 ${
+                      isCompleted ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 
+                      isCurrent ? 'bg-blue-500 text-white animate-pulse shadow-lg shadow-blue-500/20' : 
+                      'bg-neutral-200 dark:bg-neutral-800 text-neutral-500'
+                    }`}>
+                      S{sem.semester}
+                    </div>
+                    
                     {isCompleted ? (
-                      <motion.div initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ type: 'spring', stiffness: 200, delay: 0.2 + i * 0.06 }}>
-                        <p className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-br from-emerald-500 to-teal-600">{sem.ips!.toFixed(2)}</p>
-                        <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-600/70 dark:text-emerald-400/70 mt-1">{sem.sks} SKS</p>
-                      </motion.div>
+                      <div>
+                        <p className="text-4xl font-black bg-gradient-to-br from-emerald-500 to-teal-600 bg-clip-text text-transparent group-hover:scale-105 transition-transform">{sem.ips!.toFixed(2)}</p>
+                        <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400 mt-2">{sem.sks} SKS Index</p>
+                      </div>
                     ) : isCurrent ? (
-                      <div><p className="text-lg font-bold text-blue-500 dark:text-blue-400 mt-1">Ongoing</p><p className="text-[10px] font-mono tracking-widest uppercase text-blue-400/70 mt-1">In progress</p></div>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xl font-black text-blue-500 tracking-tighter">ONGOING</p>
+                        <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400">Current Phase</p>
+                      </div>
                     ) : (
-                      <div><p className="text-lg font-bold text-neutral-400 dark:text-neutral-600 mt-1">—</p><p className="text-[10px] font-mono tracking-widest uppercase text-neutral-400/70 mt-1">Upcoming</p></div>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-xl font-black text-neutral-300 dark:text-neutral-700 tracking-tighter">—</p>
+                        <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-neutral-400">Pending</p>
+                      </div>
                     )}
-                    <div className="absolute top-4 right-4 text-[8px] font-mono uppercase tracking-widest text-neutral-400 dark:text-neutral-500 text-right opacity-50">
-                       {sem.label.split(' ').map((t, idx) => <span key={idx} className="block">{t}</span>)}
+                    
+                    <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-10 transition-opacity">
+                       <Calculator className="w-10 h-10" />
                     </div>
                   </motion.div>
                 );
@@ -343,23 +437,22 @@ export default function Achievements() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0 }} className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center hover-lift">
-              <p className="text-2xl font-bold text-primary">{academicStats.totalSKS}</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">Total SKS</p>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.05 }} className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center hover-lift">
-              <p className="text-2xl font-bold text-primary">{academicStats.completedSemesters}<span className="text-sm font-normal text-neutral-400">/{semesterData.length}</span></p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">Semester</p>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.1 }} className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center hover-lift">
-              <p className="text-2xl font-bold text-emerald-500">{academicStats.latestIPS.toFixed(2)}</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">IPS Terakhir</p>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.15 }} className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center hover-lift">
-              <p className="text-2xl font-bold text-emerald-500">{academicStats.ipk.toFixed(2)}</p>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">IPK Kumulatif</p>
-            </motion.div>
+          {/* Quick Metrics Footer */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-[2rem] bg-neutral-50/50 dark:bg-neutral-900/20 border border-neutral-200 dark:border-neutral-800 backdrop-blur-md">
+            {[
+              { label: 'Total Credits', value: academicStats.totalSKS, icon: Calculator, color: 'text-blue-500' },
+              { label: 'Progression', value: `${academicStats.completedSemesters}/${semesterData.length}`, icon: BarChart2, color: 'text-purple-500' },
+              { label: 'Latest IPS', value: academicStats.latestIPS.toFixed(2), icon: Star, color: 'text-emerald-500' },
+              { label: 'Cumulative GPA', value: academicStats.ipk.toFixed(2), icon: Trophy, color: 'text-amber-500' }
+            ].map((metric, i) => (
+              <div key={metric.label} className="text-center p-2">
+                <p className="text-2xl font-black text-neutral-800 dark:text-white tracking-tighter">{metric.value}</p>
+                <p className="text-[9px] font-bold uppercase tracking-widest text-neutral-400 flex items-center justify-center gap-1">
+                   <metric.icon className={`w-2.5 h-2.5 ${metric.color}`} />
+                   {metric.label}
+                </p>
+              </div>
+            ))}
           </div>
 
           <motion.details initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="mt-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 overflow-hidden">

@@ -17,8 +17,8 @@ import Script from 'next/script';
 
 
 const skillCategories = [
-  { name: 'All', count: 50 },
-  { name: 'Frontend', count: 16 },
+  { name: 'All', count: 52 },
+  { name: 'Frontend', count: 18 },
   { name: 'Backend', count: 14 },
   { name: 'Database', count: 6 },
   { name: 'Tools', count: 14 },
@@ -75,6 +75,8 @@ const skills = [
   { name: 'IBM', color: '#0530AD', category: 'Backend', slug: 'ibm' },
   { name: 'Langflow', color: '#1B1B1B', category: 'Tools', slug: 'langflow' },
   { name: 'REST API', color: '#009688', category: 'Backend', slug: 'postman' },
+  { name: 'Lenis', color: '#ff0000', category: 'Frontend', slug: 'lenis' },
+  { name: 'Smooth Scroll', color: '#000000', category: 'Frontend', slug: 'scroll' },
 ];
 
 const skillLinks: Record<string, string> = {
@@ -116,7 +118,9 @@ const skillLinks: Record<string, string> = {
   'Vitest': 'https://vitest.dev/',
   'Playwright': 'https://playwright.dev/',
   'Gemini AI': 'https://deepmind.google/technologies/gemini/',
-  'Canvas API': 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API'
+  'Canvas API': 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API',
+  'Lenis': 'https://lenis.darkroom.engineering/',
+  'Smooth Scroll': 'https://lenis.darkroom.engineering/'
 };
 
 export default function Home() {

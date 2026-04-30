@@ -13,6 +13,7 @@ import HoverSound from '@/components/HoverSound';
 import DynamicFavicon from '@/components/DynamicFavicon';
 import DynamicClientComponents from '@/components/DynamicClientComponents';
 import AdaptiveBackground from '@/components/AdaptiveBackground';
+import SmoothScroll from '@/components/SmoothScroll';
 
 
 
@@ -71,17 +72,19 @@ export default function RootLayout({
             <ScrollProgress />
             <AdaptiveBackground />
 
-            <div className="min-h-screen flex">
-              <Sidebar />
-              <MobileNav />
-              <main className="flex-1 min-w-0 pt-14 lg:pt-0 relative">
-                {/* Subtle top loading bar simulation (CSS only for static feel) */}
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-20 pointer-events-none" />
-                <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12 pt-8 pb-32 lg:py-16">
-                  {children}
-                </div>
-              </main>
-            </div>
+            <SmoothScroll>
+              <div className="min-h-screen flex">
+                <Sidebar />
+                <MobileNav />
+                <main className="flex-1 min-w-0 pt-14 lg:pt-0 relative">
+                  {/* Subtle top loading bar simulation (CSS only for static feel) */}
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-20 pointer-events-none" />
+                  <div className="max-w-5xl mx-auto px-6 sm:px-10 md:px-12 pt-8 pb-32 lg:py-16">
+                    {children}
+                  </div>
+                </main>
+              </div>
+            </SmoothScroll>
 
 
           </ThemeProvider>

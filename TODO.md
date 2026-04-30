@@ -11,12 +11,12 @@
 - [x] **Testing**: Vitest (Unit) and Playwright (E2E) setup.
 - [x] **CI/CD**: GitHub Actions workflow.
 - [x] **Documentation**: Overhauled README.md and Firebase Setup Guide.
+- [x] **Premium Smooth Scroll**: Lenis implementation with GSAP Ticker sync.
+- [x] **UI Redesign**: High-fidelity Dashboard & Campus Academic ID cards.
 
 ## 🔜 Next Steps
-- [ ] **Blog Content**: Add more MDX articles to `content/blog`.
-- [ ] **Project Showcase**: Expand `content/projects` with high-quality screenshots.
 - [ ] **Accessibility**: Conduct a full WCAG audit.
 - [ ] **Production Deployment**: Finalize Vercel/Railway settings.
 
 ---
-*Updated: 2026-04-25*
+*Updated: 2026-04-30*

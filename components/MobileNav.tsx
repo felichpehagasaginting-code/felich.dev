@@ -109,6 +109,7 @@ export default function MobileNav() {
               exit={{ x: '-100%', scale: 0.95 }}
               transition={{ type: 'spring', damping: 24, stiffness: 250 }}
               className="fixed left-3 top-3 bottom-3 w-[calc(100vw-1.5rem)] max-w-sm z-50 overflow-y-auto p-6 lg:hidden glass-panel shadow-apple custom-scrollbar"
+              data-lenis-prevent
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">

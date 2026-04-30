@@ -157,7 +157,10 @@ export default function Sidebar() {
   }, [statuses.length]);
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 min-w-[256px] h-[calc(100vh-2rem)] sticky top-4 ml-4 my-4 p-6 overflow-y-auto glass-panel shadow-apple z-40 custom-scrollbar">
+    <aside 
+      className="hidden lg:flex flex-col w-64 min-w-[256px] h-[calc(100vh-2rem)] sticky top-4 ml-4 my-4 p-6 overflow-y-auto glass-panel shadow-apple z-40 custom-scrollbar"
+      data-lenis-prevent
+    >
       <div className="mb-6">
         <Magnetic>
           <div className="mb-4 group cursor-pointer">
