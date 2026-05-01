@@ -9,6 +9,7 @@ import { triggerImpact } from '@/lib/impact';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
+import Logo from '@/components/Logo';
 
 const navLinks = [
   {
@@ -71,8 +72,9 @@ export default function MobileNav() {
     <>
       <div className="fixed top-3 left-3 right-3 z-50 lg:hidden pointer-events-none">
         <div className="flex items-center justify-between px-5 py-3 glass-panel shadow-apple pointer-events-auto liquid-glass !rounded-[1.5rem]">
-          <Link href="/" className="text-lg font-bold tracking-tighter">
-            Felich<span className="text-primary">.dev</span>
+          <Link href="/" className="flex items-center gap-2 text-lg font-black tracking-tighter">
+            <Logo className="w-6 h-6" />
+            <span>Felich<span className="text-primary">.dev</span></span>
           </Link>
           <button
             onClick={() => { setMobileMenuOpen(!mobileMenuOpen); sounds.playPop(); }}
@@ -146,26 +148,68 @@ export default function MobileNav() {
                 </button>
               </div>
 
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-6">
                 <button
                   onClick={() => { toggleLanguage(); sounds.playSwitch(); }}
                   onMouseEnter={() => sounds.playHover()}
-                  className="flex items-center rounded-full border border-neutral-200 dark:border-neutral-700 overflow-hidden text-xs font-semibold"
+                  className="relative flex items-center p-1 rounded-full bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5 group"
                 >
-                  <span className={`px-2.5 py-1 transition-all ${language === 'en' ? 'bg-primary text-white' : 'text-neutral-500'}`}>US</span>
-                  <span className={`px-2.5 py-1 transition-all ${language === 'id' ? 'bg-primary text-white' : 'text-neutral-500'}`}>ID</span>
+                  <div 
+                    className={`absolute inset-1 w-[calc(50%-4px)] bg-primary rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+                      language === 'id' ? 'translate-x-[calc(100%+0px)]' : 'translate-x-0'
+                    }`}
+                  />
+                  <span className={`relative z-10 px-4 py-1.5 text-[10px] font-black tracking-widest transition-colors duration-300 ${language === 'en' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'}`}>
+                    US
+                  </span>
+                  <span className={`relative z-10 px-4 py-1.5 text-[10px] font-black tracking-widest transition-colors duration-300 ${language === 'id' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'}`}>
+                    ID
+                  </span>
                 </button>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">
                   {[
-                    { key: 'light' as const, icon: '☀️', color: '#ffffff' },
-                    { key: 'dark' as const, icon: '🌙', color: '#171717' },
-                    { key: 'yellow' as const, icon: '⚡', color: '#fef9ed' },
-                    { key: 'apple' as const, icon: <svg className="w-4 h-4" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>, color: '#ffffff' },
+                    { 
+                      key: 'light' as const, 
+                      icon: (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <circle cx="12" cy="12" r="5" strokeWidth={2} />
+                          <path strokeWidth={2} strokeLinecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42m12.72-12.72l1.42-1.42" />
+                        </svg>
+                      ), 
+                      color: '#ffffff' 
+                    },
+                    { 
+                      key: 'dark' as const, 
+                      icon: (
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                        </svg>
+                      ), 
+                      color: '#171717' 
+                    },
+                    { 
+                      key: 'yellow' as const, 
+                      icon: (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 1v3M10 1v3M14 1v3" />
+                        </svg>
+                      ), 
+                      color: '#fef9ed' 
+                    },
+                    { 
+                      key: 'apple' as const, 
+                      icon: (
+                        <svg className="w-4 h-4" viewBox="0 0 384 512" fill="currentColor">
+                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                        </svg>
+                      ), 
+                      color: '#ffffff' 
+                    },
                   ].map((t) => (
                     <Magnetic key={t.key}>
                       <button
-                        key={t.key}
                         onClick={(e) => { 
                           setTheme(t.key); 
                           triggerWarp(e.clientX, e.clientY, t.color);
@@ -173,9 +217,15 @@ export default function MobileNav() {
                           sounds.playSwitch(); 
                         }}
                         onMouseEnter={() => sounds.playHover()}
-                        className={`theme-btn ${theme === t.key ? 'active' : ''}`}
+                        className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-300 ${
+                          theme === t.key 
+                            ? 'bg-white dark:bg-white/10 text-primary shadow-apple ring-1 ring-black/5 dark:ring-white/10' 
+                            : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
+                        }`}
                       >
-                        {t.icon}
+                        <motion.div whileTap={{ scale: 0.9 }}>
+                          {t.icon}
+                        </motion.div>
                       </button>
                     </Magnetic>
                   ))}

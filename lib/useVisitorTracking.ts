@@ -14,7 +14,8 @@ export function useVisitorTracking(path: string = 'home') {
 
   useEffect(() => {
     // ── 1. Increment total page views in Firestore ─────────────────────────
-    const pageRef = doc(db, 'page_views', path);
+    const docId = path.replace(/\//g, '_');
+    const pageRef = doc(db, 'page_views', docId);
     const trackView = async () => {
       try {
         await setDoc(pageRef, { count: increment(1), path }, { merge: true });

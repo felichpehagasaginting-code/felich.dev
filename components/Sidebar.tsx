@@ -11,6 +11,7 @@ import { triggerImpact } from '@/lib/impact';
 import { motion, AnimatePresence } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
 import { Volume2, VolumeX, GitBranch } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 const navLinks = [
   {
@@ -69,14 +70,52 @@ function ThemeSwitcher() {
   const { theme, setTheme, triggerWarp } = useLayoutStore();
 
   const themes: { key: 'light' | 'dark' | 'yellow' | 'apple'; icon: React.ReactNode; label: string; color: string }[] = [
-    { key: 'light', icon: '☀️', label: 'Light Mode', color: '#ffffff' },
-    { key: 'dark', icon: '🌙', label: 'Dark Mode', color: '#171717' },
-    { key: 'yellow', icon: '⚡', label: 'Retro Mode', color: '#fef9ed' },
-    { key: 'apple', icon: <svg className="w-4 h-4" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>, label: 'Liquid Glass', color: '#ffffff' },
+    { 
+      key: 'light', 
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="5" strokeWidth={2} />
+          <path strokeWidth={2} strokeLinecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42m12.72-12.72l1.42-1.42" />
+        </svg>
+      ), 
+      label: 'Light Mode', 
+      color: '#ffffff' 
+    },
+    { 
+      key: 'dark', 
+      icon: (
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+      ), 
+      label: 'Dark Mode', 
+      color: '#171717' 
+    },
+    { 
+      key: 'yellow', 
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 1v3M10 1v3M14 1v3" />
+        </svg>
+      ), 
+      label: 'Retro Mode', 
+      color: '#fef9ed' 
+    },
+    { 
+      key: 'apple', 
+      icon: (
+        <svg className="w-4 h-4" viewBox="0 0 384 512" fill="currentColor">
+          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+        </svg>
+      ), 
+      label: 'Liquid Glass', 
+      color: '#ffffff' 
+    },
   ];
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">
       {themes.map((t) => (
         <Magnetic key={t.key}>
           <button
@@ -87,11 +126,20 @@ function ThemeSwitcher() {
               sounds.playSwitch();
             }}
             onMouseEnter={() => sounds.playHover()}
-            className={`theme-btn ${theme === t.key ? 'active' : ''}`}
+            className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-300 ${
+              theme === t.key 
+                ? 'bg-white dark:bg-white/10 text-primary shadow-apple ring-1 ring-black/5 dark:ring-white/10' 
+                : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5'
+            }`}
             aria-label={`Switch to ${t.key} theme`}
             title={t.label}
           >
-            {t.icon}
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {t.icon}
+            </motion.div>
           </button>
         </Magnetic>
       ))}
@@ -106,12 +154,17 @@ function LanguageSwitcher() {
     <button
       onClick={() => { toggleLanguage(); sounds.playSwitch(); }}
       onMouseEnter={() => sounds.playHover()}
-      className="flex items-center rounded-full border border-neutral-200 dark:border-neutral-700 overflow-hidden text-xs font-semibold"
+      className="relative flex items-center p-1 rounded-full bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5 group"
     >
-      <span className={`px-2.5 py-1 transition-all ${language === 'en' ? 'bg-primary text-white' : 'text-neutral-500 dark:text-neutral-400'}`}>
+      <div 
+        className={`absolute inset-1 w-[calc(50%-4px)] bg-primary rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg shadow-primary/25 ${
+          language === 'id' ? 'translate-x-[calc(100%+0px)]' : 'translate-x-0'
+        }`}
+      />
+      <span className={`relative z-10 px-4 py-1.5 text-[10px] font-black tracking-widest transition-colors duration-300 ${language === 'en' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'}`}>
         US
       </span>
-      <span className={`px-2.5 py-1 transition-all ${language === 'id' ? 'bg-primary text-white' : 'text-neutral-500 dark:text-neutral-400'}`}>
+      <span className={`relative z-10 px-4 py-1.5 text-[10px] font-black tracking-widest transition-colors duration-300 ${language === 'id' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'}`}>
         ID
       </span>
     </button>
@@ -135,10 +188,28 @@ function SoundSwitcher() {
     <button
       onClick={handleToggle}
       onMouseEnter={() => sounds.playHover()}
-      className={`p-2 rounded-xl border border-neutral-200 dark:border-neutral-800 transition-all ${isEnabled ? 'bg-primary/5 text-primary border-primary/20' : 'text-neutral-400 opacity-50'}`}
+      className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-all duration-500 ${
+        isEnabled 
+          ? 'bg-primary/5 text-primary border-primary/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]' 
+          : 'bg-neutral-100/50 dark:bg-white/5 text-neutral-400 border-neutral-200 dark:border-white/5 opacity-60'
+      }`}
       title={isEnabled ? 'Mute Sounds' : 'Unmute Sounds'}
     >
-      {isEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+      <motion.div
+        animate={isEnabled ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+        transition={{ repeat: Infinity, duration: 2 }}
+      >
+        {isEnabled ? (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 6L8 10H4v4h4l4 4V6z" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        )}
+      </motion.div>
     </button>
   );
 }
@@ -178,12 +249,17 @@ export default function Sidebar() {
         </Magnetic>
 
         <div className="text-center">
-          <h1 className="text-lg font-bold flex items-center justify-center gap-1.5 group">
-            <span className="bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-white dark:to-neutral-400 bg-clip-text text-transparent">Felich</span>
-            <svg className="w-4 h-4 text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </h1>
+          <Link href="/" className="flex flex-col items-center gap-3 group">
+            <Logo className="w-12 h-12" />
+            <h1 className="text-xl font-black flex items-center justify-center gap-1.5 tracking-tighter">
+              <span className="bg-gradient-to-r from-neutral-900 to-neutral-700 dark:from-white dark:to-neutral-400 bg-clip-text text-transparent">
+                Felich<span className="text-primary">.dev</span>
+              </span>
+              <svg className="w-4 h-4 text-blue-500 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </h1>
+          </Link>
 
           <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-700 dark:text-green-400 overflow-hidden">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>

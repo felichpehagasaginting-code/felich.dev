@@ -566,7 +566,6 @@
   will-change: transform, opacity; /* Avoid will-change: backdrop-filter as it can be heavy */
   transform: translateZ(0); /* Force GPU layer */
   position: relative;
-  overflow: hidden;
 }
 
 /* Apple-style Grain/Noise Texture on Glass */

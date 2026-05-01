@@ -231,26 +231,58 @@ export default function Terminal() {
         break;
       case 'fetch':
         output = (
-          <div className="flex gap-4">
-            <div className="text-blue-500 font-bold hidden sm:block whitespace-pre leading-tight">
+          <div className="flex gap-6 items-start py-1">
+            <div className="text-primary font-bold hidden sm:block whitespace-pre leading-[1.1] drop-shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]">
               {`
-   /\\   
-  /  \\  
- /____\\ 
-/      \\
+    ──────┐
+    │ ┌───┘
+    │ └───┐
+    │ ┌───┘
+    │ │
+    └─┘
               `}
             </div>
-            <div className="flex flex-col">
-              <span className="text-purple-400 font-bold">felich@dev-machine</span>
-              <span>--------------</span>
-              <span><span className="text-blue-400 font-bold">OS:</span> Next.js 14 / Linux</span>
-              <span><span className="text-blue-400 font-bold">Kernel:</span> React Server Components</span>
-              <span><span className="text-blue-400 font-bold">Uptime:</span> ∞ days</span>
-              <span><span className="text-blue-400 font-bold">Terminal:</span> Antigravity v2.1</span>
-              <span><span className="text-blue-400 font-bold">Shell:</span> custom-sh 5.1</span>
-              <span><span className="text-blue-400 font-bold">Memory:</span> 32GB / 64GB</span>
-              <div className="flex gap-1 mt-2">
-                <div className="w-3 h-3 bg-red-500"></div><div className="w-3 h-3 bg-green-500"></div><div className="w-3 h-3 bg-yellow-500"></div><div className="w-3 h-3 bg-blue-500"></div><div className="w-3 h-3 bg-purple-500"></div><div className="w-3 h-3 bg-cyan-500"></div>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-primary font-black uppercase tracking-wider">felich@portfolio</span>
+                <span className="text-neutral-600">|</span>
+                <span className="text-neutral-400 text-[10px]">v2.5.0-stable</span>
+              </div>
+              <div className="h-[1px] w-full bg-gradient-to-r from-primary/50 to-transparent mb-2" />
+              
+              <div className="grid grid-cols-[85px_1fr] gap-x-2 text-[11px] sm:text-xs">
+                <span className="text-neutral-500 uppercase font-bold tracking-tighter">OS</span>
+                <span className="text-white font-medium">LiquidOS (Next.js 16)</span>
+                
+                <span className="text-neutral-500 uppercase font-bold tracking-tighter">HOST</span>
+                <span className="text-white">Felich-Workstation-Pro</span>
+                
+                <span className="text-neutral-500 uppercase font-bold tracking-tighter">KERNEL</span>
+                <span className="text-white">React-Server-Edge</span>
+                
+                <span className="text-neutral-500 uppercase font-bold tracking-tighter">UPTIME</span>
+                <span className="text-white">∞ (Digital Immortality)</span>
+                
+                <span className="text-neutral-500 uppercase font-bold tracking-tighter">SHELL</span>
+                <span className="text-white">zsh-antigravity 5.9</span>
+                
+                <span className="text-neutral-500 uppercase font-bold tracking-tighter">THEME</span>
+                <span className="text-primary font-semibold">Apple Liquid Glass</span>
+                
+                <span className="text-neutral-500 uppercase font-bold tracking-tighter">MEMORY</span>
+                <span className="text-white">Cloud-Sync Enabled</span>
+              </div>
+
+              <div className="flex gap-1.5 mt-3">
+                {[
+                  'bg-[#FF5F57]', 'bg-[#FEBC2E]', 'bg-[#28C840]', 
+                  'bg-[#3B82F6]', 'bg-[#8B5CF6]', 'bg-[#EC4899]'
+                ].map((bg, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`w-3.5 h-3.5 rounded-full ${bg} shadow-lg border border-white/5`} 
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -299,48 +331,63 @@ export default function Terminal() {
       viewport={{ once: true }}
       className="w-full max-w-2xl mx-auto rounded-xl overflow-hidden border border-neutral-800 bg-[#0A0A0A]/90 backdrop-blur-xl shadow-2xl font-mono text-xs sm:text-sm"
     >
-      {/* Terminal Header */}
-      <div className="bg-[#1A1A1A] px-4 py-2.5 flex items-center justify-between border-b border-neutral-800 select-none">
-        <div className="flex gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.3)]"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80 shadow-[0_0_8px_rgba(234,179,8,0.3)]"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.3)]"></div>
+      {/* Terminal Header - Apple Style */}
+      <div className="bg-[#1A1A1A]/80 backdrop-blur-md px-4 py-2 flex items-center justify-between border-b border-white/5 select-none h-10">
+        <div className="flex gap-2 w-16">
+          <div className="group relative w-3 h-3 rounded-full bg-[#FF5F57] border border-[#E0443E] cursor-pointer active:scale-95 transition-all">
+             <span className="absolute inset-0 flex items-center justify-center text-[8px] text-black/40 opacity-0 group-hover:opacity-100">✕</span>
+          </div>
+          <div className="group relative w-3 h-3 rounded-full bg-[#FEBC2E] border border-[#D89F24] cursor-pointer active:scale-95 transition-all">
+             <span className="absolute inset-0 flex items-center justify-center text-[8px] text-black/40 opacity-0 group-hover:opacity-100">−</span>
+          </div>
+          <div className="group relative w-3 h-3 rounded-full bg-[#28C840] border border-[#24AA35] cursor-pointer active:scale-95 transition-all">
+             <span className="absolute inset-0 flex items-center justify-center text-[8px] text-black/40 opacity-0 group-hover:opacity-100">⤢</span>
+          </div>
         </div>
-        <div className="text-neutral-500 text-[10px] uppercase tracking-[0.2em] font-black">Felich-OS Terminal</div>
-        <div className="text-neutral-600 text-[10px] hidden sm:block">ssh guest@felich.dev</div>
+        
+        <div className="flex items-center gap-1.5 text-neutral-400 font-medium text-[11px]">
+          <svg className="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+          </svg>
+          <span className="opacity-80">guest — felich — zsh — 80×24</span>
+        </div>
+
+        <div className="w-16 hidden sm:block"></div>
       </div>
 
       {/* Terminal Body */}
       <div
         ref={containerRef}
-        className="p-5 h-72 overflow-y-auto scrollbar-hide text-neutral-300 relative"
+        data-lenis-prevent
+        className="p-5 h-80 overflow-y-auto scrollbar-hide text-neutral-300 relative bg-[#020202]/40 overscroll-contain"
         onClick={() => inputRef.current?.focus()}
       >
         {/* Subtle Scanline Effect */}
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-10 bg-[length:100%_2px,3px_100%]" />
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] z-10 bg-[length:100%_2px,3px_100%] opacity-20" />
 
-        <div className="mb-4 text-green-400/80 flex items-center gap-2">
-          <span className="animate-pulse">●</span>
-          <span>Session started: {mounted ? new Date().toLocaleTimeString() : '--:--:--'} - Type &apos;help&apos; to explore.</span>
+        <div className="mb-4 text-neutral-500 text-[11px] font-mono leading-relaxed">
+          Last login: {mounted ? new Date().toDateString() : '---'} on ttys001
+          <br />
+          <span className="text-primary/70">Welcome to Felich Interactive Shell (zsh)</span>
         </div>
 
         {history.map((cmd, i) => (
-          <div key={i} className="mb-3 relative z-20">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-purple-400 font-bold">guest@felich</span>
-              <span className="text-neutral-500">~</span>
-              <span className="text-blue-400">$</span>
-              <span className="text-white">{cmd.text}</span>
+          <div key={i} className="mb-4 relative z-20">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="text-[#5DBEFE] font-bold">➜</span>
+              <span className="text-[#A6E22E] font-bold">~</span>
+              <span className="text-white ml-1">{cmd.text}</span>
             </div>
-            <div className="pl-4 text-neutral-400">{cmd.output}</div>
+            <div className="pl-5 text-neutral-400 border-l border-white/5 ml-[7px] py-1">
+              {cmd.output}
+            </div>
           </div>
         ))}
 
-        <form onSubmit={handleCommand} className="flex items-center gap-2 relative z-20 pb-4">
-          <span className="text-purple-400 font-bold">guest@felich</span>
-          <span className="text-neutral-500">~</span>
-          <span className="text-blue-400">$</span>
-          <div className="relative flex-1">
+        <form onSubmit={handleCommand} className="flex items-center gap-2 relative z-20 pb-8">
+          <span className="text-[#5DBEFE] font-bold animate-pulse">➜</span>
+          <span className="text-[#A6E22E] font-bold">~</span>
+          <div className="relative flex-1 ml-1">
             <input
               ref={inputRef}
               type="text"
@@ -351,15 +398,15 @@ export default function Terminal() {
                 if (sounds.playClick) sounds.playClick();
               }}
               onKeyDown={handleKeyDown}
-              className="w-full bg-transparent outline-none text-white border-none focus:ring-0 p-0 caret-transparent"
+              className="w-full bg-transparent outline-none text-white border-none focus:ring-0 p-0 caret-transparent font-mono"
               autoComplete="off"
               spellCheck="false"
             />
-            {/* Custom Blinking Cursor */}
+            {/* macOS Style Bar Cursor */}
             <motion.div 
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-              className="absolute top-0 w-2 h-4 sm:h-5 bg-primary/80"
+              animate={{ opacity: [1, 1, 0, 0] }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear", times: [0, 0.5, 0.5, 1] }}
+              className="absolute top-0.5 w-2 h-[18px] bg-primary/60 shadow-[0_0_8px_rgba(37,99,235,0.4)]"
               style={{ left: `${input.length}ch` }}
             />
           </div>
