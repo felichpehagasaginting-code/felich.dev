@@ -73,6 +73,8 @@ export default function AIChatbot() {
     setLoading(true);
     sounds.playPop();
 
+    const aiMsgId = (Date.now() + 1).toString();
+
     try {
       const history = [...messages, userMsg].map((m) => ({
         role: m.role,
@@ -85,15 +87,14 @@ export default function AIChatbot() {
         body: JSON.stringify({ messages: history }),
       });
 
-      const data = await res.json();
-
-      // Handle API-level errors
-      if (!res.ok || data.error) {
-        console.error('Chat API error:', data);
+      // Handle non-streaming error responses
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        console.error('Chat API error:', errData);
         setMessages((prev) => [
           ...prev,
           {
-            id: (Date.now() + 1).toString(),
+            id: aiMsgId,
             role: 'assistant',
             content: "Hmm, I ran into an issue connecting to my brain 🧠 Please try again in a moment!",
             timestamp: new Date(),
@@ -102,14 +103,50 @@ export default function AIChatbot() {
         return;
       }
 
-      const aiMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.message || "I'm not sure how to answer that. Ask me about Felich's skills or projects!",
-        timestamp: new Date(),
-      };
+      // Create placeholder assistant message for streaming
+      setMessages((prev) => [
+        ...prev,
+        { id: aiMsgId, role: 'assistant', content: '', timestamp: new Date() },
+      ]);
+      setLoading(false); // Hide typing dots — text will stream in
 
-      setMessages((prev) => [...prev, aiMsg]);
+      // Read SSE stream
+      const reader = res.body?.getReader();
+      if (!reader) return;
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let fullText = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith('data: ')) continue;
+
+          try {
+            const chunk = JSON.parse(trimmed.slice(6));
+            if (chunk.done) break;
+            if (chunk.text) {
+              fullText += chunk.text;
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === aiMsgId ? { ...m, content: fullText } : m
+                )
+              );
+            }
+          } catch {
+            // Skip malformed chunks
+          }
+        }
+      }
+
       sounds.playSwitch();
 
       if (!open || minimized) {
@@ -119,7 +156,7 @@ export default function AIChatbot() {
       setMessages((prev) => [
         ...prev,
         {
-          id: (Date.now() + 1).toString(),
+          id: aiMsgId,
           role: 'assistant',
           content: "Network issue! Please check your connection and try again 🔌",
           timestamp: new Date(),
@@ -181,8 +218,8 @@ export default function AIChatbot() {
 
   return (
     <>
-      {/* Floating Button - Positioned to avoid QuickConnect */}
-      <div className="fixed bottom-[110px] right-6 md:bottom-[90px] md:right-6 z-[90] flex flex-col items-end gap-3">
+      {/* Floating Button - Stacked above QuickConnect */}
+      <div className="fixed bottom-24 right-6 z-[90] flex flex-col items-end gap-3">
         <AnimatePresence>
           {open && (
             <motion.div

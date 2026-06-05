@@ -177,8 +177,8 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
+              style={{ perspective: 1000 }}
               whileHover={{ 
-                perspective: 1000,
                 rotateX: 1,
                 rotateY: -1,
                 transition: { type: 'spring', stiffness: 400, damping: 20 }

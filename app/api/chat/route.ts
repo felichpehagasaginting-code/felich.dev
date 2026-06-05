@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent';
 
 
 const SYSTEM_PROMPT = `You are "Felich AI", a smart, friendly, and concise portfolio assistant for Felich Pehagasa Ginting. 
@@ -64,17 +64,22 @@ export async function POST(req: NextRequest) {
     const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+      return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       console.error('GEMINI_API_KEY is not set');
-      return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
+      return new Response(JSON.stringify({ error: 'API key not configured' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     // Build Gemini conversation history
-    // Gemini requires: alternating user/model turns, ending with user
     const rawContents = messages.map((msg: { role: string; content: string }) => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }],
@@ -84,7 +89,6 @@ export async function POST(req: NextRequest) {
     const contents: { role: string; parts: { text: string }[] }[] = [];
     for (const msg of rawContents) {
       if (contents.length > 0 && contents[contents.length - 1].role === msg.role) {
-        // Merge into previous
         contents[contents.length - 1].parts[0].text += '\n' + msg.parts[0].text;
       } else {
         contents.push({ ...msg, parts: [{ text: msg.parts[0].text }] });
@@ -98,7 +102,9 @@ export async function POST(req: NextRequest) {
     }
 
     if (contents.length === 0) {
-      return NextResponse.json({ message: "Please send a message first!" });
+      return new Response(JSON.stringify({ message: "Please send a message first!" }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
 
     const requestBody = {
@@ -113,7 +119,7 @@ export async function POST(req: NextRequest) {
       },
     };
 
-    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}&alt=sse`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
@@ -122,27 +128,86 @@ export async function POST(req: NextRequest) {
     if (!response.ok) {
       const errText = await response.text();
       console.error(`Gemini API error (${response.status}):`, errText);
-      return NextResponse.json(
-        { error: `Gemini error: ${response.status}`, detail: errText },
-        { status: 502 }
+      return new Response(
+        JSON.stringify({ error: `Gemini error: ${response.status}`, detail: errText }),
+        { status: 502, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    const data = await response.json();
+    // Stream the response back to the client as Server-Sent Events
+    const encoder = new TextEncoder();
+    const readable = new ReadableStream({
+      async start(controller) {
+        const reader = response.body?.getReader();
+        if (!reader) {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`));
+          controller.close();
+          return;
+        }
 
-    // Check for blocked content
-    const finishReason = data?.candidates?.[0]?.finishReason;
-    if (finishReason === 'SAFETY') {
-      return NextResponse.json({ message: "I can't respond to that, but feel free to ask about Felich's work! 😊" });
-    }
+        const decoder = new TextDecoder();
+        let buffer = '';
 
-    const text =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ??
-      "I'm not sure how to answer that. Try asking about Felich's skills, projects, or contact info!";
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-    return NextResponse.json({ message: text });
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || !trimmed.startsWith('data: ')) continue;
+
+              const jsonStr = trimmed.slice(6);
+              if (jsonStr === '[DONE]') continue;
+
+              try {
+                const chunk = JSON.parse(jsonStr);
+                const finishReason = chunk?.candidates?.[0]?.finishReason;
+                
+                if (finishReason === 'SAFETY') {
+                  controller.enqueue(
+                    encoder.encode(`data: ${JSON.stringify({ text: "I can't respond to that, but feel free to ask about Felich's work! 😊", done: true })}\n\n`)
+                  );
+                  controller.close();
+                  return;
+                }
+
+                const text = chunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                  controller.enqueue(
+                    encoder.encode(`data: ${JSON.stringify({ text })}\n\n`)
+                  );
+                }
+              } catch {
+                // Skip malformed JSON chunks
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Stream read error:', err);
+        }
+
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`));
+        controller.close();
+      },
+    });
+
+    return new Response(readable, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+      },
+    });
   } catch (err) {
     console.error('Chat API error:', err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }

@@ -608,6 +608,22 @@
   z-index: 2;
 }
 
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.92) !important;
+  }
+  .dark .glass-panel {
+    background: rgba(10, 10, 10, 0.95) !important;
+  }
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+  .dark .liquid-glass {
+    background: rgba(10, 10, 10, 0.92) !important;
+  }
+}
+
 /* Lenis Smooth Scroll Styles */
 html.lenis,
 html.lenis body {

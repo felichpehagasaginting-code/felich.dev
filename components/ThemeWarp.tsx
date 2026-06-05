@@ -17,6 +17,7 @@ interface Particle {
 export default function ThemeWarp() {
   const { warp } = useLayoutStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
     if (!warp || !canvasRef.current) return;
@@ -25,17 +26,19 @@ export default function ThemeWarp() {
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
+    // Use logical pixels for rendering, CSS handles display size
+    const dpr = Math.min(window.devicePixelRatio, 2); // Cap at 2x for perf
     const resize = () => {
-      canvas.width = window.innerWidth * window.devicePixelRatio;
-      canvas.height = window.innerHeight * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
     window.addEventListener('resize', resize);
 
-    // Initialize particles
+    // Initialize particles with burst spread
     const particles: Particle[] = [];
-    const particleCount = 40;
+    const particleCount = 30; // Reduced from 40 for smoother rendering
     for (let i = 0; i < particleCount; i++) {
       const angle = Math.random() * Math.PI * 2;
       const speed = Math.random() * 8 + 4;
@@ -46,70 +49,71 @@ export default function ThemeWarp() {
         vy: Math.sin(angle) * speed,
         life: 1.0,
         color: warp.color,
-        size: Math.random() * 3 + 1
+        size: Math.random() * 3 + 1,
       });
     }
 
-    let progress = 0;
-    const duration = 350; // Super fast / Instant feel
+    const duration = 350;
     const startTime = performance.now();
+    const maxRadius = Math.sqrt(
+      window.innerWidth ** 2 + window.innerHeight ** 2
+    ) * 1.2;
 
     const draw = (now: number) => {
       const elapsed = Math.max(0, now - startTime);
-      progress = Math.min(elapsed / duration, 1);
+      const progress = Math.min(elapsed / duration, 1);
 
       // Super sharp easing for "Snap" effect
       const ease = 1 - Math.pow(1 - progress, 5);
-      
-      const maxRadius = Math.sqrt(Math.pow(window.innerWidth, 2) + Math.pow(window.innerHeight, 2)) * 1.2;
       const radius = ease * maxRadius;
 
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      
+
       // 1. Draw Main Ripple (Fast)
       ctx.beginPath();
       ctx.arc(warp.x, warp.y, radius, 0, Math.PI * 2);
       ctx.fillStyle = warp.color;
       ctx.fill();
 
-      // 2. Fast Leading Glow
+      // 2. Fast Leading Glow (only first half of animation)
       if (progress < 0.5) {
+        const glowAlpha = 0.3 * (1 - progress * 2);
         ctx.beginPath();
         ctx.arc(warp.x, warp.y, radius + 20, 0, Math.PI * 2);
         ctx.strokeStyle = warp.color;
         ctx.lineWidth = 10 * (1 - progress);
-        ctx.globalAlpha = 0.3 * (1 - progress);
+        ctx.globalAlpha = glowAlpha;
         ctx.stroke();
         ctx.globalAlpha = 1.0;
       }
 
-      // 3. High Velocity Particles
-      particles.forEach(p => {
+      // 3. High Velocity Particles with batch rendering
+      ctx.save();
+      for (const p of particles) {
         p.x += p.vx * 1.5;
         p.y += p.vy * 1.5;
-        p.vy += 0.5; // More gravity for fast fall
-        p.life -= 0.05; // Faster fade
+        p.vy += 0.5;
+        p.life -= 0.05;
 
         if (p.life > 0) {
+          ctx.globalAlpha = p.life;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
           ctx.fillStyle = p.color;
-          ctx.globalAlpha = p.life;
           ctx.fill();
-          ctx.globalAlpha = 1.0;
         }
-      });
+      }
+      ctx.restore();
 
-      // 4. Subtle Screen Shake (Removed for "Instant" feel as requested)
-      
       if (progress < 1) {
-        requestAnimationFrame(draw);
+        rafRef.current = requestAnimationFrame(draw);
       }
     };
 
-    requestAnimationFrame(draw);
+    rafRef.current = requestAnimationFrame(draw);
 
     return () => {
+      cancelAnimationFrame(rafRef.current);
       window.removeEventListener('resize', resize);
     };
   }, [warp]);

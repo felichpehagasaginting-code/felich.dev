@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 interface MagneticProps {
   children: React.ReactNode;
@@ -10,9 +10,17 @@ interface MagneticProps {
 export default function Magnetic({ children }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  // Detect touch devices once on mount and disable magnetic effect
+  useEffect(() => {
+    setIsTouchDevice(
+      'ontouchstart' in window || navigator.maxTouchPoints > 0
+    );
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (isTouchDevice || !ref.current) return;
     const { clientX, clientY } = e;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const centerX = left + width / 2;
@@ -26,6 +34,11 @@ export default function Magnetic({ children }: MagneticProps) {
   const handleMouseLeave = () => {
     setPosition({ x: 0, y: 0 });
   };
+
+  // On touch devices, just render children without the magnetic wrapper overhead
+  if (isTouchDevice) {
+    return <>{children}</>;
+  }
 
   return (
     <motion.div

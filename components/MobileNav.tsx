@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useLayoutStore } from '@/lib/store';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -67,6 +68,16 @@ const navLinks = [
 export default function MobileNav() {
   const pathname = usePathname();
   const { mobileMenuOpen, setMobileMenuOpen, theme, setTheme, language, toggleLanguage, triggerWarp } = useLayoutStore();
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
 
   return (
     <>

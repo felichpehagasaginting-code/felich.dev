@@ -8,7 +8,7 @@ import { useLayoutStore } from '@/lib/store';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function ParticleSwarm() {
+function ParticleSwarm({ isMobile }: { isMobile: boolean }) {
   const ref = useRef<THREE.Points>(null);
   const { theme } = useLayoutStore();
   
@@ -19,7 +19,7 @@ function ParticleSwarm() {
     return '#8b5cf6';
   }, [theme]);
 
-  const sphereCount = 2000;
+  const sphereCount = isMobile ? 600 : 2000;
   const spherePositions = useMemo(() => {
     const positions = new Float32Array(sphereCount * 3);
     for (let i = 0; i < sphereCount; i++) {
@@ -32,7 +32,7 @@ function ParticleSwarm() {
         positions[i * 3 + 2] = r * Math.cos(phi);
     }
     return positions;
-  }, []);
+  }, [sphereCount]);
 
   useFrame((state, delta) => {
     if (ref.current) {
@@ -200,6 +200,7 @@ export default function Hero3D() {
   const groupRef = useRef<THREE.Group>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const { theme } = useLayoutStore();
 
   useEffect(() => {
@@ -209,6 +210,18 @@ export default function Hero3D() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Pause rendering when canvas is off-screen to save GPU
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -246,6 +259,7 @@ export default function Hero3D() {
         camera={{ position: [0, 0, isMobile ? 7 : 5], fov: isMobile ? 55 : 45 }}
         className="w-full h-full !absolute inset-0 focus:outline-none"
         dpr={isMobile ? [1, 1.5] : [1, 2]}
+        frameloop={isVisible ? 'always' : 'never'}
         gl={{ 
           antialias: !isMobile, 
           powerPreference: "high-performance",
@@ -268,7 +282,7 @@ export default function Hero3D() {
         <Environment preset="city" />
 
         <group ref={groupRef} position={[0, 0, 0]} scale={isMobile ? 0.6 : 0.85}>
-          <ParticleSwarm />
+          <ParticleSwarm isMobile={isMobile} />
           <OrbitRings />
           <CoreShape />
           <InnerCore />
