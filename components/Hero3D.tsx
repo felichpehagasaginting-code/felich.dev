@@ -154,27 +154,25 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
           isMobile ? (
             <meshStandardMaterial
               color={coreColor}
-              wireframe={theme !== 'light'}
-              roughness={0.3}
-              metalness={0.2}
+              roughness={0.1}
+              metalness={0.1}
               transparent={true}
-              opacity={0.8}
+              opacity={0.25}
             />
           ) : (
             <meshPhysicalMaterial 
               color={coreColor} 
-              wireframe={theme !== 'light'} 
               emissive={coreColor}
-              emissiveIntensity={0.5}
-              roughness={0}
-              metalness={0}
-              transmission={0.5}
-              thickness={1.5}
-              ior={1.5}
-              reflectivity={1}
+              emissiveIntensity={0.15}
+              roughness={0.15}
+              metalness={0.1}
+              transmission={0.85}
+              thickness={1.2}
+              ior={1.3}
+              reflectivity={0.8}
               clearcoat={1}
-              clearcoatRoughness={0}
-              opacity={1}
+              clearcoatRoughness={0.05}
+              opacity={0.9}
               transparent={true}
             />
           )
