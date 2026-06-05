@@ -79,6 +79,8 @@ export default function QuickConnect() {
         className={`w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 pointer-events-auto outline-none ${
           isOpen ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900' : 'bg-primary text-white'
         }`}
+        title="Toggle quick links"
+        aria-label="Toggle quick links"
       >
         <motion.div
           animate={{ rotate: isOpen ? 135 : 0 }}

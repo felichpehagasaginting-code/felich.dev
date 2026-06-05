@@ -129,8 +129,7 @@ export default function ThemeWarp() {
         >
           <canvas
             ref={canvasRef}
-            className="w-full h-full"
-            style={{ width: '100vw', height: '100vh' }}
+            className="w-screen h-screen"
           />
         </motion.div>
       )}

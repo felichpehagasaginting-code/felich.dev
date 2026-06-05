@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { sounds } from '@/lib/sounds';
 import ReactMarkdown from 'react-markdown';
@@ -116,7 +116,6 @@ export default function AIChatbot() {
 
       const decoder = new TextDecoder();
       let buffer = '';
-      let fullText = '';
 
       while (true) {
         const { done, value } = await reader.read();
@@ -134,10 +133,10 @@ export default function AIChatbot() {
             const chunk = JSON.parse(trimmed.slice(6));
             if (chunk.done) break;
             if (chunk.text) {
-              fullText += chunk.text;
+              const textChunk = chunk.text;
               setMessages((prev) =>
                 prev.map((m) =>
-                  m.id === aiMsgId ? { ...m, content: fullText } : m
+                  m.id === aiMsgId ? { ...m, content: m.content + textChunk } : m
                 )
               );
             }
@@ -254,6 +253,8 @@ export default function AIChatbot() {
                   <button
                     onClick={() => { setOpen(false); sounds.playSwitch(); }}
                     className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-sm"
+                    title="Close chat"
+                    aria-label="Close chat"
                   >
                     <X size={16} />
                   </button>
@@ -301,7 +302,7 @@ export default function AIChatbot() {
                                 p: ({children}) => <p className="mb-1 last:mb-0">{children}</p>,
                                 strong: ({children}) => <strong className="font-extrabold text-blue-500 dark:text-blue-400">{children}</strong>,
                                 ul: ({children}) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
-                                li: ({children}) => <li className="mb-0.5">{children}</li>,
+                                li: ({children}) => React.createElement('li', { className: 'mb-0.5' }, children),
                                 code: ({children}) => <code className="bg-black/10 dark:bg-black/30 px-1 rounded font-mono text-[11px]">{children}</code>
                               }}
                             >
@@ -379,6 +380,8 @@ export default function AIChatbot() {
                         onClick={() => sendMessage(input)}
                         disabled={!input.trim() || loading}
                         className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center disabled:opacity-30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 shadow-md"
+                        title="Send message"
+                        aria-label="Send message"
                       >
                         <Send size={14} />
                       </button>
