@@ -120,7 +120,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
   return (
     <Float floatIntensity={isMobile ? 0.8 : 1.5} speed={isMobile ? 1.5 : 3}>
       <mesh ref={coreRef}>
-        <sphereGeometry args={[1.3, isMobile ? 24 : 64, isMobile ? 24 : 64]} />
+        <icosahedronGeometry args={[1.3, 0]} />
         {theme === 'apple' ? (
           isMobile ? (
             <meshStandardMaterial
@@ -129,6 +129,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
               metalness={0.1}
               transparent={true}
               opacity={0.8}
+              flatShading={true}
             />
           ) : (
             <MeshDistortMaterial
@@ -148,6 +149,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
               clearcoatRoughness={0}
               attenuationDistance={0.5}
               attenuationColor="#ffffff"
+              flatShading={true}
             />
           )
         ) : (
@@ -158,6 +160,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
               metalness={0.1}
               transparent={true}
               opacity={0.25}
+              flatShading={true}
             />
           ) : (
             <meshPhysicalMaterial 
@@ -174,6 +177,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
               clearcoatRoughness={0.05}
               opacity={0.9}
               transparent={true}
+              flatShading={true}
             />
           )
         )}
