@@ -54,7 +54,7 @@ export default function AdaptiveBackground() {
           {/* Animated Background Blobs for Liquid Feel - Simplified for performance */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <motion.div 
-              animate={{ 
+              animate={isMobile ? undefined : { 
                 x: [0, 80, -40, 0], 
                 y: [0, -80, 40, 0],
                 scale: [1, 1.1, 0.9, 1]
@@ -74,7 +74,7 @@ export default function AdaptiveBackground() {
               />
             )}
             <motion.div 
-              animate={{ 
+              animate={isMobile ? undefined : { 
                 x: [0, 60, -80, 0], 
                 y: [0, 80, -40, 0],
                 scale: [1, 1.05, 0.95, 1]

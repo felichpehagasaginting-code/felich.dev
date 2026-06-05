@@ -64,7 +64,7 @@ function ParticleSwarm({ isMobile }: { isMobile: boolean }) {
   );
 }
 
-function OrbitRings() {
+function OrbitRings({ isMobile }: { isMobile: boolean }) {
   const ring1Ref = useRef<THREE.Mesh>(null);
   const ring2Ref = useRef<THREE.Mesh>(null);
   const { theme } = useLayoutStore();
@@ -89,17 +89,17 @@ function OrbitRings() {
 
   return (
     <group>
-      <Torus ref={ring1Ref} args={[1.5, 0.01, 16, 100]}>
+      <Torus ref={ring1Ref} args={[1.5, 0.01, isMobile ? 8 : 16, isMobile ? 40 : 100]}>
         <meshBasicMaterial color={ringColor} transparent opacity={0.3} />
       </Torus>
-      <Torus ref={ring2Ref} args={[1.8, 0.005, 16, 100]}>
+      <Torus ref={ring2Ref} args={[1.8, 0.005, isMobile ? 8 : 16, isMobile ? 40 : 100]}>
         <meshBasicMaterial color={ringColor} transparent opacity={0.2} />
       </Torus>
     </group>
   );
 }
 
-function CoreShape() {
+function CoreShape({ isMobile }: { isMobile: boolean }) {
   const coreRef = useRef<THREE.Mesh>(null);
   const { theme } = useLayoutStore();
 
@@ -118,52 +118,73 @@ function CoreShape() {
   });
 
   return (
-    <Float floatIntensity={1.5} speed={3}>
+    <Float floatIntensity={isMobile ? 0.8 : 1.5} speed={isMobile ? 1.5 : 3}>
       <mesh ref={coreRef}>
-        <sphereGeometry args={[1.3, 64, 64]} />
+        <sphereGeometry args={[1.3, isMobile ? 24 : 64, isMobile ? 24 : 64]} />
         {theme === 'apple' ? (
-          <MeshDistortMaterial
-            color="#ffffff"
-            speed={2}
-            distort={0.2}
-            radius={1}
-            transmission={1}
-            thickness={2}
-            ior={1.4}
-            reflectivity={0.5}
-            roughness={0}
-            metalness={0.05}
-            transparent={true}
-            opacity={1}
-            clearcoat={1}
-            clearcoatRoughness={0}
-            attenuationDistance={0.5}
-            attenuationColor="#ffffff"
-          />
+          isMobile ? (
+            <meshStandardMaterial
+              color="#ffffff"
+              roughness={0.1}
+              metalness={0.1}
+              transparent={true}
+              opacity={0.8}
+            />
+          ) : (
+            <MeshDistortMaterial
+              color="#ffffff"
+              speed={2}
+              distort={0.2}
+              radius={1}
+              transmission={1}
+              thickness={2}
+              ior={1.4}
+              reflectivity={0.5}
+              roughness={0}
+              metalness={0.05}
+              transparent={true}
+              opacity={1}
+              clearcoat={1}
+              clearcoatRoughness={0}
+              attenuationDistance={0.5}
+              attenuationColor="#ffffff"
+            />
+          )
         ) : (
-          <meshPhysicalMaterial 
-            color={coreColor} 
-            wireframe={theme !== 'light'} 
-            emissive={coreColor}
-            emissiveIntensity={0.5}
-            roughness={0}
-            metalness={0}
-            transmission={0.5}
-            thickness={1.5}
-            ior={1.5}
-            reflectivity={1}
-            clearcoat={1}
-            clearcoatRoughness={0}
-            opacity={1}
-            transparent={true}
-          />
+          isMobile ? (
+            <meshStandardMaterial
+              color={coreColor}
+              wireframe={theme !== 'light'}
+              roughness={0.3}
+              metalness={0.2}
+              transparent={true}
+              opacity={0.8}
+            />
+          ) : (
+            <meshPhysicalMaterial 
+              color={coreColor} 
+              wireframe={theme !== 'light'} 
+              emissive={coreColor}
+              emissiveIntensity={0.5}
+              roughness={0}
+              metalness={0}
+              transmission={0.5}
+              thickness={1.5}
+              ior={1.5}
+              reflectivity={1}
+              clearcoat={1}
+              clearcoatRoughness={0}
+              opacity={1}
+              transparent={true}
+            />
+          )
         )}
       </mesh>
     </Float>
   );
 }
 
-function InnerCore() {
+function InnerCore({ isMobile }: { isMobile: boolean }) {
   const [hovered, setHover] = useState(false);
   const { theme } = useLayoutStore();
   
@@ -178,20 +199,28 @@ function InnerCore() {
 
   return (
     <Sphere 
-      args={[0.5, 64, 64]} 
+      args={[0.5, isMobile ? 20 : 64, isMobile ? 20 : 64]} 
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}
     >
-      <MeshDistortMaterial
-        color={hovered ? colors.hover : colors.default}
-        envMapIntensity={2}
-        clearcoat={1}
-        clearcoatRoughness={0}
-        metalness={0.9}
-        roughness={0.1}
-        distort={hovered ? 0.6 : 0.4}
-        speed={hovered ? 6 : 4}
-      />
+      {isMobile ? (
+        <meshStandardMaterial
+          color={hovered ? colors.hover : colors.default}
+          metalness={0.8}
+          roughness={0.2}
+        />
+      ) : (
+        <MeshDistortMaterial
+          color={hovered ? colors.hover : colors.default}
+          envMapIntensity={2}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          metalness={0.9}
+          roughness={0.1}
+          distort={hovered ? 0.6 : 0.4}
+          speed={hovered ? 6 : 4}
+        />
+      )}
     </Sphere>
   );
 }
@@ -258,7 +287,7 @@ export default function Hero3D() {
       <Canvas
         camera={{ position: [0, 0, isMobile ? 7 : 5], fov: isMobile ? 55 : 45 }}
         className="w-full h-full !absolute inset-0 focus:outline-none"
-        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        dpr={isMobile ? 1 : [1, 1.5]}
         frameloop={isVisible ? 'always' : 'never'}
         gl={{ 
           antialias: !isMobile, 
@@ -283,9 +312,9 @@ export default function Hero3D() {
 
         <group ref={groupRef} position={[0, 0, 0]} scale={isMobile ? 0.6 : 0.85}>
           <ParticleSwarm isMobile={isMobile} />
-          <OrbitRings />
-          <CoreShape />
-          <InnerCore />
+          <OrbitRings isMobile={isMobile} />
+          <CoreShape isMobile={isMobile} />
+          <InnerCore isMobile={isMobile} />
         </group>
 
         <OrbitControls 
