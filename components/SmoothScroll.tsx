@@ -14,10 +14,10 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     // Initialize Lenis as a singleton
     if (!lenisRef.current) {
       lenisRef.current = new Lenis({
-        lerp: 0.05,
-        wheelMultiplier: 1,
-        touchMultiplier: 1.5,
-        syncTouch: true, // Sync trackpad and touch devices
+        lerp: 0.08, // Crisp, highly responsive scroll speed
+        wheelMultiplier: 1.0,
+        touchMultiplier: 0.8,
+        syncTouch: false, // Let mobile/touch screen devices scroll with native hardware acceleration
       });
     }
 

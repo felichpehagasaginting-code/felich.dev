@@ -5,7 +5,6 @@ import { motion, useSpring } from 'framer-motion';
 import { useLayoutStore } from '@/lib/store';
 
 export default function CustomCursor() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const { theme } = useLayoutStore();
@@ -15,26 +14,33 @@ export default function CustomCursor() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
 
       if (!isVisible) setIsVisible(true);
 
       const target = e.target as HTMLElement;
-      setIsPointer(
-        window.getComputedStyle(target).cursor === 'pointer' ||
+      if (!target) return;
+
+      const isInteractive = 
         target.tagName === 'BUTTON' ||
         target.tagName === 'A' ||
+        target.tagName === 'INPUT' ||
+        target.tagName === 'SELECT' ||
+        target.tagName === 'TEXTAREA' ||
         target.closest('button') !== null ||
-        target.closest('a') !== null
-      );
+        target.closest('a') !== null ||
+        target.closest('[role="button"]') !== null ||
+        target.closest('.cursor-pointer') !== null ||
+        target.closest('.interactive-element') !== null;
+
+      setIsPointer(isInteractive);
     };
 
     const handleMouseLeave = () => setIsVisible(false);
     const handleMouseEnter = () => setIsVisible(true);
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 

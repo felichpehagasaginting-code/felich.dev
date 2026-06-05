@@ -14,6 +14,7 @@ import Terminal from '@/components/Terminal';
 import SpotifyWidget from '@/components/SpotifyWidget';
 import LiveVisitorBadge from '@/components/LiveVisitorBadge';
 import Script from 'next/script';
+import LazySection from '@/components/LazySection';
 
 
 const skillCategories = [
@@ -274,171 +275,174 @@ export default function Home() {
         </Reveal>
 
         {/* Stats Counter Section */}
-        <Reveal width="100%" delay={0.4}>
-          <section className="mb-12">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <AnimatedCounter end={32} className="text-3xl font-bold text-primary" suffix="+" />
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Skills</p>
+        <LazySection height="100px">
+          <Reveal width="100%" delay={0.4}>
+            <section className="mb-12">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <AnimatedCounter end={32} className="text-3xl font-bold text-primary" suffix="+" />
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Skills</p>
+                </div>
+                <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <AnimatedCounter end={8} className="text-3xl font-bold text-primary" suffix="+" />
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Achievements</p>
+                </div>
+                <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <AnimatedCounter end={4} className="text-3xl font-bold text-primary" suffix="+" />
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Projects</p>
+                </div>
+                <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  <AnimatedCounter end={2} className="text-3xl font-bold text-primary" suffix="+" />
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Years Exp.</p>
+                </div>
               </div>
-              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <AnimatedCounter end={8} className="text-3xl font-bold text-primary" suffix="+" />
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Achievements</p>
-              </div>
-              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <AnimatedCounter end={4} className="text-3xl font-bold text-primary" suffix="+" />
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Projects</p>
-              </div>
-              <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
-                <AnimatedCounter end={2} className="text-3xl font-bold text-primary" suffix="+" />
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Years Exp.</p>
-              </div>
-            </div>
-          </section>
-        </Reveal>
+            </section>
+          </Reveal>
+        </LazySection>
 
         {/* Interactive Terminal Section */}
-        <Reveal width="100%" delay={0.2}>
-          <section className="mb-16">
-            <Terminal />
-          </section>
-        </Reveal>
+        <LazySection height="400px">
+          <Reveal width="100%" delay={0.2}>
+            <section className="mb-16">
+              <Terminal />
+            </section>
+          </Reveal>
+        </LazySection>
 
         {/* Skills Section */}
-        <section className="mb-16">
-          <AnimatedDivider className="mb-8" />
+        <LazySection height="300px">
+          <section className="mb-16">
+            <AnimatedDivider className="mb-8" />
 
-          <Reveal>
-            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-              <span className="text-lg">{'</>'}</span>
-              Skills
-            </h2>
-          </Reveal>
-          
-          <Reveal delay={0.4}>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">
-              My professional skills. Click to learn more.
-            </p>
-          </Reveal>
+            <Reveal>
+              <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                <span className="text-lg">{'</>'}</span>
+                Skills
+              </h2>
+            </Reveal>
+            
+            <Reveal delay={0.4}>
+              <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">
+                My professional skills. Click to learn more.
+              </p>
+            </Reveal>
 
-          {/* Filter pills */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {skillCategories.map((cat) => (
-              <button
-                key={cat.name}
-                onClick={() => { setActiveFilter(cat.name); sounds.playPop(); }}
-                onMouseEnter={() => sounds.playHover()}
-                className={`filter-pill ${activeFilter === cat.name ? 'active' : ''}`}
-              >
-                {cat.name}
-                <span className="ml-1.5 text-xs opacity-70">{cat.count}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Skills grid */}
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={{
-              visible: { transition: { staggerChildren: 0.02 } },
-              hidden: {}
-            }}
-            className="flex flex-wrap gap-2 md:gap-3"
-          >
-            <AnimatePresence>
-              {filteredSkills.map((skill) => (
-                <motion.div
-                  key={skill.name}
-                  layout
+            {/* Filter pills */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {skillCategories.map((cat) => (
+                <button
+                  key={cat.name}
+                  onClick={() => { setActiveFilter(cat.name); sounds.playPop(); }}
                   onMouseEnter={() => sounds.playHover()}
-                  onClick={() => {
-                    sounds.playPop();
-                    const link = skillLinks[skill.name];
-                    if (link) window.open(link, '_blank');
-                  }}
-                  initial={{ opacity: 0, scale: 0.8, y: 15 }}
-                  animate={{ opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 15 } }}
-                  exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.2 } }}
-                  whileHover={{ 
-                    scale: 1.05, 
-                    y: -2,
-                    boxShadow: "0 10px 30px -10px rgba(59, 130, 246, 0.3)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-semibold 
-                             bg-white/50 dark:bg-neutral-900/40 backdrop-blur-md border border-neutral-200 dark:border-neutral-800
-                             cursor-pointer overflow-hidden transition-all duration-300"
-                  style={{
-                    '--skill-color': skill.color,
-                    '--skill-glow': `${skill.color}60`
-                  } as React.CSSProperties}
+                  className={`filter-pill ${activeFilter === cat.name ? 'active' : ''}`}
                 >
-                  {/* Background Tint on Hover */}
-                  <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-300 pointer-events-none hidden lg:block"
-                    style={{ backgroundColor: skill.color }}
-                  />
-
-                  {/* Logo Indicator */}
-                  <motion.div
-                    className="relative w-4 h-4 md:w-5 md:h-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-0.5"
-                    style={{ 
-                      filter: typeof window !== 'undefined' && window.innerWidth < 768 ? 'none' : `drop-shadow(0 0 5px ${skill.color}50)` 
-                    }}
-                  >
-                    {SkillIcons[skill.slug] ? (
-                      <div className="w-full h-full flex items-center justify-center" style={{ color: skill.color }}>
-                        {SkillIcons[skill.slug]}
-                      </div>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center font-bold text-[10px]" style={{ color: skill.color }}>
-                        {skill.name.substring(0, 2).toUpperCase()}
-                      </div>
-                    )}
-                  </motion.div>
-
-                  <span className="relative z-10 text-neutral-600 dark:text-neutral-300 transition-colors duration-300 group-hover:text-black dark:group-hover:text-white">
-                    {skill.name}
-                  </span>
-
-                  {/* Technical Meta-Data Tooltip */}
-                  <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                     <span className="text-[7px] font-mono text-neutral-400 uppercase tracking-tighter">
-                        Spec v1.0
-                     </span>
-                  </div>
-
-                  <div className="absolute inset-0 bg-white/95 dark:bg-neutral-950/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center px-4 z-20">
-                     <div className="flex items-center justify-between mb-1">
-                        <span className="text-[7px] font-bold font-mono tracking-widest text-primary/70 uppercase">
-                          {skill.category}
-                        </span>
-                        <span className="text-[7px] font-mono text-neutral-400">VER_1.2</span>
-                     </div>
-                     
-                     <div className="flex items-center justify-between pointer-events-none">
-                        <span className="text-[9px] font-mono font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-tighter">Expertise</span>
-                        <span className="text-[9px] font-bold font-mono text-primary">
-                          {(skill.name.length * 7 + 38) % 30 + 70}%
-                        </span>
-                     </div>
-                     
-                     <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-800 mt-1.5 rounded-full overflow-hidden">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${(skill.name.length * 7 + 38) % 30 + 70}%` }}
-                          transition={{ duration: 0.8, ease: "easeOut" }}
-                          className="h-full bg-gradient-to-r from-blue-600 to-primary"
-                        />
-                     </div>
-                  </div>
-                </motion.div>
+                  {cat.name}
+                  <span className="ml-1.5 text-xs opacity-70">{cat.count}</span>
+                </button>
               ))}
-            </AnimatePresence>
-          </motion.div>
-        </section>
+            </div>
+
+            {/* Skills grid */}
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={{
+                visible: { transition: { staggerChildren: 0.02 } },
+                hidden: {}
+              }}
+              className="flex flex-wrap gap-2 md:gap-3"
+            >
+              <AnimatePresence>
+                {filteredSkills.map((skill) => (
+                  <motion.div
+                    key={skill.name}
+                    layout
+                    onMouseEnter={() => sounds.playHover()}
+                    onClick={() => {
+                      sounds.playPop();
+                      const link = skillLinks[skill.name];
+                      if (link) window.open(link, '_blank');
+                    }}
+                    initial={{ opacity: 0, scale: 0.8, y: 15 }}
+                    animate={{ opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 15 } }}
+                    exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.2 } }}
+                    whileHover={{ 
+                      scale: 1.05, 
+                      y: -2,
+                      boxShadow: "0 10px 30px -10px rgba(59, 130, 246, 0.3)"
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-semibold 
+                               bg-white/50 dark:bg-neutral-900/40 backdrop-blur-md border border-neutral-200 dark:border-neutral-800
+                               cursor-pointer overflow-hidden transition-all duration-300"
+                    style={{
+                      '--skill-color': skill.color,
+                      '--skill-glow': `${skill.color}60`,
+                      '--skill-drop-shadow': typeof window !== 'undefined' && window.innerWidth < 768 ? 'none' : `drop-shadow(0 0 5px ${skill.color}50)`
+                    } as React.CSSProperties}
+                  >
+                    {/* Background Tint on Hover */}
+                    <div 
+                      className="absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-300 pointer-events-none hidden lg:block bg-[var(--skill-color)]"
+                    />
+
+                    {/* Logo Indicator */}
+                    <motion.div
+                      className="relative w-4 h-4 md:w-5 md:h-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-0.5 [filter:var(--skill-drop-shadow)]"
+                    >
+                      {SkillIcons[skill.slug] ? (
+                        <div className="w-full h-full flex items-center justify-center text-[var(--skill-color)]">
+                          {SkillIcons[skill.slug]}
+                        </div>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center font-bold text-[10px] text-[var(--skill-color)]">
+                          {skill.name.substring(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </motion.div>
+
+                    <span className="relative z-10 text-neutral-600 dark:text-neutral-300 transition-colors duration-300 group-hover:text-black dark:group-hover:text-white">
+                      {skill.name}
+                    </span>
+
+                    {/* Technical Meta-Data Tooltip */}
+                    <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                       <span className="text-[7px] font-mono text-neutral-400 uppercase tracking-tighter">
+                          Spec v1.0
+                       </span>
+                    </div>
+
+                    <div className="absolute inset-0 bg-white/95 dark:bg-neutral-950/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center px-4 z-20">
+                       <div className="flex items-center justify-between mb-1">
+                          <span className="text-[7px] font-bold font-mono tracking-widest text-primary/70 uppercase">
+                            {skill.category}
+                          </span>
+                          <span className="text-[7px] font-mono text-neutral-400">VER_1.2</span>
+                       </div>
+                       
+                       <div className="flex items-center justify-between pointer-events-none">
+                          <span className="text-[9px] font-mono font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-tighter">Expertise</span>
+                          <span className="text-[9px] font-bold font-mono text-primary">
+                            {(skill.name.length * 7 + 38) % 30 + 70}%
+                          </span>
+                       </div>
+                       
+                       <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-800 mt-1.5 rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${(skill.name.length * 7 + 38) % 30 + 70}%` }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="h-full bg-gradient-to-r from-blue-600 to-primary"
+                          />
+                       </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </section>
+        </LazySection>
 
         {/* Keyboard shortcut hint */}
         <motion.div

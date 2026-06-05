@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLayoutStore } from '@/lib/store';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -68,11 +68,15 @@ const navLinks = [
 export default function MobileNav() {
   const pathname = usePathname();
   const { mobileMenuOpen, setMobileMenuOpen, theme, setTheme, language, toggleLanguage, triggerWarp } = useLayoutStore();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
+      if (menuRef.current) {
+        menuRef.current.scrollTop = 0;
+      }
     } else {
       document.body.style.overflow = '';
     }
@@ -115,8 +119,10 @@ export default function MobileNav() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/40 backdrop-blur-md z-40 lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
+              data-lenis-prevent
             />
             <motion.div
+              ref={menuRef}
               initial={{ x: '-100%', scale: 0.95 }}
               animate={{ x: 0, scale: 1 }}
               exit={{ x: '-100%', scale: 0.95 }}
