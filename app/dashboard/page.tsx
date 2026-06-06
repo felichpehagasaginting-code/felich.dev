@@ -19,16 +19,18 @@ function GithubIcon({ className }: { className?: string }) {
 function generateContribData() {
   const weeks = 20;
   const days = 7;
-  const data: number[][] = [];
+  const data: { level: number, count: number, date: string }[][] = [];
   for (let w = 0; w < weeks; w++) {
-    const week: number[] = [];
+    const week: { level: number, count: number, date: string }[] = [];
     for (let d = 0; d < days; d++) {
       const rand = Math.random();
-      if (rand < 0.3) week.push(0);
-      else if (rand < 0.6) week.push(1);
-      else if (rand < 0.8) week.push(2);
-      else if (rand < 0.95) week.push(3);
-      else week.push(4);
+      let level = 0;
+      let count = 0;
+      if (rand > 0.8) { level = 4; count = 12; }
+      else if (rand > 0.6) { level = 3; count = 8; }
+      else if (rand > 0.4) { level = 2; count = 5; }
+      else if (rand > 0.3) { level = 1; count = 2; }
+      week.push({ level, count, date: '' });
     }
     data.push(week);
   }
@@ -56,7 +58,7 @@ export default function Dashboard() {
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const contribData = useMemo(() => generateContribData(), []);
+  const [contribData, setContribData] = useState<{ level: number, count: number, date: string }[][]>(() => generateContribData());
 
   useEffect(() => {
     const username = 'felichpehagasaginting-code';
@@ -64,10 +66,29 @@ export default function Dashboard() {
 
     const fetchData = async () => {
       try {
-        const reposRes = await axios.get(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
-          headers: token ? { Authorization: `token ${token}` } : {}
-        });
-        setRepos(reposRes.data);
+        // Fetch repos and contributions in parallel
+        const [reposRes, contribRes] = await Promise.allSettled([
+          axios.get(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
+            headers: token ? { Authorization: `token ${token}` } : {}
+          }),
+          axios.get('/api/github-contributions')
+        ]);
+
+        if (reposRes.status === 'fulfilled') {
+          setRepos(reposRes.value.data);
+        } else {
+          console.error('Failed to fetch GitHub repos:', reposRes.reason);
+          setError('Failed to fetch GitHub data');
+        }
+
+        if (contribRes.status === 'fulfilled' && contribRes.value.data && contribRes.value.data.weeks) {
+          setContribData(contribRes.value.data.weeks);
+        } else {
+          console.warn(
+            'Contributions fetch failed, using simulated data.',
+            contribRes.status === 'rejected' ? contribRes.reason : 'Invalid data format'
+          );
+        }
       } catch (err: any) {
         setError('Failed to fetch GitHub data');
         console.error(err);
@@ -175,43 +196,43 @@ export default function Dashboard() {
           </div>
           
           <div className="p-6 rounded-[2rem] border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-xl overflow-x-auto shadow-sm liquid-glass">
-            <div className="flex gap-[4px] min-w-fit">
+            <div className="flex gap-[3px] min-w-fit">
               {contribData.map((week, wi) => (
-                <div key={wi} className="flex flex-col gap-[4px]">
-                  {week.map((level, di) => (
+                <div key={wi} className="flex flex-col gap-[3px]">
+                  {week.map((day, di) => (
                     <motion.div
                       key={`${wi}-${di}`}
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.5 + (wi * 0.01) }}
                       whileHover={{ scale: 1.5, zIndex: 10 }}
-                      className={`w-3 h-3 rounded-[2px] transition-colors duration-300 ${
-                        level === 0 ? 'bg-neutral-100 dark:bg-neutral-800/50' :
-                        level === 1 ? 'bg-emerald-200 dark:bg-emerald-900/40' :
-                        level === 2 ? 'bg-emerald-400 dark:bg-emerald-700/60' :
-                        level === 3 ? 'bg-emerald-500 dark:bg-emerald-500/80' :
-                        'bg-emerald-600 dark:bg-emerald-400'
+                      className={`w-[11px] h-[11px] rounded-[2px] transition-colors duration-300 ${
+                        day.level === 0 ? 'bg-[#ebedf0] dark:bg-[#161b22]' :
+                        day.level === 1 ? 'bg-[#9be9a8] dark:bg-[#0e4429]' :
+                        day.level === 2 ? 'bg-[#40c463] dark:bg-[#006d32]' :
+                        day.level === 3 ? 'bg-[#30a14e] dark:bg-[#26a641]' :
+                        'bg-[#216e39] dark:bg-[#39d353]'
                       }`}
-                      title={`${level} contributions`}
+                      title={day.count > 0 ? `${day.count} contributions${day.date ? ' on ' + day.date : ''}` : `No contributions${day.date ? ' on ' + day.date : ''}`}
                     />
                   ))}
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-end gap-3 mt-4 text-[10px] font-bold font-mono text-neutral-400">
-              <span className="uppercase tracking-widest">Less</span>
-              <div className="flex gap-1">
+            <div className="flex items-center justify-end gap-2 mt-4 text-[10px] font-bold font-mono text-neutral-400">
+              <span className="uppercase tracking-widest mr-1">Less</span>
+              <div className="flex gap-[3px]">
                 {[0, 1, 2, 3, 4].map(i => (
-                  <div key={i} className={`w-3 h-3 rounded-[2px] ${
-                    i === 0 ? 'bg-neutral-100 dark:bg-neutral-800/50' :
-                    i === 1 ? 'bg-emerald-200 dark:bg-emerald-900/40' :
-                    i === 2 ? 'bg-emerald-400 dark:bg-emerald-700/60' :
-                    i === 3 ? 'bg-emerald-500 dark:bg-emerald-500/80' :
-                    'bg-emerald-600 dark:bg-emerald-400'
+                  <div key={i} className={`w-[11px] h-[11px] rounded-[2px] ${
+                    i === 0 ? 'bg-[#ebedf0] dark:bg-[#161b22]' :
+                    i === 1 ? 'bg-[#9be9a8] dark:bg-[#0e4429]' :
+                    i === 2 ? 'bg-[#40c463] dark:bg-[#006d32]' :
+                    i === 3 ? 'bg-[#30a14e] dark:bg-[#26a641]' :
+                    'bg-[#216e39] dark:bg-[#39d353]'
                   }`} />
                 ))}
               </div>
-              <span className="uppercase tracking-widest">More</span>
+              <span className="uppercase tracking-widest ml-1">More</span>
             </div>
           </div>
         </motion.section>
