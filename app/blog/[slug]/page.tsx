@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import PageTransition from '@/components/PageTransition';
 import Link from 'next/link';
 import BlogViewCounterWrapper from '@/components/BlogViewCounterWrapper';
+import BlogLikeButton from '@/components/BlogLikeButton';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
 import { 
   MdxH1, MdxH2, MdxH3, MdxP, MdxUl, MdxLi, 
@@ -105,6 +106,8 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
         <div className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-black prose-headings:tracking-tighter prose-p:text-lg prose-p:leading-relaxed prose-blockquote:border-primary prose-blockquote:bg-primary/5 prose-blockquote:py-1 prose-blockquote:rounded-r-2xl">
           <MDXRemote source={content} components={componentsMap} />
         </div>
+
+        <BlogLikeButton slug={slug} />
 
         <footer className="mt-24 pt-12 border-t border-neutral-200 dark:border-neutral-800">
           <div className="flex flex-col items-center text-center p-12 rounded-[3rem] bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">

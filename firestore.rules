@@ -24,5 +24,25 @@ service cloud.firestore {
       // No one can update an existing message once posted
       allow update: if false;
     }
+    // Counters for Blog Views
+    match /blog_views/{slug} {
+      allow read: if true;
+      allow create: if request.resource.data.count == 1 && request.resource.data.slug == slug;
+      allow update: if request.resource.data.count == resource.data.count + 1 && request.resource.data.slug == slug;
+    }
+
+    // Counters for Blog Likes
+    match /blog_likes/{slug} {
+      allow read: if true;
+      allow create: if request.resource.data.count == 1 && request.resource.data.slug == slug;
+      allow update: if request.resource.data.count == resource.data.count + 1 && request.resource.data.slug == slug;
+    }
+
+    // Counters for Project Likes
+    match /project_likes/{slug} {
+      allow read: if true;
+      allow create: if request.resource.data.count == 1 && request.resource.data.slug == slug;
+      allow update: if request.resource.data.count == resource.data.count + 1 && request.resource.data.slug == slug;
+    }
   }
 }
