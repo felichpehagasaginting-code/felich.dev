@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent';
 
 
 const SYSTEM_PROMPT = `You are "Felich AI", a smart, friendly, and concise portfolio assistant for Felich Pehagasa Ginting. 
