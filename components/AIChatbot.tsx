@@ -93,10 +93,6 @@ export default function AIChatbot() {
     }
   }, [open, minimized, messages]);
 
-  // ── Cleanup on unmount ───────────────────────────────────────────────
-  useEffect(() => {
-    return () => stopListeningCleanup();
-  }, [stopListeningCleanup]);
 
   // ── speak() — upgraded with language detection + isSpeaking state ────
   const speak = useCallback((text: string, msgId?: string) => {
@@ -144,6 +140,11 @@ export default function AIChatbot() {
     if (audioCtxRef.current) { audioCtxRef.current.close().catch(() => {}); audioCtxRef.current = null; }
     analyserRef.current = null;
   }, []);
+
+  // ── Cleanup on unmount ───────────────────────────────────────────────
+  useEffect(() => {
+    return () => stopListeningCleanup();
+  }, [stopListeningCleanup]);
 
   // ── Voice Activity Detection ─────────────────────────────────────────
   const startVAD = useCallback((stream: MediaStream, onSilence: () => void) => {
