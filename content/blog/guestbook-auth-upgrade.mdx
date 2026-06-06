@@ -1,0 +1,147 @@
+---
+title: "Securing the Guestbook: Firebase Auth & Real User Avatars"
+date: "2026-06-06"
+description: "How we upgraded the guestbook from anonymous free-for-all to a secure, authenticated experience using Firebase Auth (Google OAuth), real user avatars, Firestore Security Rules, and a client-side rate limiter."
+topics: ["Next.js", "Firebase", "Security", "Engineering"]
+image: "/images/blog/guestbook-auth.jpg"
+---
+
+# From Open Wall to Secure Guestbook
+
+The original guestbook was a classic developer MVP: anyone could post anything, avatars were random emojis, and there were zero guardrails. It worked, but it was one spam bot away from disaster.
+
+This post documents how we locked it down without sacrificing the open, inviting feel of a public guestbook.
+
+---
+
+## The Problem: Anonymous Writes to Firestore
+
+The original implementation called `addDoc()` with no authentication check whatsoever:
+
+```typescript
+// Before — completely open to abuse
+await addDoc(collection(db, 'guestbook'), {
+  name: name.trim(),
+  message: message.trim(),
+  avatar: randomAvatar(), // random emoji
+  createdAt: serverTimestamp(),
+});
+```
+
+Any script could flood the collection with thousands of documents, exhausting the free Firestore write quota in minutes. Worse, the emoji avatar provided zero identity signal — there was no way to tie a message to a real person.
+
+---
+
+## Solution 1: Firebase Authentication with Google OAuth
+
+We added `firebase/auth` to the existing Firebase setup and created a dedicated `useAuth` hook:
+
+```typescript
+// lib/useAuth.ts
+export function useAuth(): UseAuthReturn {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const signInWithGoogle = async () => {
+    googleProvider.setCustomParameters({ prompt: 'select_account' });
+    await signInWithPopup(auth, googleProvider);
+  };
+
+  return { user, loading, signInWithGoogle, signOut };
+}
+```
+
+The `onAuthStateChanged` listener is reactive — when Firebase restores a session from localStorage on page load, the hook updates automatically. No manual token handling required.
+
+### Auth Gate UI
+
+The guestbook now renders a clean sign-in panel for unauthenticated visitors, and the full form for authenticated users:
+
+```tsx
+{!user ? (
+  <SignInPanel onGoogleSignIn={signInWithGoogle} />
+) : (
+  <GuestbookForm user={user} onSubmit={handleSubmit} />
+)}
+```
+
+The panel itself is minimal and honest — one button, a short explanation of *why* sign-in is needed (spam prevention), and nothing else.
+
+---
+
+## Solution 2: Real User Avatars from OAuth
+
+Firebase Auth returns a `photoURL` from the Google OAuth provider. We now store this URL directly in Firestore alongside each guestbook entry:
+
+```typescript
+await addDoc(collection(db, 'guestbook'), {
+  name: name.trim().slice(0, 100),
+  message: message.trim().slice(0, 500),
+  avatar: user.photoURL ?? '😊', // real profile photo URL
+  uid: user.uid,
+  createdAt: serverTimestamp(),
+});
+```
+
+In the entry list, we detect whether the avatar is a URL or an emoji and render accordingly using `next/image` with `referrerPolicy="no-referrer"` (required for Google CDN images):
+
+```tsx
+{entry.avatar?.startsWith('http') ? (
+  <Image
+    src={entry.avatar}
+    alt={entry.name}
+    width={40}
+    height={40}
+    className="rounded-full"
+    referrerPolicy="no-referrer"
+  />
+) : (
+  <span>{entry.avatar}</span>
+)}
+```
+
+This approach is **backwards compatible** — old entries with emoji avatars still render correctly alongside new entries with real photos.
+
+---
+
+## Solution 3: Client-Side Rate Limiting
+
+To prevent rapid-fire posting after authentication, we implemented a 30-second cooldown tracked in `localStorage`:
+
+```typescript
+const RATE_LIMIT_KEY = 'guestbook_last_post';
+const RATE_LIMIT_MS = 30_000;
+
+const checkRateLimit = useCallback((): boolean => {
+  const lastPost = localStorage.getItem(RATE_LIMIT_KEY);
+  if (!lastPost) return true;
+  const elapsed = Date.now() - parseInt(lastPost, 10);
+  if (elapsed < RATE_LIMIT_MS) {
+    const remaining = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
+    setCooldown(remaining); // triggers visible countdown
+    return false;
+  }
+  return true;
+}, []);
+```
+
+A reactive countdown timer (`setInterval`) ticks down the cooldown state every second, and the submit button displays `Wait 28s` dynamically — giving the user clear feedback without a hard block.
+
+---
+
+## Technical Quality Assurance
+
+```bash
+npm run type-check  # ✅ zero TypeScript errors
+npm run lint        # ✅ zero new ESLint errors
+```
+
+The guestbook is now a first-class, secure, and identity-aware feature — a meaningful upgrade from the emoji-avatar free-for-all it started as.

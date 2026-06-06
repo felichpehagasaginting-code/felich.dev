@@ -12,55 +12,56 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
 import { Volume2, VolumeX, GitBranch } from 'lucide-react';
 import Logo from '@/components/Logo';
+import { useTranslation } from 'react-i18next';
 
 const navLinks = [
   {
-    href: '/', label: 'Home', icon: (
+    href: '/', label: 'Home', key: 'link_home', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
     )
   },
   {
-    href: '/about', label: 'About', icon: (
+    href: '/about', label: 'About', key: 'link_about', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
     )
   },
   {
-    href: '/achievements', label: 'Achievements', icon: (
+    href: '/achievements', label: 'Achievements', key: 'link_achievements', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
     )
   },
   {
-    href: '/projects', label: 'Projects', icon: (
+    href: '/projects', label: 'Projects', key: 'link_projects', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
     )
   },
   {
-    href: '/blog', label: 'Blog', icon: (
+    href: '/blog', label: 'Blog', key: 'link_blog', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
     )
   },
   {
-    href: '/dashboard', label: 'Dashboard', icon: (
+    href: '/dashboard', label: 'Dashboard', key: 'link_dashboard', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
     )
   },
   {
-    href: '/contact', label: 'Contact', icon: (
+    href: '/contact', label: 'Contact', key: 'link_contact', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
     )
   },
   {
-    href: '/guestbook', label: 'Guestbook', icon: (
+    href: '/guestbook', label: 'Guestbook', key: 'link_guestbook', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
     )
   },
   {
-    href: '/uses', label: 'Uses', icon: (
+    href: '/uses', label: 'Uses', key: 'link_uses', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
     )
   },
   {
-    href: '/links', label: 'Links', icon: (
+    href: '/links', label: 'Links', key: 'link_links', icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
     )
   },
@@ -217,8 +218,9 @@ function SoundSwitcher() {
 export default function Sidebar() {
   const pathname = usePathname();
   const { theme } = useLayoutStore();
+  const { t } = useTranslation();
   const [statusIndex, setStatusIndex] = useState(0);
-  const statuses = ['Internship', 'Collaborate'];
+  const statuses = [t('status_internship'), t('status_collaborate')];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -264,7 +266,7 @@ export default function Sidebar() {
           <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 text-xs font-medium text-green-700 dark:text-green-400 overflow-hidden">
             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
             <span className="whitespace-nowrap flex gap-1">
-              Open to
+              {t('status_open_to')}
               <div className="relative inline-flex items-center overflow-visible w-[68px] sm:w-[72px] text-left">
                 <AnimatePresence mode="popLayout">
                   <motion.span
@@ -308,7 +310,7 @@ export default function Sidebar() {
               className={`nav-link ${isActive ? 'active' : ''}`}
             >
               {link.icon}
-              <span>{link.label}</span>
+              <span>{t(link.key)}</span>
               {isActive && (
                 <svg className="w-4 h-4 ml-auto text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -328,7 +330,7 @@ export default function Sidebar() {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <span className="flex-1 text-left">Command Palette</span>
+          <span className="flex-1 text-left">{t('search_hint')}</span>
           <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700 text-[10px] font-mono">⌘K</kbd>
         </button>
       </div>
@@ -340,6 +342,9 @@ export default function Sidebar() {
             <a
               href="https://github.com/felichpehagasaginting-code"
               target="_blank"
+              rel="noopener noreferrer"
+              title="GitHub Profile"
+              aria-label="GitHub Profile"
               onMouseEnter={() => sounds.playHover()}
               className="p-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all"
             >
@@ -350,6 +355,9 @@ export default function Sidebar() {
             <a
               href="https://www.linkedin.com/in/felich-pehagasa-ginting"
               target="_blank"
+              rel="noopener noreferrer"
+              title="LinkedIn Profile"
+              aria-label="LinkedIn Profile"
               onMouseEnter={() => sounds.playHover()}
               className="p-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-[#0a66c2] hover:shadow-[0_0_15px_rgba(10,102,194,0.3)] transition-all"
             >
@@ -360,6 +368,9 @@ export default function Sidebar() {
             <a
               href="https://www.instagram.com/fel.comp"
               target="_blank"
+              rel="noopener noreferrer"
+              title="Instagram Profile"
+              aria-label="Instagram Profile"
               onMouseEnter={() => sounds.playHover()}
               className="p-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-[#e4405f] hover:shadow-[0_0_15px_rgba(228,64,95,0.3)] transition-all"
             >
@@ -374,7 +385,7 @@ export default function Sidebar() {
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
           </span>
           <span className="text-[11px] font-bold uppercase tracking-widest text-green-600 dark:text-green-400 group cursor-default">
-            Available for Work
+            {t('status_available_for_work')}
           </span>
         </div>
 

@@ -1,0 +1,99 @@
+---
+title: "Building the Virtual Shell & Spotify API: A Portfolio Upgrade"
+date: "2026-06-06"
+description: "How we migrated static portfolio widgets to a stateful Virtual File System (VFS) terminal shell, configured real Spotify API synchronization, and rolled out full Indonesian-English localization."
+topics: ["Next.js", "Engineering", "API", "i18n"]
+image: "/images/blog/vfs-spotify.jpg"
+---
+
+# The Journey Beyond Static Portfolios
+
+A portfolio website is more than a digital CV; it is a canvas to demonstrate engineering philosophy, performance optimizations, and interface polishing. In this major upgrade, we transitioned three major elements of this website from static/simulated components into fully-realized functional software modules.
+
+Here is an architectural deep dive into how we built these features.
+
+---
+
+## 1. Building a Stateful Virtual File System (VFS) Terminal
+
+The simulated terminal (`components/Terminal.tsx`) previously worked on a basic string-matching switch case. It felt interactive but was fundamentally a static projection. 
+
+To create a genuine terminal simulator, we implemented a full **Virtual File System (VFS)** engine client-side:
+
+### Tree Architecture
+We modeled the file system structure as a node tree where nodes are either files or sub-directories:
+
+```typescript
+interface VFSNode {
+  type: 'dir' | 'file';
+  content?: string;
+  children?: Record<string, VFSNode>;
+}
+```
+
+This tree allows recursion when parsing navigation targets. Commands like `cd` and `ls` evaluate real folder structures. For example:
+- `pwd` returns the active path string (`~` or `~/projects`).
+- `cd <target>` traverses the tree, supporting parent directory lookup via `..` and root shortcuts `/`.
+- `cat <file>` dynamically extracts the text content of a file leaf.
+
+### Autocomplete & Ghost Text
+To elevate the visual fidelity, we added **ghost text autocomplete suggestions** (similar to zsh-autosuggestions). As the user types, the terminal checks for partial command and path matches. 
+
+If a match is found, the remainder is rendered in a semi-opaque font-mono element behind the caret. Pressing `Tab` or `ArrowRight` fills the input instantly.
+
+---
+
+## 2. Setting Up Live Spotify Synchronization
+
+The music player widget in our dashboard and landing hero was originally simulating fake Lofi beats. While visually pleasing, it lacked integration with real playback.
+
+To solve this, we set up a robust Next.js API route that handles **Spotify API Token Exchange**:
+
+### Token Rotation
+Using our Spotify Client ID, Secret, and a long-lived Refresh Token, the API requests a temporary Access Token from Spotify’s token service:
+
+```typescript
+const response = await fetch('https://accounts.spotify.com/api/token', {
+  method: 'POST',
+  headers: {
+    Authorization: `Basic ${basic}`,
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: new URLSearchParams({
+    grant_type: 'refresh_token',
+    refresh_token,
+  }),
+});
+```
+
+### Double Fallback Design
+1. **Playback API Fallback**: If the user is currently listening to Spotify, `/api/spotify/now-playing` returns the track details. If inactive, it requests the last played track from `/v1/me/player/recently-played` and sets `isPlaying: false`.
+2. **Mock Fallback**: If credentials are unset on local development environments, the route falls back to a simulated playlist, generating a dynamic `progressMs` offset based on `Date.now() % duration` to ensure progress bars always animate naturally.
+
+### Smooth Local Interpolation
+To prevent the client from requesting the Spotify API continuously (which would hit API rate limits), we built a React hook that updates the UI every second using a local interval timer, only polling the server once every 15 seconds to sync state.
+
+---
+
+## 3. Rolling Out Full Multilingual Localization (i18n)
+
+A portfolio needs to communicate clearly across borders. We integrated `react-i18next` to implement full English (EN) and Indonesian (ID) translations across the site.
+
+### Scope of Translation
+We translated all elements including:
+- Interactive text states (e.g. dynamic job availability headers in `components/Sidebar.tsx`).
+- Rich biographies and timelines in `app/about/page.tsx`.
+- Metric labels, repository status headers, and dashboard widgets.
+
+### Dynamic Mapping
+For dynamic datasets like project categories, we created robust logic to translate front-end filters without mutating underlying data keys, preserving smooth category filtering.
+
+---
+
+## Technical Auditing
+
+We ran full static analysis to ensure high quality metrics were maintained:
+* **TypeScript checking (`npm run type-check`)**: Confirmed no recursion type issues on VFS node resolution or hook declarations.
+* **Lint checks (`npm run lint`)**: Finished cleanly with zero syntax/formatting issues.
+
+All upgrades are live on the codebase and ready for production! Keep exploring the dashboard and simulated terminal to see these systems in action.

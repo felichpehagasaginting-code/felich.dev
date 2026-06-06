@@ -15,6 +15,7 @@ import SpotifyWidget from '@/components/SpotifyWidget';
 import LiveVisitorBadge from '@/components/LiveVisitorBadge';
 import Script from 'next/script';
 import LazySection from '@/components/LazySection';
+import { useTranslation } from 'react-i18next';
 
 
 const skillCategories = [
@@ -125,6 +126,7 @@ const skillLinks: Record<string, string> = {
 };
 
 export default function Home() {
+  const { t } = useTranslation();
   const [activeFilter, setActiveFilter] = useState('All');
   const [localTime, setLocalTime] = useState('');
   
@@ -187,7 +189,7 @@ export default function Home() {
               className="flex-1 relative z-20"
             >
               <h1 className="text-4xl md:text-7xl font-black mb-6 tracking-tighter leading-[1.1] md:leading-tight px-0.5 overflow-visible">
-                Hi, I&apos;m{' '}
+                {t('hi_im')}{' '}
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent animate-gradient-x pb-4 inline-block md:drop-shadow-sm">
                   Felich
                 </span>
@@ -196,10 +198,10 @@ export default function Home() {
               <div className="text-lg md:text-xl text-neutral-600 dark:text-neutral-300 font-medium mb-8 min-h-[3.5rem] md:min-h-[2rem] relative z-10 px-0.5 overflow-visible">
                 <TypingAnimation
                   texts={[
-                    'Software Engineer',
-                    'AI Engineer',
-                    'DevOps Engineer',
-                    'Fullstack Developer',
+                    t('hero_typing_se'),
+                    t('hero_typing_ai'),
+                    t('hero_typing_devops'),
+                    t('hero_typing_fs'),
                   ]}
                 />
               </div>
@@ -210,11 +212,11 @@ export default function Home() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    <span>Based in Indonesia 🇮🇩</span>
+                    <span>{t('location')}</span>
                     
                     {/* Time Tooltip */}
                     <div className="absolute -top-10 left-0 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-3 py-1 rounded-lg text-xs font-mono shadow-xl whitespace-nowrap pointer-events-none z-50">
-                      Local Time: {localTime} (WIB)
+                      {t('location_tooltip')}: {localTime} (WIB)
                     </div>
                   </div>
                   
@@ -223,7 +225,7 @@ export default function Home() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
-                    <span>Available for Onsite</span>
+                    <span>{t('onsite')}</span>
                   </div>
                   
                   <div className="w-full sm:w-auto">
@@ -233,36 +235,29 @@ export default function Home() {
 
               <div className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed relative z-10">
                 <p>
-                  Currently a Software Engineering student and <span className="text-primary font-bold">BPDP Full Scholar</span>, 
-                  I work at the intersection of AI, data, and long-term 
-                  thinking. My focus is on building intelligent systems 
-                  using Machine Learning and Data Analytics that solve 
-                  real, scalable problems.
+                  {t('hero_para_1')}
                 </p>
                 <p>
-                  Beyond code, I&apos;m deeply interested in capital allocation 
-                  and financial independence — because the best engineers 
-                  don&apos;t just build products, they build wealth.
+                  {t('hero_para_2')}
                 </p>
                 <div className="py-2">
-                  <p className="font-bold text-neutral-900 dark:text-white mb-2">What I bring to the table:</p>
+                  <p className="font-bold text-neutral-900 dark:text-white mb-2">{t('hero_skills_title')}</p>
                   <ul className="space-y-1.5 ml-1">
                     <li className="flex items-center gap-2">
-                      <span className="text-primary">→</span> AI & Machine Learning development
+                      <span className="text-primary">→</span> {t('hero_skills_1')}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-primary">→</span> Data-driven decision making
+                      <span className="text-primary">→</span> {t('hero_skills_2')}
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-primary">→</span> Systems thinking & long-term strategy
+                      <span className="text-primary">→</span> {t('hero_skills_3')}
                     </li>
                   </ul>
                 </div>
                 <p>
-                  Open to internships, collaborations, and conversations 
-                  about tech, data, and building the future.
+                  {t('hero_para_3')}
                 </p>
-                <p className="font-bold text-primary">Let&apos;s connect 🔥</p>
+                <p className="font-bold text-primary">{t('lets_connect')}</p>
               </div>
 
               {/* Live Monitor moved to global fixed position */}
@@ -281,19 +276,19 @@ export default function Home() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
                   <AnimatedCounter end={32} className="text-3xl font-bold text-primary" suffix="+" />
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Skills</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{t('stats_skills')}</p>
                 </div>
                 <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
                   <AnimatedCounter end={8} className="text-3xl font-bold text-primary" suffix="+" />
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Achievements</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{t('stats_achievements')}</p>
                 </div>
                 <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
                   <AnimatedCounter end={4} className="text-3xl font-bold text-primary" suffix="+" />
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Projects</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{t('stats_projects')}</p>
                 </div>
                 <div className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center group hover:shadow-md hover:-translate-y-0.5 transition-all">
                   <AnimatedCounter end={2} className="text-3xl font-bold text-primary" suffix="+" />
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Years Exp.</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{t('stats_experience')}</p>
                 </div>
               </div>
             </section>
@@ -317,29 +312,36 @@ export default function Home() {
             <Reveal>
               <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
                 <span className="text-lg">{'</>'}</span>
-                Skills
+                {t('stats_skills')}
               </h2>
             </Reveal>
             
             <Reveal delay={0.4}>
               <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">
-                My professional skills. Click to learn more.
+                {t('skills_subtitle')}
               </p>
             </Reveal>
 
             {/* Filter pills */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {skillCategories.map((cat) => (
-                <button
-                  key={cat.name}
-                  onClick={() => { setActiveFilter(cat.name); sounds.playPop(); }}
-                  onMouseEnter={() => sounds.playHover()}
-                  className={`filter-pill ${activeFilter === cat.name ? 'active' : ''}`}
-                >
-                  {cat.name}
-                  <span className="ml-1.5 text-xs opacity-70">{cat.count}</span>
-                </button>
-              ))}
+              {skillCategories.map((cat) => {
+                const localizedName = cat.name === 'All' ? t('skills_filter_all') :
+                                      cat.name === 'Frontend' ? t('skills_filter_frontend') :
+                                      cat.name === 'Backend' ? t('skills_filter_backend') :
+                                      cat.name === 'Database' ? t('skills_filter_database') :
+                                      cat.name === 'Tools' ? t('skills_filter_tools') : cat.name;
+                return (
+                  <button
+                    key={cat.name}
+                    onClick={() => { setActiveFilter(cat.name); sounds.playPop(); }}
+                    onMouseEnter={() => sounds.playHover()}
+                    className={`filter-pill ${activeFilter === cat.name ? 'active' : ''}`}
+                  >
+                    {localizedName}
+                    <span className="ml-1.5 text-xs opacity-70">{cat.count}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Skills grid */}
@@ -452,11 +454,7 @@ export default function Home() {
           className="text-center"
         >
           <p className="text-xs text-neutral-400 dark:text-neutral-500">
-            Press{' '}
-            <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700 text-[10px] font-mono">
-              Ctrl+K
-            </kbd>{' '}
-            to open command palette
+            {t('shortcut_hint')}
           </p>
         </motion.div>
       </div>

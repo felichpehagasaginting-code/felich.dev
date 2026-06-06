@@ -7,14 +7,174 @@ import { sounds } from '@/lib/sounds';
 type Command = {
   text: string;
   output: React.ReactNode;
+  path: string;
+};
+
+type FileNode = {
+  type: 'file';
+  content: React.ReactNode;
+};
+
+type DirectoryNode = {
+  type: 'dir';
+  children: Record<string, FileNode | DirectoryNode>;
+};
+
+type VFSNode = FileNode | DirectoryNode;
+
+const VFS: Record<string, VFSNode> = {
+  'about.md': {
+    type: 'file',
+    content: (
+      <div className="space-y-1">
+        <p className="text-white font-bold">Felich Pehagasa Ginting</p>
+        <p className="text-neutral-400">D4 Software Engineering Technology student at Politeknik Kelapa Sawit Citra Widya Edukasi.</p>
+        <p className="text-neutral-400">Focused on building intelligent AI-driven systems and scalable financial platforms.</p>
+      </div>
+    )
+  },
+  'resume.md': {
+    type: 'file',
+    content: (
+      <div className="space-y-2">
+        <p className="text-white font-bold">[ EXPERIENCE / EDUCATION ]</p>
+        <p className="text-neutral-400">• <span className="text-blue-400">Politeknik CWE</span> (2025 - 2029) - D4 Software Engineering Technology</p>
+        <p className="text-neutral-400">• <span className="text-blue-400">BPDP Scholar</span> - Full scholarship recipient</p>
+      </div>
+    )
+  },
+  'secret.txt': {
+    type: 'file',
+    content: <span className="text-yellow-500 italic">&quot;The best way to predict the future is to invent it.&quot; - Alan Kay</span>
+  },
+  'contact.md': {
+    type: 'file',
+    content: (
+      <div className="flex flex-col gap-1">
+        <span>Email: <a href="mailto:hello@felich.dev" className="text-blue-400 hover:underline">hello@felich.dev</a></span>
+        <span>GitHub: <a href="https://github.com/felichpehagasaginting-code" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">github.com/felichpehagasaginting-code</a></span>
+        <span>Instagram: <a href="https://instagram.com/fel.comp" className="text-blue-400 hover:underline">@fel.comp</a></span>
+        <span>LinkedIn: <a href="https://linkedin.com/in/felich-pehagasa-ginting" className="text-blue-400 hover:underline">Felich Ginting</a></span>
+      </div>
+    )
+  },
+  'projects': {
+    type: 'dir',
+    children: {
+      'fintech.md': {
+        type: 'file',
+        content: (
+          <div>
+            <span className="text-green-400 font-bold">FinTech Dashboard</span>
+            <p className="text-neutral-400 mt-1">A real-time financial tracking dashboard built with Next.js and Firebase. Supports bank statement parsing and analytics.</p>
+          </div>
+        )
+      },
+      'aiml.md': {
+        type: 'file',
+        content: (
+          <div>
+            <span className="text-purple-400 font-bold">AI/ML Platform</span>
+            <p className="text-neutral-400 mt-1">A data-engineering platform for model optimization and training monitoring. Integrated with Gemini and Claude APIs.</p>
+          </div>
+        )
+      },
+      'portfolio.md': {
+        type: 'file',
+        content: (
+          <div>
+            <span className="text-pink-400 font-bold">Felich.dev v2</span>
+            <p className="text-neutral-400 mt-1">This website! High-fidelity Next.js portfolio featuring Framer Motion, Lenis scroll, Three.js, and simulated widgets.</p>
+          </div>
+        )
+      },
+      'ecommerce.md': {
+        type: 'file',
+        content: (
+          <div>
+            <span className="text-blue-400 font-bold">E-Commerce Backend</span>
+            <p className="text-neutral-400 mt-1">Scalable microservices-based API gateway and payment service written in Go and Dockerized for AWS deployment.</p>
+          </div>
+        )
+      }
+    }
+  },
+  'skills': {
+    type: 'dir',
+    children: {
+      'frontend.md': {
+        type: 'file',
+        content: <p className="text-neutral-400">Next.js, React, HTML5, CSS3, JavaScript, TypeScript, TailwindCSS, Bootstrap, Framer Motion, Vite, Redux, GSAP, Canvas API, Svelte, React Query.</p>
+      },
+      'backend.md': {
+        type: 'file',
+        content: <p className="text-neutral-400">Node.js, Express, Python, Go, PHP, Laravel, Prisma, Sanity CMS, Rust, PyTorch, TensorFlow, tRPC.</p>
+      },
+      'database.md': {
+        type: 'file',
+        content: <p className="text-neutral-400">PostgreSQL, MySQL, MongoDB, Firebase, Supabase, Redis.</p>
+      },
+      'tools.md': {
+        type: 'file',
+        content: <p className="text-neutral-400">Git, GitHub, Docker, VS Code, Postman, npm, Vercel, Vitest, Playwright, Gemini AI, Claude, Linux, Cloudflare, Langflow.</p>
+      }
+    }
+  }
+};
+
+const resolveVFSPath = (pathStr: string, currentDir: string) => {
+  if (pathStr === '') return { node: resolveVFSPathNode(currentDir), path: currentDir };
+
+  let segments: string[] = [];
+  if (pathStr.startsWith('~') || pathStr.startsWith('/')) {
+    segments = pathStr.replace(/^~?\/+/, '').split('/').filter(Boolean);
+  } else {
+    const base = currentDir.replace(/^~?\/+/, '').split('/').filter(Boolean);
+    segments = [...base, ...pathStr.split('/')].filter(Boolean);
+  }
+
+  const resolvedSegments: string[] = [];
+  for (const seg of segments) {
+    if (seg === '.') continue;
+    if (seg === '..') {
+      resolvedSegments.pop();
+    } else {
+      resolvedSegments.push(seg);
+    }
+  }
+
+  let current: VFSNode = { type: 'dir', children: VFS };
+  let pathString = '~';
+  for (const seg of resolvedSegments) {
+    if (current.type !== 'dir') return null;
+    const next: VFSNode | undefined = current.children[seg];
+    if (!next) return null;
+    current = next;
+    pathString += '/' + seg;
+  }
+  return { node: current, path: pathString };
+};
+
+const resolveVFSPathNode = (pathStr: string): VFSNode | null => {
+  const segments = pathStr.replace(/^~?\/+/, '').split('/').filter(Boolean);
+  let current: VFSNode = { type: 'dir', children: VFS };
+  for (const seg of segments) {
+    if (current.type !== 'dir') return null;
+    const next: VFSNode | undefined = current.children[seg];
+    if (!next) return null;
+    current = next;
+  }
+  return current;
 };
 
 export default function Terminal() {
   const [input, setInput] = useState('');
+  const [currentPath, setCurrentPath] = useState('~');
   const [history, setHistory] = useState<Command[]>([
     {
       text: 'whoami',
-      output: 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer.'
+      output: 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer.',
+      path: '~'
     }
   ]);
   const [cmdHistory, setCmdHistory] = useState<string[]>(['whoami']);
@@ -22,7 +182,60 @@ export default function Terminal() {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const commands = ['help', 'whoami', 'skills', 'projects', 'contact', 'fetch', 'echo', 'date', 'clear', 'ls', 'cat', 'matrix', 'whois', 'ai', 'socials', 'repo', 'theme'];
+  const commands = [
+    'help', 'whoami', 'skills', 'projects', 'contact', 'fetch', 'echo', 'date', 
+    'clear', 'ls', 'cat', 'matrix', 'whois', 'ai', 'socials', 'repo', 'theme',
+    'cd', 'pwd', 'sudo', 'unlock-elite'
+  ];
+
+  const getSuggestion = (inputVal: string, currentDir: string): string => {
+    if (!inputVal) return '';
+
+    const trimmed = inputVal.trimStart();
+    const parts = trimmed.split(/\s+/);
+    
+    if (parts.length === 1 && !trimmed.endsWith(' ')) {
+      const cmdPrefix = parts[0].toLowerCase();
+      const match = commands.find(c => c.startsWith(cmdPrefix));
+      if (match && match !== cmdPrefix) {
+        return inputVal + match.slice(cmdPrefix.length);
+      }
+    } else if (parts.length >= 2) {
+      const cmd = parts[0].toLowerCase();
+      if (cmd === 'cd' || cmd === 'cat') {
+        const fullArg = trimmed.slice(cmd.length).trimStart();
+        if (!fullArg) {
+          const resolved = resolveVFSPath('', currentDir);
+          if (resolved && resolved.node && resolved.node.type === 'dir') {
+            const keys = Object.keys(resolved.node.children);
+            if (keys.length > 0) {
+              return inputVal + keys[0];
+            }
+          }
+          return '';
+        }
+
+        const lastSlashIdx = fullArg.lastIndexOf('/');
+        let dirPart = '';
+        let filePrefix = fullArg;
+        if (lastSlashIdx !== -1) {
+          dirPart = fullArg.slice(0, lastSlashIdx + 1);
+          filePrefix = fullArg.slice(lastSlashIdx + 1);
+        }
+
+        const resolved = resolveVFSPath(dirPart, currentDir);
+        if (resolved && resolved.node && resolved.node.type === 'dir') {
+          const match = Object.keys(resolved.node.children).find(k => 
+            k.toLowerCase().startsWith(filePrefix.toLowerCase())
+          );
+          if (match && match.toLowerCase() !== filePrefix.toLowerCase()) {
+            return inputVal + match.slice(filePrefix.length);
+          }
+        }
+      }
+    }
+    return '';
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowUp') {
@@ -42,11 +255,14 @@ export default function Terminal() {
         setHistoryIndex(-1);
         setInput('');
       }
-    } else if (e.key === 'Tab') {
-      e.preventDefault();
-      const currentInput = input.trim().toLowerCase();
-      const match = commands.find(c => c.startsWith(currentInput));
-      if (match) setInput(match);
+    } else if (e.key === 'Tab' || e.key === 'ArrowRight') {
+      const suggestion = getSuggestion(input, currentPath);
+      if (suggestion) {
+        e.preventDefault();
+        setInput(suggestion);
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+      }
     }
   };
 
@@ -69,7 +285,7 @@ export default function Terminal() {
         output = (
           <div className="flex flex-col gap-2 text-neutral-400">
             <div className="text-white font-bold border-b border-neutral-800 pb-1 flex justify-between items-center">
-              <span>SYSTEM DOCUMENTATION (v2.1)</span>
+              <span>SYSTEM DOCUMENTATION (v2.6)</span>
               <span className="text-[10px] text-neutral-500 font-normal">felich.dev/help</span>
             </div>
             
@@ -77,18 +293,19 @@ export default function Terminal() {
               <div className="flex flex-col">
                 <span className="text-primary font-bold mt-2 mb-1 underline">Core Commands</span>
                 <span className="text-blue-400">whoami  <span className="text-neutral-500">- Identity summary</span></span>
-                <span className="text-blue-400">skills  <span className="text-neutral-500">- Technical stack</span></span>
-                <span className="text-blue-400">projects<span className="text-neutral-500">- Featured work</span></span>
+                <span className="text-blue-400">skills  <span className="text-neutral-500">- Technical stack overview</span></span>
+                <span className="text-blue-400">projects<span className="text-neutral-500">- Featured work overview</span></span>
                 <span className="text-blue-400">socials <span className="text-neutral-500">- Digital presence</span></span>
                 <span className="text-blue-400">contact <span className="text-neutral-500">- Communication info</span></span>
               </div>
               
               <div className="flex flex-col">
                 <span className="text-primary font-bold mt-2 mb-1 underline">File System</span>
-                <span className="text-blue-400">ls      <span className="text-neutral-500">- List directory</span></span>
-                <span className="text-blue-400">cat     <span className="text-neutral-500">- Read local file</span></span>
-                <span className="text-blue-400">clear   <span className="text-neutral-500">- Flush terminal</span></span>
-                <span className="text-blue-400">repo    <span className="text-neutral-500">- Source control</span></span>
+                <span className="text-blue-400">ls      <span className="text-neutral-500">- List directory contents</span></span>
+                <span className="text-blue-400">cd &lt;dir&gt;<span className="text-neutral-500">- Change active directory</span></span>
+                <span className="text-blue-400">cat &lt;file&gt;<span className="text-neutral-500">- Read content of a file</span></span>
+                <span className="text-blue-400">pwd     <span className="text-neutral-500">- Show current directory path</span></span>
+                <span className="text-blue-400">clear   <span className="text-neutral-500">- Flush terminal history</span></span>
               </div>
 
               <div className="flex flex-col">
@@ -100,15 +317,15 @@ export default function Terminal() {
 
               <div className="flex flex-col">
                 <span className="text-primary font-bold mt-2 mb-1 underline">Utilities</span>
-                <span className="text-blue-400">fetch   <span className="text-neutral-500">- System overview</span></span>
+                <span className="text-blue-400">fetch   <span className="text-neutral-500">- System overview fetch</span></span>
                 <span className="text-blue-400">date    <span className="text-neutral-500">- Runtime clock</span></span>
-                <span className="text-blue-400">echo    <span className="text-neutral-500">- Output string</span></span>
+                <span className="text-blue-400">echo    <span className="text-neutral-500">- Output argument string</span></span>
                 <span className="text-blue-400">sudo    <span className="text-neutral-500">- Elevated access</span></span>
               </div>
             </div>
             
             <div className="mt-2 p-2 bg-white/5 rounded border border-neutral-800 text-[10px]">
-              <span className="text-yellow-500 font-bold">PRO TIP:</span> Use <kbd className="text-white px-1 bg-neutral-700 rounded">Tab</kbd> for auto-complete and <kbd className="text-white px-1 bg-neutral-700 rounded">↑</kbd> <kbd className="text-white px-1 bg-neutral-700 rounded">↓</kbd> for history.
+              <span className="text-yellow-500 font-bold">PRO TIP:</span> Type prefix & use <kbd className="text-white px-1 bg-neutral-700 rounded">Tab</kbd> or <kbd className="text-white px-1 bg-neutral-700 rounded">→</kbd> for autocomplete.
             </div>
           </div>
         );
@@ -125,7 +342,7 @@ export default function Terminal() {
         output = (
           <div className="flex items-center gap-2">
             <span className="text-orange-400">Git Repository:</span>
-            <a href="https://github.com/felichpehagasaginting-code/felich.dev" target="_blank" className="text-blue-400 underline">felichpehagasaginting-code/felich.dev</a>
+            <a href="https://github.com/felichpehagasaginting-code/felich.dev" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">felichpehagasaginting-code/felich.dev</a>
           </div>
         );
         break;
@@ -136,6 +353,7 @@ export default function Terminal() {
             <span>1. <span className="text-blue-400">Dark</span> (Default)</span>
             <span>2. <span className="text-neutral-400">Light</span> (High Contrast)</span>
             <span>3. <span className="text-orange-400">Yellow</span> (Elite Amber)</span>
+            <span>4. <span className="text-white font-bold">Apple</span> (Liquid Glass)</span>
             <span className="text-[10px] mt-1 opacity-70">Use the UI toggle to switch instantly.</span>
           </div>
         );
@@ -150,27 +368,58 @@ export default function Terminal() {
             </div>
           </div>
         );
-        // Trigger a custom event or store change if needed, 
-        // for now just visual feedback in terminal
         break;
       case 'ls':
-        output = (
-          <div className="flex gap-4 text-blue-400 font-bold">
-            <span>about.md</span>
-            <span>projects/</span>
-            <span>resume.pdf</span>
-            <span className="text-green-400">secret.txt</span>
-          </div>
-        );
+        const lsResolved = resolveVFSPath(args[0] || '', currentPath);
+        if (lsResolved && lsResolved.node && lsResolved.node.type === 'dir') {
+          output = (
+            <div className="flex flex-wrap gap-4 font-bold">
+              {Object.entries(lsResolved.node.children).map(([name, node]) => (
+                <span 
+                  key={name} 
+                  className={node.type === 'dir' ? 'text-blue-400' : 'text-neutral-100'}
+                >
+                  {name}{node.type === 'dir' ? '/' : ''}
+                </span>
+              ))}
+            </div>
+          );
+        } else {
+          output = `ls: ${args[0] || ''}: No such directory`;
+        }
+        break;
+      case 'cd':
+        const targetPath = args[0] || '~';
+        const cdResolved = resolveVFSPath(targetPath, currentPath);
+        if (cdResolved && cdResolved.node) {
+          if (cdResolved.node.type === 'dir') {
+            setCurrentPath(cdResolved.path);
+            output = '';
+          } else {
+            output = `cd: not a directory: ${targetPath}`;
+          }
+        } else {
+          output = `cd: no such file or directory: ${targetPath}`;
+        }
         break;
       case 'cat':
-        if (args[0] === 'about.md') {
-          output = 'Software Engineer focused on high-performance web systems and AI integration.';
-        } else if (args[0] === 'secret.txt') {
-          output = <span className="text-yellow-500 italic">&quot;The best way to predict the future is to invent it.&quot; - Alan Kay</span>;
+        if (!args[0]) {
+          output = 'cat: no file specified';
         } else {
-          output = `cat: ${args[0] || 'no file specified'}: No such file or directory`;
+          const catResolved = resolveVFSPath(args[0], currentPath);
+          if (catResolved && catResolved.node) {
+            if (catResolved.node.type === 'file') {
+              output = catResolved.node.content;
+            } else {
+              output = `cat: ${args[0]}: Is a directory`;
+            }
+          } else {
+            output = `cat: ${args[0]}: No such file or directory`;
+          }
         }
+        break;
+      case 'pwd':
+        output = currentPath;
         break;
       case 'ai':
         const insights = [
@@ -206,23 +455,30 @@ export default function Terminal() {
         output = 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer.';
         break;
       case 'skills':
-        output = 'Next.js, React, Node.js, Python, PostgreSQL, Three.js, TailwindCSS, Docker, Go, Gemini AI, GSAP.';
+        output = (
+          <div className="space-y-1">
+            <p>technical stack directory. Explore with:</p>
+            <p className="text-blue-400">cd skills</p>
+            <p className="text-blue-400">ls</p>
+            <p className="text-blue-400">cat frontend.md</p>
+          </div>
+        );
         break;
       case 'projects':
         output = (
-          <div className="flex flex-col gap-1">
-            <span className="text-green-400">1. FinTech Dashboard (Fullstack Web)</span>
-            <span className="text-purple-400">2. AI/ML Platform (Data Engineering)</span>
-            <span className="text-pink-400">3. Felich.dev (Next.js Portfolio)</span>
-            <span className="text-blue-400">4. E-Commerce Backend (Scalable Systems)</span>
+          <div className="space-y-1">
+            <p>featured work directory. Explore with:</p>
+            <p className="text-blue-400">cd projects</p>
+            <p className="text-blue-400">ls</p>
+            <p className="text-blue-400">cat fintech.md</p>
           </div>
         );
         break;
       case 'contact':
         output = (
-          <div className="flex flex-col gap-1">
-            <span>Email: <a href="mailto:hello@felich.dev" className="text-blue-400 hover:underline">hello@felich.dev</a></span>
-            <span>GitHub: <a href="https://github.com/felichpehagasaginting-code" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">github.com/felichpehagasaginting-code</a></span>
+          <div className="space-y-1">
+            <p>technical contact info. Explore with:</p>
+            <p className="text-blue-400">cat contact.md</p>
           </div>
         );
         break;
@@ -246,13 +502,13 @@ export default function Terminal() {
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-primary font-black uppercase tracking-wider">felich@portfolio</span>
                 <span className="text-neutral-600">|</span>
-                <span className="text-neutral-400 text-[10px]">v2.5.0-stable</span>
+                <span className="text-neutral-400 text-[10px]">v2.6.0-stable</span>
               </div>
               <div className="h-[1px] w-full bg-gradient-to-r from-primary/50 to-transparent mb-2" />
               
               <div className="grid grid-cols-[85px_1fr] gap-x-2 text-[11px] sm:text-xs">
                 <span className="text-neutral-500 uppercase font-bold tracking-tighter">OS</span>
-                <span className="text-white font-medium">LiquidOS (Next.js 16)</span>
+                <span className="text-white font-medium">LiquidOS (Next.js 14)</span>
                 
                 <span className="text-neutral-500 uppercase font-bold tracking-tighter">HOST</span>
                 <span className="text-white">Felich-Workstation-Pro</span>
@@ -307,7 +563,7 @@ export default function Terminal() {
         }
     }
 
-    setHistory([...history, { text: fullCmd, output }]);
+    setHistory([...history, { text: fullCmd, output, path: currentPath }]);
     setInput('');
   };
 
@@ -375,7 +631,7 @@ export default function Terminal() {
           <div key={i} className="mb-4 relative z-20">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="text-[#5DBEFE] font-bold">➜</span>
-              <span className="text-[#A6E22E] font-bold">~</span>
+              <span className="text-[#A6E22E] font-bold">{cmd.path}</span>
               <span className="text-white ml-1">{cmd.text}</span>
             </div>
             <div className="pl-5 text-neutral-400 border-l border-white/5 ml-[7px] py-1">
@@ -386,8 +642,13 @@ export default function Terminal() {
 
         <form onSubmit={handleCommand} className="flex items-center gap-2 relative z-20 pb-8">
           <span className="text-[#5DBEFE] font-bold animate-pulse">➜</span>
-          <span className="text-[#A6E22E] font-bold">~</span>
-          <div className="relative flex-1 ml-1">
+          <span className="text-[#A6E22E] font-bold">{currentPath}</span>
+          <div className="relative flex-1 ml-1 h-[18px] flex items-center">
+            {/* Visual autocomplete ghost text overlay */}
+            <div className="absolute inset-y-0 left-0 w-full pointer-events-none flex items-center font-mono whitespace-pre text-xs sm:text-sm select-none">
+              <span className="text-white">{input}</span>
+              <span className="text-neutral-500/70 dark:text-neutral-500/70">{getSuggestion(input, currentPath).slice(input.length)}</span>
+            </div>
             <input
               ref={inputRef}
               type="text"
@@ -398,15 +659,18 @@ export default function Terminal() {
                 if (sounds.playClick) sounds.playClick();
               }}
               onKeyDown={handleKeyDown}
-              className="w-full bg-transparent outline-none text-white border-none focus:ring-0 p-0 caret-transparent font-mono"
+              className="w-full bg-transparent outline-none text-transparent border-none focus:ring-0 p-0 caret-transparent font-mono select-none text-xs sm:text-sm"
               autoComplete="off"
               spellCheck="false"
+              aria-label="Terminal Input"
+              title="Terminal Input"
+              placeholder="Enter command..."
             />
             {/* macOS Style Bar Cursor */}
             <motion.div 
               animate={{ opacity: [1, 1, 0, 0] }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear", times: [0, 0.5, 0.5, 1] }}
-              className="absolute top-0.5 w-2 h-[18px] bg-primary/60 shadow-[0_0_8px_rgba(37,99,235,0.4)]"
+              className="absolute top-0 w-2 h-[18px] bg-primary/60 shadow-[0_0_8px_rgba(37,99,235,0.4)]"
               style={{ left: `${input.length}ch` }}
             />
           </div>

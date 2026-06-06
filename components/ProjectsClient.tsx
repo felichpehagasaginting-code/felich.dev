@@ -8,11 +8,13 @@ import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import TiltCard from './TiltCard';
 import { useProjectLikes } from '@/lib/useProjectLikes';
+import { useTranslation } from 'react-i18next';
 
 const projectTypes = ['All', 'Web', 'Mobile'];
 const projectCategories = ['All', 'Personal Project', 'Freelance'];
 
 export default function ProjectsClient({ projects }: { projects: any[] }) {
+  const { t } = useTranslation();
   const [activeType, setActiveType] = useState('All');
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
@@ -27,9 +29,9 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
     <div>
       <Reveal width="100%">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Projects</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{t('link_projects')}</h1>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm">
-            A showcase of both private and open-source projects I&apos;ve built or contributed to.
+            {t('projects_desc')}
           </p>
         </div>
       </Reveal>
@@ -38,35 +40,43 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
 
       {/* Type filter */}
       <div className="flex items-center gap-3 mb-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-primary">Type</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-primary">{t('projects_filter_type')}</span>
         <div className="flex gap-2">
-          {projectTypes.map((type) => (
-            <button
-              key={type}
-              onClick={() => { setActiveType(type); sounds.playPop(); }}
-              onMouseEnter={() => sounds.playHover()}
-              className={`filter-pill text-xs ${activeType === type ? 'active' : ''}`}
-            >
-              {type}
-            </button>
-          ))}
+          {projectTypes.map((type) => {
+            const label = type === 'All' ? t('projects_filter_all') : type;
+            return (
+              <button
+                key={type}
+                onClick={() => { setActiveType(type); sounds.playPop(); }}
+                onMouseEnter={() => sounds.playHover()}
+                className={`filter-pill text-xs ${activeType === type ? 'active' : ''}`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Category filter */}
       <div className="flex items-center gap-3 mb-8">
-        <span className="text-xs font-semibold uppercase tracking-wider text-primary">Category</span>
+        <span className="text-xs font-semibold uppercase tracking-wider text-primary">{t('projects_filter_category')}</span>
         <div className="flex flex-wrap gap-2">
-          {projectCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => { setActiveCategory(cat); sounds.playPop(); }}
-              onMouseEnter={() => sounds.playHover()}
-              className={`filter-pill text-xs ${activeCategory === cat ? 'active' : ''}`}
-            >
-              {cat}
-            </button>
-          ))}
+          {projectCategories.map((cat) => {
+            const label = cat === 'All' ? t('projects_filter_all') :
+                          cat === 'Personal Project' ? t('projects_personal') :
+                          cat === 'Freelance' ? t('projects_freelance') : cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => { setActiveCategory(cat); sounds.playPop(); }}
+                onMouseEnter={() => sounds.playHover()}
+                className={`filter-pill text-xs ${activeCategory === cat ? 'active' : ''}`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -83,12 +93,11 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                 transition={{ duration: 0.3, delay: i * 0.05 }}
                 onClick={() => { setSelectedProject(project); triggerImpact(); sounds.playPop(); }}
                 onMouseEnter={() => sounds.playHover()}
-                className="group cursor-pointer rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
-                style={{ transformStyle: "preserve-3d" }}
+                className="group cursor-pointer rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col h-full [transform-style:preserve-3d]"
               >
                 {/* Image placeholder / Real Image */}
-                <motion.div layoutId={`project-image-${project.title}`} className="h-44 bg-gradient-to-br from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 relative overflow-hidden transition-colors group-hover:from-blue-500/10 group-hover:to-purple-500/10" style={{ transform: "translateZ(30px)" }}>
-                  <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#3b82f6 1px, transparent 1px)', backgroundSize: '16px 16px' }}></div>
+                <motion.div layoutId={`project-image-${project.title}`} className="h-44 bg-gradient-to-br from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 relative overflow-hidden transition-colors group-hover:from-blue-500/10 group-hover:to-purple-500/10 [transform:translateZ(30px)]">
+                  <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.2] bg-[radial-gradient(#3b82f6_1px,transparent_1px)] bg-[size:16px_16px]"></div>
                   
                   {project.slug && (
                     <Image
@@ -103,7 +112,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
 
                   {project.featured && (
                     <span className="absolute top-3 right-3 px-2.5 py-1 bg-gradient-to-r from-pink-500 to-orange-400 text-white text-[10px] uppercase font-bold tracking-widest rounded-md flex items-center gap-1.5 shadow-lg shadow-pink-500/20 z-10">
-                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> Featured
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> {t('projects_featured')}
                     </span>
                   )}
                   {!project.slug && (
@@ -116,7 +125,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                 </motion.div>
 
                 {/* Content */}
-                <div className="p-5 flex-1 flex flex-col" style={{ transform: "translateZ(40px)" }}>
+                <div className="p-5 flex-1 flex flex-col [transform:translateZ(40px)]">
                   <motion.h3 layoutId={`project-title-${project.title}`} className="font-bold text-lg mb-1 group-hover:text-primary transition-colors">
                     {project.title}
                   </motion.h3>
@@ -137,7 +146,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                   </div>
 
                   <div className="text-xs font-semibold text-primary flex items-center gap-1 mt-2">
-                    View Case Study
+                    {t('projects_view_case')}
                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>
                   </div>
                 </div>
@@ -164,7 +173,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
               className="relative w-full max-w-4xl max-h-[90vh] bg-white/70 dark:bg-neutral-900/60 backdrop-blur-[40px] rounded-[2.5rem] border border-white/40 dark:border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.4)] overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col sm:flex-row ring-1 ring-black/5 dark:ring-white/5"
             >
               <div className="sm:w-2/5 relative h-64 sm:h-auto border-b sm:border-b-0 sm:border-r border-neutral-200/50 dark:border-neutral-800/50 overflow-hidden bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent">
-                <div className="absolute inset-0 opacity-[0.2]" style={{ backgroundImage: 'radial-gradient(#3b82f6 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
+                <div className="absolute inset-0 opacity-[0.2] bg-[radial-gradient(#3b82f6_1.5px,transparent_1.5px)] bg-[size:24px_24px]"></div>
                 <div className="absolute inset-0 bg-gradient-to-t from-white/80 dark:from-neutral-900/80 to-transparent sm:hidden z-10"></div>
                 
                 {selectedProject.slug && (
@@ -196,13 +205,18 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
               <div className="flex-1 overflow-y-auto">
                 <div className="sticky top-0 z-50 p-6 flex justify-between items-center bg-white/40 dark:bg-black/20 backdrop-blur-md border-b border-white/20 dark:border-white/5">
                    <div className="flex gap-2">
-                      <span className="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-md border border-primary/20">{selectedProject.type}</span>
-                      <span className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800/80 text-neutral-500 text-[10px] font-bold uppercase tracking-widest rounded-md border border-neutral-200 dark:border-neutral-700/50">{selectedProject.category}</span>
+                       <span className="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest rounded-md border border-primary/20">{selectedProject.type}</span>
+                       <span className="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800/80 text-neutral-500 text-[10px] font-bold uppercase tracking-widest rounded-md border border-neutral-200 dark:border-neutral-700/50">
+                         {selectedProject.category === 'Personal Project' ? t('projects_personal') :
+                          selectedProject.category === 'Freelance' ? t('projects_freelance') : selectedProject.category}
+                       </span>
                    </div>
-                   <button
-                    onClick={() => setSelectedProject(null)}
-                    className="p-2 bg-neutral-200/50 dark:bg-neutral-800/50 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 rounded-full transition-all group"
-                  >
+                    <button
+                     onClick={() => setSelectedProject(null)}
+                     className="p-2 bg-neutral-200/50 dark:bg-neutral-800/50 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 rounded-full transition-all group"
+                     aria-label="Close"
+                     title="Close"
+                   >
                     <svg className="w-4 h-4 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12"/></svg>
                   </button>
                 </div>
@@ -226,14 +240,14 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                       <p>Architected with a focus on performance, user experience, and technical excellence. This project represents a deep dive into solving complex engineering challenges through modern software patterns.</p>
                   </div>
 
-                  <div className="space-y-4 pt-8 border-t border-neutral-200 dark:border-neutral-800">
-                    <h4 className="text-[10px] font-mono uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500 mb-6">Execution & Resources</h4>
+                   <div className="space-y-4 pt-8 border-t border-neutral-200 dark:border-neutral-800">
+                    <h4 className="text-[10px] font-mono uppercase tracking-[0.3em] text-neutral-400 dark:text-neutral-500 mb-6">{t('projects_modal_resources')}</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {selectedProject.github && (
                         <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 p-4 bg-neutral-900 text-white rounded-2xl hover:scale-[1.02] transition-all shadow-xl shadow-black/10 group">
                           <div className="flex items-center gap-3">
                              <svg className="w-5 h-5 text-neutral-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-                             <span className="text-sm font-bold">Source Code</span>
+                             <span className="text-sm font-bold">{t('projects_modal_source')}</span>
                           </div>
                           <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7"/></svg>
                         </a>
@@ -243,7 +257,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                         <a href={selectedProject.live} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 p-4 bg-primary text-white rounded-2xl hover:scale-[1.02] transition-all shadow-xl shadow-primary/20 group">
                           <div className="flex items-center gap-3">
                              <svg className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                             <span className="text-sm font-bold">Live System</span>
+                             <span className="text-sm font-bold">{t('projects_modal_live')}</span>
                           </div>
                           <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7"/></svg>
                         </a>
@@ -266,6 +280,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
 // ── Sub-component: Like button per project ──────────────────────────────────
 function ProjectLikeButton({ slug }: { slug: string }) {
   const { likes, hasLiked, loading, toggleLike } = useProjectLikes(slug);
+  const { t } = useTranslation();
 
   return (
     <div className="pt-6 border-t border-neutral-200 dark:border-neutral-800 flex items-center gap-3">
@@ -287,10 +302,10 @@ function ProjectLikeButton({ slug }: { slug: string }) {
           {hasLiked ? '❤️' : '🤍'}
         </motion.span>
         <span>{loading ? '—' : likes}</span>
-        <span className="font-normal opacity-70">{hasLiked ? 'Liked!' : 'Like this project'}</span>
+        <span className="font-normal opacity-70">{hasLiked ? t('projects_modal_liked') : t('projects_modal_like')}</span>
       </motion.button>
       {hasLiked && (
-        <span className="text-xs text-neutral-400 font-mono">Synced to Firebase ✓</span>
+        <span className="text-xs text-neutral-400 font-mono">{t('projects_modal_synced')}</span>
       )}
     </div>
   );

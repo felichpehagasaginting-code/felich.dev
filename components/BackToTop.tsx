@@ -56,11 +56,9 @@ export default function BackToTop() {
               strokeWidth="2.5"
               fill="none"
               strokeLinecap="round"
-              style={{
-                strokeDasharray: circumference,
-                strokeDashoffset,
-                transition: 'stroke-dashoffset 0.1s ease',
-              }}
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              className="transition-[stroke-dashoffset] duration-100 ease-out"
             />
             <defs>
               <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">

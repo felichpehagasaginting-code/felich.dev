@@ -1,10 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+import { useSpotify } from '@/lib/useSpotify';
+import { useTranslation } from 'react-i18next';
 
 export default function SpotifyWidget() {
-  const [isPlaying] = useState(true);
+  const { data, isLoading } = useSpotify();
+  const { t } = useTranslation();
   
   // Simulated animation heights for sound bars
   const bars = [
@@ -15,12 +18,26 @@ export default function SpotifyWidget() {
     { duration: 1.2, heights: ["20%", "60%", "30%", "80%", "20%"] }
   ];
 
+  if (isLoading || !data) {
+    return (
+      <div className="flex items-center gap-3 px-3.5 py-2 rounded-full bg-neutral-900/5 dark:bg-white/5 backdrop-blur-md border border-neutral-200/50 dark:border-white/10 w-fit shrink-0">
+        <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin shrink-0" />
+        <span className="text-[10px] font-bold text-neutral-400 leading-none">Spotify...</span>
+      </div>
+    );
+  }
+
+  const isPlaying = data.isPlaying;
+
   return (
-    <motion.div 
+    <motion.a 
+      href={data.songUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2 }}
-      className="flex items-center gap-3 px-3.5 py-2 rounded-full bg-neutral-900/5 dark:bg-white/5 backdrop-blur-md border border-neutral-200/50 dark:border-white/10 hover:border-emerald-500/30 dark:hover:border-emerald-500/30 hover:shadow-[0_8px_30px_rgba(16,185,129,0.06)] transition-all duration-300 w-fit pointer-events-auto cursor-pointer"
+      className="flex items-center gap-3 px-3.5 py-2 rounded-full bg-neutral-900/5 dark:bg-white/5 backdrop-blur-md border border-neutral-200/50 dark:border-white/10 hover:border-emerald-500/30 dark:hover:border-emerald-500/30 hover:shadow-[0_8px_30px_rgba(16,185,129,0.06)] transition-all duration-300 w-fit pointer-events-auto cursor-pointer block"
     >
       {/* Spotify brand logo - spinning vinyl animation */}
       <div className="relative flex items-center justify-center w-7 h-7 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 shrink-0">
@@ -40,15 +57,15 @@ export default function SpotifyWidget() {
 
       <div className="flex flex-col min-w-0 pr-1 select-none">
         <span className="text-[7.5px] uppercase font-bold tracking-[0.25em] text-neutral-400 dark:text-neutral-500 leading-none mb-0.5">
-          Listening to
+          {isPlaying ? t('spotify_listening_to') : t('spotify_last_played')}
         </span>
         <div className="flex items-center gap-1.5">
           <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200 truncate max-w-[120px] leading-tight">
-            Lofi Coding Beats
+            {data.title}
           </p>
           <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700 shrink-0" />
           <p className="text-[10px] text-neutral-500 dark:text-neutral-400 truncate max-w-[80px] leading-tight">
-            Felich Playlist
+            {data.artist}
           </p>
         </div>
       </div>
@@ -64,6 +81,6 @@ export default function SpotifyWidget() {
           />
         ))}
       </div>
-    </motion.div>
+    </motion.a>
   );
 }

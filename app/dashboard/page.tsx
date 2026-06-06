@@ -6,6 +6,15 @@ import axios from 'axios';
 import { Star, GitFork, BarChart2, Music, Headphones, Folder } from 'lucide-react';
 import PageTransition from '@/components/PageTransition';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import { useTranslation } from 'react-i18next';
+import { useSpotify } from '@/lib/useSpotify';
+
+function formatTime(ms: number) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -55,6 +64,8 @@ interface Repo {
 }
 
 export default function Dashboard() {
+  const { t } = useTranslation();
+  const { data: spotify, progressMs } = useSpotify();
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -135,10 +146,10 @@ export default function Dashboard() {
             </div>
             <div>
               <h1 className="text-3xl md:text-5xl font-black tracking-tighter bg-gradient-to-r from-neutral-900 via-neutral-600 to-neutral-900 dark:from-white dark:via-neutral-400 dark:to-white bg-clip-text text-transparent">
-                Dashboard
+                {t('dashboard')}
               </h1>
               <p className="text-neutral-500 dark:text-neutral-400 text-sm font-medium mt-1">
-                Real-time metrics & GitHub activity index.
+                {t('dashboard_desc')}
               </p>
             </div>
           </div>
@@ -149,10 +160,10 @@ export default function Dashboard() {
         {/* Stats overview - Elite Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
-            { label: 'Repositories', value: repos.length, color: 'from-blue-500 to-indigo-600', shadow: 'shadow-blue-500/20' },
-            { label: 'Total Stars', value: repos.reduce((a, r) => a + r.stargazers_count, 0), color: 'from-amber-400 to-orange-500', shadow: 'shadow-amber-500/20' },
-            { label: 'Total Forks', value: repos.reduce((a, r) => a + r.forks_count, 0), color: 'from-emerald-400 to-teal-500', shadow: 'shadow-emerald-500/20' },
-            { label: 'Languages', value: new Set(repos.map(r => r.language).filter(Boolean)).size, color: 'from-pink-500 to-rose-500', shadow: 'shadow-pink-500/20' }
+            { label: t('dashboard_stats_repos'), value: repos.length, color: 'from-blue-500 to-indigo-600', shadow: 'shadow-blue-500/20' },
+            { label: t('dashboard_stats_stars'), value: repos.reduce((a, r) => a + r.stargazers_count, 0), color: 'from-amber-400 to-orange-500', shadow: 'shadow-amber-500/20' },
+            { label: t('dashboard_stats_forks'), value: repos.reduce((a, r) => a + r.forks_count, 0), color: 'from-emerald-400 to-teal-500', shadow: 'shadow-emerald-500/20' },
+            { label: t('dashboard_stats_languages'), value: new Set(repos.map(r => r.language).filter(Boolean)).size, color: 'from-pink-500 to-rose-500', shadow: 'shadow-pink-500/20' }
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -187,7 +198,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold flex items-center gap-2">
               <BarChart2 className="w-5 h-5 text-blue-500" /> 
-              Contribution Activity
+              {t('dashboard_contributions')}
             </h2>
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -220,7 +231,7 @@ export default function Dashboard() {
               ))}
             </div>
             <div className="flex items-center justify-end gap-2 mt-4 text-[10px] font-bold font-mono text-neutral-400">
-              <span className="uppercase tracking-widest mr-1">Less</span>
+              <span className="uppercase tracking-widest mr-1">{t('less')}</span>
               <div className="flex gap-[3px]">
                 {[0, 1, 2, 3, 4].map(i => (
                   <div key={i} className={`w-[11px] h-[11px] rounded-[2px] ${
@@ -232,7 +243,7 @@ export default function Dashboard() {
                   }`} />
                 ))}
               </div>
-              <span className="uppercase tracking-widest ml-1">More</span>
+              <span className="uppercase tracking-widest ml-1">{t('more')}</span>
             </div>
           </div>
         </motion.section>
@@ -247,52 +258,67 @@ export default function Dashboard() {
           <div className="group p-1 rounded-[2.5rem] bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-transparent p-[1px]">
             <div className="p-6 rounded-[2.5rem] bg-white/60 dark:bg-black/40 backdrop-blur-3xl border border-white/20 dark:border-white/5 shadow-2xl shadow-green-500/5 liquid-glass">
               <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="relative group">
-                  <div className="w-24 h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-green-500/20 group-hover:scale-105 transition-transform duration-500 ring-2 ring-white/20">
-                    <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white">
-                      <Headphones className="w-10 h-10 animate-bounce" />
-                    </div>
+                <div className="relative group shrink-0">
+                  <div className="w-24 h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-green-500/20 group-hover:scale-105 transition-transform duration-500 ring-2 ring-white/20 relative">
+                    {spotify?.albumImageUrl ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img 
+                        src={spotify.albumImageUrl} 
+                        alt={spotify.album} 
+                        className="w-full h-full object-cover" 
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white">
+                        <Headphones className="w-10 h-10 animate-bounce" />
+                      </div>
+                    )}
                   </div>
                   <div className="absolute -bottom-2 -right-2 bg-white dark:bg-black p-2 rounded-full shadow-lg">
-                    <Music className="w-4 h-4 text-green-500 animate-spin-slow" />
+                    <Music className={`w-4 h-4 text-green-500 ${spotify?.isPlaying ? 'animate-spin-slow' : ''}`} />
                   </div>
                 </div>
                 
                 <div className="flex-1 w-full text-center md:text-left">
                   <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                    <span className="flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    <span className="flex h-2 w-2 relative">
+                      {spotify?.isPlaying && (
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      )}
+                      <span className={`relative inline-flex rounded-full h-2 w-2 ${spotify?.isPlaying ? 'bg-green-500' : 'bg-neutral-400'}`}></span>
                     </span>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-green-600 dark:text-green-400">
-                      Now Streaming
+                    <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${spotify?.isPlaying ? 'text-green-600 dark:text-green-400' : 'text-neutral-500'}`}>
+                      {spotify?.isPlaying ? t('dashboard_spotify_streaming') : t('spotify_last_played')}
                     </p>
                   </div>
-                  <h3 className="text-2xl font-black tracking-tighter mb-1 truncate">Coding Flow & Lo-Fi</h3>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium mb-4">Deep Focus • 24/7 Beats</p>
+                  <h3 className="text-2xl font-black tracking-tighter mb-1 truncate">
+                    {spotify?.title || 'Coding Flow & Lo-Fi'}
+                  </h3>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium mb-4">
+                    {spotify?.artist || 'Deep Focus'} • {spotify?.album || '24/7 Beats'}
+                  </p>
                   
                   {/* Progress Bar Simulation */}
                   <div className="w-full h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden mb-2">
                     <motion.div 
                       initial={{ width: 0 }}
-                      animate={{ width: '65%' }}
-                      transition={{ duration: 2, ease: "easeOut" }}
+                      animate={{ width: `${spotify ? Math.min(100, (progressMs / spotify.durationMs) * 100) : 0}%` }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
                       className="h-full bg-gradient-to-r from-green-500 to-emerald-400"
                     />
                   </div>
                   <div className="flex justify-between text-[8px] font-mono font-bold text-neutral-400 tracking-widest">
-                    <span>02:45</span>
-                    <span>04:20</span>
+                    <span>{formatTime(progressMs)}</span>
+                    <span>{formatTime(spotify?.durationMs || 0)}</span>
                   </div>
                 </div>
                 
                 <a
-                  href="https://open.spotify.com"
+                  href={spotify?.songUrl || 'https://open.spotify.com'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-8 py-3 rounded-2xl bg-green-500 text-white text-xs font-black uppercase tracking-widest hover:bg-green-600 transition-all shadow-xl shadow-green-500/20 hover:-translate-y-1 active:scale-95"
                 >
-                  Listen
+                  {t('dashboard_spotify_listen')}
                 </a>
               </div>
             </div>
@@ -303,10 +329,10 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
             <Folder className="w-7 h-7 text-blue-500" />
-            Active Repositories
+            {t('dashboard_active_repos')}
           </h2>
           <div className="h-px flex-1 bg-neutral-100 dark:bg-neutral-800 mx-6 hidden md:block" />
-          <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Sort: Updated</p>
+          <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest">{t('dashboard_sort_updated')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -367,7 +393,7 @@ export default function Dashboard() {
         >
           <div className="absolute inset-0 bg-grid-neutral-200/50 dark:bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
           <p className="text-sm font-bold text-neutral-600 dark:text-neutral-400 mb-4 relative z-10">
-             To unlock full API performance, configure your GitHub Token in <code className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 rounded font-mono text-xs">.env.local</code>
+             {t('dashboard_token_note')} <code className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 rounded font-mono text-xs">.env.local</code>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 relative z-10">
             <a
@@ -376,7 +402,7 @@ export default function Dashboard() {
               rel="noopener noreferrer"
               className="px-6 py-2.5 rounded-xl bg-neutral-900 dark:bg-white text-white dark:text-black text-xs font-black uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
             >
-              Get Token
+              {t('dashboard_get_token')}
             </a>
             <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
               NEXT_PUBLIC_GITHUB_TOKEN

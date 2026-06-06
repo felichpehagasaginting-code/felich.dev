@@ -4,41 +4,33 @@ import { motion } from 'framer-motion';
 import PageTransition from '@/components/PageTransition';
 import { Quote, Verified, ShieldCheck, MessageSquare, Clock, Sparkles } from 'lucide-react';
 import CareerTimeline from '@/components/CareerTimeline';
-
-const testimonials = [
-  {
-    name: 'Project Collaborator',
-    role: 'Senior Developer',
-    initials: 'PC',
-    text: 'Felich demonstrates exceptional problem-solving skills and a deep understanding of modern web technologies. His code is always clean, well-documented, and scalable.',
-  },
-  {
-    name: 'Academic Mentor',
-    role: 'University Lecturer',
-    initials: 'AM',
-    text: "One of the most dedicated and talented students I've had. His passion for AI and software engineering is truly inspiring, consistently going above and beyond expectations.",
-  },
-  {
-    name: 'Client',
-    role: 'Startup Founder',
-    initials: 'CL',
-    text: 'Working with Felich was an excellent experience. He delivered a high-quality full-stack application on time and with great attention to detail. Highly recommended!',
-  },
-];
-
-const bioContent = `
-  I'm Felich, an Indonesia-based Software Engineer dedicated to building impactful digital solutions.
-  I specialize in developing scalable web platforms and mobile applications using a modern tech stack,
-  including Next.js, TypeScript, Python, and Node.js.
-  My primary focus is crafting software architecture that doesn't just work but is well-structured,
-  maintainable, and scalable to meet business needs. I believe that high-quality code must go hand-in-hand
-  with system efficiency and logical clarity.
-  I blend technical expertise with proactive communication, critical thinking, and effective time management.
-  I thrive in collaborative environments and leverage leadership skills to ensure every project delivers
-  optimal results and a real-world impact.
-`;
+import { useTranslation } from 'react-i18next';
 
 export default function About() {
+  const { t } = useTranslation();
+
+  const testimonials = [
+    {
+      name: t('testimonial_1_name'),
+      role: t('testimonial_1_role'),
+      initials: 'PC',
+      text: t('testimonial_1_text'),
+    },
+    {
+      name: t('testimonial_2_name'),
+      role: t('testimonial_2_role'),
+      initials: 'AM',
+      text: t('testimonial_2_text'),
+    },
+    {
+      name: t('testimonial_3_name'),
+      role: t('testimonial_3_role'),
+      initials: 'CL',
+      text: t('testimonial_3_text'),
+    },
+  ];
+
+  const bioContent = t('bio_p1') + ' ' + t('bio_p2') + ' ' + t('bio_p3');
   const readingTime = Math.ceil(bioContent.split(' ').length / 200);
 
   return (
@@ -51,14 +43,14 @@ export default function About() {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">About</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{t('about')}</h1>
           <p className="text-neutral-500 dark:text-neutral-400 text-sm">
-            A brief introduction to who I am.
+            {t('about_desc')}
           </p>
           <div className="flex items-center gap-2 mt-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
               <Clock className="w-3 h-3" />
-              {readingTime} min read
+              {readingTime} {t('about_reading_time')}
             </span>
           </div>
         </motion.div>
@@ -73,28 +65,22 @@ export default function About() {
           className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed mb-8"
         >
           <p>
-            I&apos;m Felich, an Indonesia-based Software Engineer dedicated to building impactful digital solutions.
-            I specialize in developing scalable web platforms and mobile applications using a modern tech stack,
-            including Next.js, TypeScript, Python, and Node.js.
+            {t('bio_p1')}
           </p>
           <p>
-            My primary focus is crafting software architecture that doesn&apos;t just work but is well-structured,
-            maintainable, and scalable to meet business needs. I believe that high-quality code must go hand-in-hand
-            with system efficiency and logical clarity.
+            {t('bio_p2')}
           </p>
           <p>
-            I blend technical expertise with proactive communication, critical thinking, and effective time management.
-            I thrive in collaborative environments and leverage leadership skills to ensure every project delivers
-            optimal results and a real-world impact.
+            {t('bio_p3')}
           </p>
         </motion.div>
 
         <div className="flex items-center gap-6 mb-12 p-6 rounded-3xl bg-neutral-50/50 dark:bg-neutral-900/30 border border-neutral-200 dark:border-neutral-800 w-fit">
           <div className="flex flex-col">
             <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400 mb-2 flex items-center gap-1.5">
-              <Verified className="w-3 h-3 text-blue-500" /> Digital Signature
+              <Verified className="w-3 h-3 text-blue-500" /> {t('signature')}
             </p>
-            <p className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-sm select-none" style={{ fontFamily: '"Great Vibes", cursive' }}>
+            <p className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-sm select-none font-['Great_Vibes',_cursive]">
               Felich
             </p>
           </div>
@@ -119,10 +105,10 @@ export default function About() {
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-1 flex items-center gap-2">
               <Sparkles className="w-6 h-6 text-primary" />
-              Journey
+              {t('timeline_title')}
             </h2>
             <p className="text-neutral-500 dark:text-neutral-400 text-sm">
-              My career & education timeline — scroll to explore.
+              {t('timeline_desc')}
             </p>
           </div>
 
@@ -139,9 +125,9 @@ export default function About() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <MessageSquare className="w-6 h-6 text-purple-500" /> Testimonials
+            <MessageSquare className="w-6 h-6 text-purple-500" /> {t('testimonials_title')}
           </h2>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">What people say about working with me.</p>
+          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">{t('testimonials_desc')}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {testimonials.map((t, i) => (
