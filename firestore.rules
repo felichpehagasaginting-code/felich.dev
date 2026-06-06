@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /guestbook/{messageId} {
+      // Anyone can read guestbook entries
+      allow read: if true;
+      
+      // Only authenticated users can create messages
+      allow create: if request.auth != null 
+                    // UID must match the token's UID
+                    && request.auth.uid == request.resource.data.uid
+                    // Name must be string & under 100 chars
+                    && request.resource.data.name is string 
+                    && request.resource.data.name.size() <= 100
+                    // Message must be string & under 500 chars
+                    && request.resource.data.message is string 
+                    && request.resource.data.message.size() <= 500;
+      
+      // Users can only delete their own messages
+      allow delete: if request.auth != null 
+                    && request.auth.uid == resource.data.uid;
+                    
+      // No one can update an existing message once posted
+      allow update: if false;
+    }
+  }
+}
