@@ -825,6 +825,43 @@ function GitShape({ isMobile, color }: { isMobile: boolean; color: string }) {
 function FirebaseShape({ isMobile, color }: { isMobile: boolean; color: string }) {
   const groupRef = useRef<THREE.Group>(null);
 
+  const orangeShape = useMemo(() => {
+    const s = new THREE.Shape();
+    s.moveTo(0, 0.85);
+    s.lineTo(-0.65, -0.4);
+    s.lineTo(0, -0.6);
+    s.lineTo(0.65, -0.4);
+    s.closePath();
+    return s;
+  }, []);
+
+  const redShape = useMemo(() => {
+    const s = new THREE.Shape();
+    s.moveTo(0, 0.85);
+    s.lineTo(-0.65, -0.4);
+    s.lineTo(0, -0.2);
+    s.closePath();
+    return s;
+  }, []);
+
+  const yellowShape = useMemo(() => {
+    const s = new THREE.Shape();
+    s.moveTo(0, 0.85);
+    s.lineTo(0.65, -0.4);
+    s.lineTo(-0.3, -0.15);
+    s.closePath();
+    return s;
+  }, []);
+
+  const extrudeSettings = useMemo(() => ({
+    depth: 0.08,
+    bevelEnabled: true,
+    bevelSegments: 3,
+    steps: 1,
+    bevelSize: 0.02,
+    bevelThickness: 0.02,
+  }), []);
+
   useFrame((state) => {
     if (!groupRef.current) return;
     const time = state.clock.getElapsedTime();
@@ -836,8 +873,8 @@ function FirebaseShape({ isMobile, color }: { isMobile: boolean; color: string }
     <Float floatIntensity={1.5} speed={2.5}>
       <group ref={groupRef}>
         {/* Orange base sheet */}
-        <mesh position={[0, -0.05, -0.05]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.9, 0.9, 0.12, 3]} />
+        <mesh position={[0, 0, -0.06]}>
+          <extrudeGeometry args={[orangeShape, extrudeSettings]} />
           <meshPhysicalMaterial
             color="#ff9100"
             roughness={0.1}
@@ -850,24 +887,9 @@ function FirebaseShape({ isMobile, color }: { isMobile: boolean; color: string }
           />
         </mesh>
         
-        {/* Yellow top sheet, offset slightly */}
-        <mesh position={[0.1, 0.1, 0.05]} rotation={[Math.PI / 2, 0, 0]} scale={[0.75, 1, 0.75]}>
-          <cylinderGeometry args={[0.8, 0.8, 0.1, 3]} />
-          <meshPhysicalMaterial
-            color="#ffca28"
-            roughness={0.15}
-            metalness={0.2}
-            transmission={0.4}
-            thickness={0.3}
-            clearcoat={1}
-            emissive="#ffca28"
-            emissiveIntensity={0.3}
-          />
-        </mesh>
-
-        {/* Small red accent sheet */}
-        <mesh position={[-0.1, -0.15, 0.1]} rotation={[Math.PI / 2, 0, 0]} scale={[0.5, 1, 0.5]}>
-          <cylinderGeometry args={[0.7, 0.7, 0.08, 3]} />
+        {/* Red left wing */}
+        <mesh position={[0, 0, 0]}>
+          <extrudeGeometry args={[redShape, extrudeSettings]} />
           <meshPhysicalMaterial
             color="#dd2c00"
             roughness={0.2}
@@ -877,6 +899,21 @@ function FirebaseShape({ isMobile, color }: { isMobile: boolean; color: string }
             clearcoat={0.8}
             emissive="#dd2c00"
             emissiveIntensity={0.2}
+          />
+        </mesh>
+
+        {/* Yellow top/right wing */}
+        <mesh position={[0, 0, 0.06]}>
+          <extrudeGeometry args={[yellowShape, extrudeSettings]} />
+          <meshPhysicalMaterial
+            color="#ffca28"
+            roughness={0.15}
+            metalness={0.2}
+            transmission={0.4}
+            thickness={0.3}
+            clearcoat={1}
+            emissive="#ffca28"
+            emissiveIntensity={0.3}
           />
         </mesh>
       </group>
