@@ -1,0 +1,75 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark mode gradient background -->
+  <rect width="1200" height="630" fill="#0A0A0C"/>
+  <circle cx="150" cy="150" r="300" fill="#10B981" opacity="0.1" filter="blur(80px)"/>
+  <circle cx="1050" cy="480" r="300" fill="#F59E0B" opacity="0.1" filter="blur(80px)"/>
+  <circle cx="600" cy="315" r="250" fill="#3B82F6" opacity="0.05" filter="blur(100px)"/>
+
+  <!-- Academic Logo -->
+  <g transform="translate(600, 180) scale(1.5)">
+    <circle cx="0" cy="0" r="35" fill="#10B981" opacity="0.1"/>
+    <!-- Graduation Cap Graphic -->
+    <path d="M0 -18 L32 -6 L0 6 L-32 -6 Z" fill="#10B981" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M-18 -1 L-18 16 C-18 22, 18 22, 18 16 L 18 -1" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M18 -4 L26 8 L22 10" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="10" r="2" fill="#F59E0B"/>
+    <!-- Star accent -->
+    <path d="M0 -3 L2 2 L7 2 L3 5 L5 10 L0 7 L-5 10 L-3 5 L-7 2 L-2 2 Z" fill="#F59E0B" transform="translate(0, 32) scale(0.7)"/>
+  </g>
+
+  <!-- Title & Subtitle inside image -->
+  <text x="600" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="44" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">ACADEMIC &amp; MILESTONES DASHBOARD</text>
+  <text x="600" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="500" font-size="20" fill="#888899" text-anchor="middle" letter-spacing="4">MINIMALIST ID CARD &bull; SEMESTER TRACKER &bull; UI/UX</text>
+
+  <!-- Left Side: Horizontal Student ID Card Representation -->
+  <g transform="translate(100, 200)">
+    <rect width="300" height="180" rx="20" fill="#151518" stroke="#33333C" stroke-width="2"/>
+    <circle cx="50" cy="60" r="25" fill="#3B82F6" opacity="0.2"/>
+    <!-- Profile placeholder avatar -->
+    <path d="M50 48 C55 48, 58 52, 58 56 C58 64, 42 64, 42 56 C42 52, 45 48, 50 48 Z" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="50" cy="42" r="6" fill="#FFFFFF" opacity="0.8"/>
+    <!-- Verified Badge -->
+    <circle cx="70" cy="75" r="7" fill="#10B981"/>
+    <path d="M67 75 L69 77 L73 73" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    
+    <!-- Student details -->
+    <rect x="95" y="40" width="160" height="12" rx="4" fill="#FFFFFF" opacity="0.9"/>
+    <rect x="95" y="60" width="120" height="8" rx="3" fill="#888899" opacity="0.6"/>
+    <rect x="95" y="74" width="90" height="6" rx="2" fill="#888899" opacity="0.4"/>
+    
+    <!-- GPA side badge -->
+    <rect x="30" y="110" width="240" height="40" rx="10" fill="#10B981" opacity="0.1"/>
+    <rect x="30" y="110" width="240" height="40" rx="10" stroke="#10B981" stroke-width="1" opacity="0.3"/>
+    <text x="50" y="134" font-family="-apple-system, sans-serif" font-weight="900" font-size="16" fill="#10B981">3.89</text>
+    <text x="95" y="133" font-family="-apple-system, sans-serif" font-weight="700" font-size="10" fill="#10B981" letter-spacing="1">CUM LAUDE</text>
+  </g>
+
+  <!-- Right Side: Semester Progress Grid Representation -->
+  <g transform="translate(800, 200)">
+    <rect width="300" height="180" rx="20" fill="#151518" stroke="#33333C" stroke-width="2"/>
+    <!-- Semester 1 Card -->
+    <g transform="translate(20, 20)">
+      <rect width="120" height="60" rx="10" fill="#1F1F24" stroke="#10B981" stroke-width="1" opacity="0.8"/>
+      <text x="12" y="20" font-family="monospace" font-size="8" fill="#888899">SEM 1</text>
+      <text x="12" y="45" font-family="-apple-system, sans-serif" font-weight="900" font-size="18" fill="#10B981">3.89</text>
+    </g>
+    <!-- Semester 2 Card (Active) -->
+    <g transform="translate(160, 20)">
+      <rect width="120" height="60" rx="10" fill="#1F1F24" stroke="#3B82F6" stroke-width="1" opacity="0.8"/>
+      <text x="12" y="20" font-family="monospace" font-size="8" fill="#888899">SEM 2</text>
+      <text x="12" y="45" font-family="-apple-system, sans-serif" font-weight="800" font-size="12" fill="#3B82F6">ACTIVE</text>
+    </g>
+    <!-- Semester 3 Card (Pending) -->
+    <g transform="translate(20, 100)">
+      <rect width="120" height="60" rx="10" fill="#18181C" stroke="#2D2D35" stroke-width="1"/>
+      <text x="12" y="20" font-family="monospace" font-size="8" fill="#555566">SEM 3</text>
+      <text x="12" y="42" font-family="-apple-system, sans-serif" font-weight="700" font-size="12" fill="#33333C">—</text>
+    </g>
+    <!-- Semester 4 Card (Pending) -->
+    <g transform="translate(160, 100)">
+      <rect width="120" height="60" rx="10" fill="#18181C" stroke="#2D2D35" stroke-width="1"/>
+      <text x="12" y="20" font-family="monospace" font-size="8" fill="#555566">SEM 4</text>
+      <text x="12" y="42" font-family="-apple-system, sans-serif" font-weight="700" font-size="12" fill="#33333C">—</text>
+    </g>
+  </g>
+</svg>

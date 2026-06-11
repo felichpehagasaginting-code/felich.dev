@@ -1,0 +1,67 @@
+---
+title: "Showcasing My Google Developer Profile: Badges & Dashboard Integration"
+date: "2026-06-11"
+description: "How I integrated my official Google Developer Program profile and 10 verified member badges into my Next.js portfolio website."
+topics: ["Next.js", "UI/UX", "Google Developers", "SVG"]
+image: "/images/blog/google-developer-integration.svg"
+---
+
+# Google Developer Profile Integration
+
+As part of my continuous journey in software engineering, I actively participate in Google Developer Groups (GDG) and various Google-led initiatives. To showcase this involvement, I decided to integrate a live, interactive **Google Developer Profile** dashboard directly into my [Achievements page](/achievements).
+
+The challenge was to present the profile bio, developer interest tag cloud, and all 10 program badges (including GDG Jakarta Member, Gemini Enterprise Agent Ready, and Firebase Studio Developer) in a highly aesthetic layout that honors the Google Developer Program brand while seamlessly fitting into my portfolio's high-fidelity dark and light themes.
+
+---
+
+## The Design Decisions
+
+### 1. Vector Badge Icons
+Instead of using heavy, static PNG image assets which would degrade in resolution when scaled, I hand-coded custom **inline SVGs** for each of the 10 badges. This ensures they load instantly, scale perfectly on high-DPI screens, and dynamically shift their accent glows on hover:
+- **GDG Jakarta & Member Badges**: Custom code bracket tags `< >` matching official GDG color patterns.
+- **Gemini Enterprise Agent Ready**: A glowing purple-blue Gemini sparkle emblem.
+- **Firebase Studio Developer**: The trademark orange-yellow Firebase flame.
+- **Google Cloud & NVIDIA**: A unified hexagon matrix merging GCP blue/green with NVIDIA's green shield.
+
+### 2. Glassmorphism & Micro-Animations
+The profile dashboard and badges card grid employ custom glassmorphism styles (`liquid-glass` paneling) with backdrop blur and grain filters. We utilized **Framer Motion** to drive micro-animations:
+- The avatar features an animated glowing border using a gradient of Google colors.
+- Individual badge cards have hover-lift physics, scaling up and displaying a tailored background color glow depending on the badge's primary color theme.
+
+---
+
+## Technical Implementation
+
+Here is an abstract representation of how we store the badges data structure and dynamically render the custom inline vector graphics:
+
+```tsx
+const googleBadges = [
+  {
+    id: 'gdg-jakarta',
+    title: 'GDG Jakarta Member',
+    org: 'Google Developer Groups',
+    date: 'Apr 3, 2026',
+    color: 'from-[#4285F4]/20 via-[#34A853]/10 to-transparent',
+    borderColor: 'hover:border-[#4285F4]/50'
+  },
+  {
+    id: 'gemini-agent',
+    title: 'Gemini Enterprise Agent Ready',
+    org: 'Google Cloud & Gemini',
+    date: 'Apr 3, 2026',
+    color: 'from-[#a855f7]/20 via-[#6366f1]/10 to-transparent',
+    borderColor: 'hover:border-[#a855f7]/50'
+  },
+  // Additional badges...
+];
+```
+
+The rendering function matches the `id` to its respective SVG asset, keeping the main component clean and modular.
+
+---
+
+## Preview It Live
+
+To check out the interactive grid, visit the [Achievements page](/achievements). Hover over the badges to see the colors glow and the cards float!
+
+Stay curious, stay coding.

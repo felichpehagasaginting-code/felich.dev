@@ -1,0 +1,95 @@
+---
+title: "Optimizing Portfolio Performance & Accessibility: Next.js, Sanity, and WCAG Audit"
+date: "2026-06-11"
+description: "A deep dive into fixing Next.js build-time tracing warnings, modernizing deprecated Sanity image builders, and auditing WCAG mobile accessibility."
+topics: ["Next.js", "Performance", "Accessibility", "A11y"]
+image: "/images/blog/project-optimization-banner.svg"
+---
+
+# Performance & Accessibility Optimization
+
+A premium web experience isn't just about beautiful animations and glassmorphic designs—it is equally about raw performance, warning-free build systems, and digital inclusivity. In this post, I walk through the steps I took to optimize my portfolio, resolving compilation warnings, speeding up Next.js bundle tracing, and upgrading mobile navigation accessibility.
+
+---
+
+## 1. Speeding Up Next.js Compilation via Bundle Tracing
+
+When running Next.js builds, the compiler traverses the workspace to trace static files and node dependencies. However, due to external lockfiles in parent directory trees, Next.js was inferring a workspace root far wider than the project repository, throwing a warning:
+
+> `⚠ Warning: Next.js inferred your workspace root, but it may not be correct...`
+
+To lock bundle tracing purely to the repository scope, I configured the `outputFileTracingRoot` parameter directly inside the Next.js configuration:
+
+```javascript
+// next.config.mjs
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const nextConfig = {
+  outputFileTracingRoot: path.resolve(__dirname),
+  // other config options...
+};
+```
+
+This ensures Next.js limits tracing to the project subdirectory, resulting in cleaner compile logs and faster static-page collection times.
+
+---
+
+## 2. Modernizing Deprecated Sanity API Client Imports
+
+In the previous build version, utilizing the default import from `@sanity/image-url` triggered compile-time deprecation warnings:
+
+> `The default export of @sanity/image-url has been deprecated. Use the named export createImageUrlBuilder instead.`
+
+I modernized the Sanity helper file to replace the default import with the recommended named export:
+
+```typescript
+// lib/sanity.ts
+import { createClient } from 'next-sanity';
+import { createImageUrlBuilder } from '@sanity/image-url';
+
+export const client = createClient({ /* client setup */ });
+const builder = createImageUrlBuilder(client);
+
+export function urlFor(source: any) {
+  return builder.image(source);
+}
+```
+
+This cleanly resolves the build deprecations, keeping our codebase forward-compatible.
+
+---
+
+## 3. Auditing & Improving WCAG Accessibility (A11y)
+
+To align with standard Web Content Accessibility Guidelines (WCAG), interactive elements must be readable by screen readers. I audited my site's navigation structures and addressed a few missing accessibility fields inside the Mobile Navigation component:
+
+- Added explicit `aria-label` tags to the language toggles:
+  `<button aria-label="Toggle language between English and Indonesian">`
+- Added explicit `aria-label` tags matching the theme state to all theme switcher icons:
+  `<button aria-label={`Switch to ${t.key} theme`} title={t.label}>`
+
+These small modifications allow assistive technologies (like voice-overs and screen readers) to identify the role of each icon control, making the mobile interface accessible to all users.
+
+---
+
+## The Clean Compilation Result
+
+After running a fresh production build, we are greeted with a fully optimized static compile output, compiling all routes successfully in record time with **zero build-time warnings**:
+
+```bash
+▲ Next.js 16.2.4 (webpack)
+- Environments: .env.local
+  Creating an optimized production build ...
+✓ Compiled successfully in 24.7s
+✓ Finished TypeScript in 6.6s
+✓ Collecting page data using 15 workers in 1177ms
+✓ Generating static pages using 15 workers (23/23) in 966ms
+```
+
+A clean build log is a reflection of a healthy, maintainable codebase.
+
+Stay optimized, keep auditing!

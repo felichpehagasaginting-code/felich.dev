@@ -1,0 +1,43 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark mode gradient background -->
+  <rect width="1200" height="630" fill="#0A0A0C"/>
+  <circle cx="150" cy="150" r="300" fill="#4285F4" opacity="0.1" filter="blur(80px)"/>
+  <circle cx="1050" cy="480" r="300" fill="#34A853" opacity="0.1" filter="blur(80px)"/>
+  <circle cx="600" cy="315" r="250" fill="#EA4335" opacity="0.05" filter="blur(100px)"/>
+
+  <!-- Google Developer Logo -->
+  <g transform="translate(600, 180) scale(1.5)">
+    <circle cx="0" cy="0" r="30" fill="#4285F4" opacity="0.1"/>
+    <path d="M-12 -12 L0 0 L-12 12" stroke="#4285F4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M12 -12 L24 0 L12 12" stroke="#34A853" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M-2 15 L8 -15" stroke="#EA4335" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="3" cy="0" r="4" fill="#FBBC05"/>
+  </g>
+
+  <!-- Title & Subtitle inside image -->
+  <text x="600" y="340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="46" fill="#FFFFFF" text-anchor="middle" letter-spacing="-1">GOOGLE DEVELOPER INTEGRATION</text>
+  <text x="600" y="390" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="500" font-size="20" fill="#888899" text-anchor="middle" letter-spacing="4">VERIFIED BADGES &amp; CREDENTIALS</text>
+
+  <!-- Glowing cards visual representation on the sides -->
+  <!-- Left Card: Profile -->
+  <g transform="translate(100, 200)">
+    <rect width="300" height="180" rx="20" fill="#151518" stroke="#33333C" stroke-width="2"/>
+    <circle cx="60" cy="60" r="30" fill="#4285F4" opacity="0.2"/>
+    <path d="M60 42 L64 53 L75 53 L66 60 L70 71 L60 64 L50 71 L54 60 L45 53 L56 53 Z" fill="#4285F4"/>
+    <rect x="110" y="40" width="140" height="15" rx="5" fill="#4285F4" opacity="0.3"/>
+    <rect x="110" y="65" width="100" height="10" rx="3" fill="#888899" opacity="0.4"/>
+    <rect x="30" y="110" width="240" height="8" rx="4" fill="#33333C"/>
+    <rect x="30" y="130" width="180" height="8" rx="4" fill="#33333C"/>
+  </g>
+
+  <!-- Right Card: Badges Grid -->
+  <g transform="translate(800, 200)">
+    <rect width="300" height="180" rx="20" fill="#151518" stroke="#33333C" stroke-width="2"/>
+    <circle cx="60" cy="60" r="20" fill="#EA4335" opacity="0.2"/>
+    <circle cx="150" cy="60" r="20" fill="#FBBC05" opacity="0.2"/>
+    <circle cx="240" cy="60" r="20" fill="#34A853" opacity="0.2"/>
+    <circle cx="60" cy="120" r="20" fill="#4285F4" opacity="0.2"/>
+    <circle cx="150" cy="120" r="20" fill="#a855f7" opacity="0.2"/>
+    <circle cx="240" cy="120" r="20" fill="#76B900" opacity="0.2"/>
+  </g>
+</svg>

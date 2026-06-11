@@ -1,0 +1,83 @@
+---
+title: "Redesigning the Academic Portfolio: A Minimalist Student ID & Milestone Tracker"
+date: "2026-06-11"
+description: "How I redesigned my campus academic ID card and semester milestone tracker to follow a simple, elegant, and data-focused layout."
+topics: ["UI/UX", "Next.js", "Tailwind CSS", "Design Systems"]
+image: "/images/blog/academic-milestones-redesign.svg"
+---
+
+<Reveal>
+# Redesigning the Academic Dashboard: Minimalist & Elegant
+
+A premium portfolio is not just a listing of professional experiences; it is a reflection of academic growth. In this post, I detail the journey of redesigning the **Campus Academic** section of my portfolio—moving away from a bulky, vertical traditional ID Card metaphor toward a highly-integrated, horizontal dashboard layout.
+
+Our goal was simple: achieve **visual elegance** while preserving complete data density.
+</Reveal>
+
+<HighlightBox type="info">
+**Design System Principle:** Remove the noise, amplify the signal. If an element does not help tell the story of your progress or credentials, it should be condensed or removed.
+</HighlightBox>
+
+---
+
+## The Core Redesign Steps
+
+<TimelineItem date="Step 1: ID Card Transformation" title="Bulky Vertical to Sleek Horizontal">
+The previous iteration of the Student digital ID card utilized a heavy, vertical card format that took up significant screen real estate and forced user scrolling. 
+
+We transformed it into a **horizontal 3-column layout**:
+- **Column 1:** Profile Photo with a pulsing green verified badge.
+- **Column 2:** Clean typographical hierarchy detailing name, cohort, degree, and active semester.
+- **Column 3:** A dedicated, side-docked GPA indicator that scales automatically with the academic database.
+</TimelineItem>
+
+<TimelineItem date="Step 2: Semester Milestones Cleanup" title="Stripping Heavy Elements">
+The old semester milestones grid suffered from heavy card borders and noisy backgrounds. We refactored it:
+- Removed solid container backgrounds and harsh borders.
+- Introduced transparent backdrop-filtered tiles (`backdrop-blur-xl`).
+- Muted the pending semesters (opacity mapping) and highlighted the active semester with a pulsing blue indicator.
+- Displayed only critical metrics (IPS GPA and SKS credit load) for a data-first approach.
+</TimelineItem>
+
+<TimelineItem date="Step 3: Interactive Math Disclosure" title="GPA Calculation Details">
+To explain how the cumulative GPA is computed from weighted credit hours without cluttering the UI, we introduced a responsive `<details>` fold containing the mathematical formula.
+</TimelineItem>
+
+---
+
+## Technical Details
+
+```math
+GPA = Σ(IPS_i * SKS_i) / Σ(SKS_i)
+```
+
+Here is how we implemented the dynamic calculations in React:
+
+```typescript
+const academicStats = useMemo(() => {
+  const completed = semesterData.filter(s => s.ips !== null && s.sks !== null);
+  const totalSemesters = completed.length;
+  if (totalSemesters === 0) return { ipk: 0, totalSKS: 0, completedSemesters: 0, latestIPS: 0 };
+  
+  const weightedSum = completed.reduce((sum, s) => sum + (s.ips! * s.sks!), 0);
+  const totalSKS = completed.reduce((sum, s) => sum + s.sks!, 0);
+  const ipk = weightedSum / totalSKS;
+  const latestCompleted = completed[completed.length - 1];
+  
+  return { ipk, totalSKS, completedSemesters: totalSemesters, latestIPS: latestCompleted.ips! };
+}, []);
+```
+
+This keeps our data perfectly synchronized. If new semester indices are populated or modified in the future, the entire digital card's Cum Laude badges and progression bars reflect the change instantly.
+
+<HighlightBox type="warning">
+**Performance Tip:** Using `useMemo` is critical here to prevent recalculating the GPA stats on every re-render, especially during active page transition animations or filter changes.
+</HighlightBox>
+
+---
+
+## Live Demo
+
+Explore the new minimalist layout live on the [Achievements page](/achievements). Select filters, hover over elements, and toggle between dark and light themes to experience the micro-animations first hand.
+
+**— Felich**
