@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
 import { Star, GitFork, BarChart2, Music, Headphones, Folder } from 'lucide-react';
 import PageTransition from '@/components/PageTransition';
 import AnimatedCounter from '@/components/AnimatedCounter';
@@ -79,21 +78,27 @@ export default function Dashboard() {
       try {
         // Fetch repos and contributions in parallel
         const [reposRes, contribRes] = await Promise.allSettled([
-          axios.get(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
+          fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
             headers: token ? { Authorization: `token ${token}` } : {}
+          }).then(async (res) => {
+            if (!res.ok) throw new Error(`GitHub repos fetch failed: ${res.status}`);
+            return res.json();
           }),
-          axios.get('/api/github-contributions')
+          fetch('/api/github-contributions').then(async (res) => {
+            if (!res.ok) throw new Error(`GitHub contributions fetch failed: ${res.status}`);
+            return res.json();
+          })
         ]);
 
         if (reposRes.status === 'fulfilled') {
-          setRepos(reposRes.value.data);
+          setRepos(reposRes.value);
         } else {
           console.error('Failed to fetch GitHub repos:', reposRes.reason);
           setError('Failed to fetch GitHub data');
         }
 
-        if (contribRes.status === 'fulfilled' && contribRes.value.data && contribRes.value.data.weeks) {
-          setContribData(contribRes.value.data.weeks);
+        if (contribRes.status === 'fulfilled' && contribRes.value && contribRes.value.weeks) {
+          setContribData(contribRes.value.weeks);
         } else {
           console.warn(
             'Contributions fetch failed, using simulated data.',

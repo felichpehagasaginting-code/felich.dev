@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 export interface SpotifyData {
   isPlaying: boolean;
@@ -24,11 +23,15 @@ export function useSpotify() {
   useEffect(() => {
     let active = true;
 
+
     const fetchNowPlaying = async () => {
       try {
-        const response = await axios.get('/api/spotify/now-playing');
+        const response = await fetch('/api/spotify/now-playing');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         if (active) {
-          const spotifyInfo = response.data;
+          const spotifyInfo = await response.json();
           setData(spotifyInfo);
           setLocalProgress(spotifyInfo.progressMs || 0);
           setError(null);
