@@ -5,8 +5,11 @@ export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your-project-id',
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   apiVersion: '2024-01-01',
-  useCdn: false, // Set to true for production
+  // Enable CDN in production for globally distributed edge caching.
+  // The CDN is bypassed in development so edits appear immediately.
+  useCdn: process.env.NODE_ENV === 'production',
 });
+
 
 const builder = createImageUrlBuilder(client);
 

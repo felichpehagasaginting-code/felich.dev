@@ -1,44 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { doc, setDoc, increment, onSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useFirestoreCounter } from '@/lib/useFirestoreCounter';
 
 /**
  * Tracks likes per blog post in Firestore.
  * Uses localStorage to prevent double-liking across sessions.
+ *
+ * Public API is unchanged — all existing callsites continue to work.
  */
 export function useBlogLikes(slug: string) {
-  const [likes, setLikes] = useState<number>(0);
-  const [hasLiked, setHasLiked] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const storageKey = `liked_blog_${slug}`;
-
-  useEffect(() => {
-    if (!slug) return;
-    setHasLiked(localStorage.getItem(storageKey) === 'true');
-
-    // Realtime listener
-    const ref = doc(db, 'blog_likes', slug);
-    const unsub = onSnapshot(ref, (snap) => {
-      setLikes(snap.data()?.count ?? 0);
-      setLoading(false);
+  const { count: likes, hasActed: hasLiked, loading, increment: toggleLike } =
+    useFirestoreCounter({
+      collection: 'blog_likes',
+      docId: slug,
+      persistenceStrategy: 'localStorage',
+      storageKey: `liked_blog_${slug}`,
     });
-    return () => unsub();
-  }, [slug, storageKey]);
-
-  const toggleLike = async () => {
-    if (hasLiked) return; // one like per device
-    const ref = doc(db, 'blog_likes', slug);
-    try {
-      await setDoc(ref, { slug, count: increment(1) }, { merge: true });
-      setHasLiked(true);
-      localStorage.setItem(storageKey, 'true');
-    } catch (err) {
-      console.error('Like error:', err);
-    }
-  };
 
   return { likes, hasLiked, loading, toggleLike };
 }

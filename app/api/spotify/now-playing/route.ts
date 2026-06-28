@@ -2,6 +2,56 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
+// ── In-memory Spotify token cache ─────────────────────────────────────────
+// Spotify access tokens are valid for 3600 seconds (1 hour). Caching the
+// token means we only hit the Spotify Accounts service once per hour instead
+// of on every incoming request, which eliminates the token exchange round-trip
+// (~200-400 ms) and avoids rate-limit exposure under high traffic.
+interface SpotifyTokenCache {
+  accessToken: string;
+  expiresAt: number; // Unix timestamp in ms
+}
+
+let tokenCache: SpotifyTokenCache | null = null;
+
+async function getSpotifyAccessToken(
+  clientId: string,
+  clientSecret: string,
+  refreshToken: string
+): Promise<string> {
+  const now = Date.now();
+  // Return cached token if it is still valid (60-second safety buffer)
+  if (tokenCache && tokenCache.expiresAt > now + 60_000) {
+    return tokenCache.accessToken;
+  }
+
+  const basic = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+  const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${basic}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }),
+    cache: 'no-store',
+  });
+
+  if (!tokenResponse.ok) {
+    throw new Error(`Spotify token exchange failed with status: ${tokenResponse.status}`);
+  }
+
+  const tokenData = await tokenResponse.json();
+  tokenCache = {
+    accessToken: tokenData.access_token,
+    expiresAt: now + tokenData.expires_in * 1000,
+  };
+
+  return tokenCache.accessToken;
+}
+
 export async function GET() {
   try {
     const client_id = process.env.SPOTIFY_CLIENT_ID;
@@ -25,28 +75,9 @@ export async function GET() {
       });
     }
 
-    const basic = Buffer.from(`${client_id}:${client_secret}`).toString('base64');
-    
-    // 1. Fetch access token from Spotify Account service
-    const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${basic}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'refresh_token',
-        refresh_token,
-      }),
-      cache: 'no-store'
-    });
+    // 1. Get access token — uses in-memory cache, only hits Spotify once per hour
+    const accessToken = await getSpotifyAccessToken(client_id, client_secret, refresh_token);
 
-    if (!tokenResponse.ok) {
-      throw new Error(`Spotify token exchange failed with status: ${tokenResponse.status}`);
-    }
-
-    const tokenData = await tokenResponse.json();
-    const accessToken = tokenData.access_token;
 
     // 2. Fetch currently playing track
     const currentlyPlayingRes = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {

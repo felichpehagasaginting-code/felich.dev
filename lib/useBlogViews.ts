@@ -1,35 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { doc, setDoc, increment, onSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useEffect } from 'react';
+import { useFirestoreCounter } from '@/lib/useFirestoreCounter';
 
 /**
- * Tracks and displays view count for a blog post slug in Firestore.
- * Increments once per session using sessionStorage.
+ * Tracks and displays the view count for a blog post slug in Firestore.
+ * Increments once per browser session using sessionStorage.
+ *
+ * Public API is unchanged — the hook still returns a `number | null`.
  */
-export function useBlogViews(slug: string) {
-  const [views, setViews] = useState<number | null>(null);
+export function useBlogViews(slug: string): number | null {
+  const { count, increment } = useFirestoreCounter({
+    collection: 'blog_views',
+    docId: slug,
+    // sessionStorage guard — fires once per browser tab session.
+    persistenceStrategy: 'sessionStorage',
+    storageKey: `viewed_blog_${slug}`,
+    countField: 'count',
+  });
 
+  // Auto-increment on first render. The guard inside the generic hook
+  // ensures this is a no-op on any subsequent renders within the same session.
   useEffect(() => {
-    if (!slug) return;
-
-    const ref = doc(db, 'blog_views', slug);
-    const sessionKey = `viewed_blog_${slug}`;
-
-    // Increment once per session
-    if (!sessionStorage.getItem(sessionKey)) {
-      setDoc(ref, { slug, count: increment(1) }, { merge: true })
-        .then(() => sessionStorage.setItem(sessionKey, 'true'))
-        .catch(console.error);
-    }
-
-    // Realtime listener
-    const unsub = onSnapshot(ref, (snap) => {
-      setViews(snap.data()?.count ?? 0);
-    });
-    return () => unsub();
+    void increment();
+    // We intentionally omit `increment` from deps to avoid re-firing on
+    // every render. The generic hook's own guard is the source of truth.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
-  return views;
+  return count ?? null;
 }

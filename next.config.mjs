@@ -10,12 +10,17 @@ const nextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
+      // Spotify — album art displayed in SpotifyWidget
+      { protocol: 'https', hostname: 'i.scdn.co' },
+      // Sanity CDN — blog post images fetched via next-sanity
+      { protocol: 'https', hostname: 'cdn.sanity.io' },
+      // GitHub avatars — used in dashboard / contributions widget
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      // Unsplash — potential blog/project cover images
+      { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },
+
   outputFileTracingRoot: path.resolve(__dirname),
 };
 

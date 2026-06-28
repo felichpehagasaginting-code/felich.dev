@@ -61,6 +61,12 @@ export default function AIChatbot() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Ref to track input synchronously for SpeechRecognition callbacks
+  const inputRefVal = useRef('');
+  useEffect(() => {
+    inputRefVal.current = input;
+  }, [input]);
+
   // VAD refs
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -96,7 +102,7 @@ export default function AIChatbot() {
 
   // ── speak() — upgraded with language detection + isSpeaking state ────
   const speak = useCallback((text: string, msgId?: string) => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
 
     const clean = text.replace(/\*\*/g, '').replace(/#{1,6}\s/g, '');
@@ -117,7 +123,13 @@ export default function AIChatbot() {
     if (window.speechSynthesis.getVoices().length > 0) {
       assignVoice();
     } else {
-      window.speechSynthesis.onvoiceschanged = assignVoice;
+      // Use addEventListener instead of property assignment so we don't
+      // silently overwrite any existing listener and can clean up properly.
+      const onVoicesReady = () => {
+        assignVoice();
+        window.speechSynthesis.removeEventListener('voiceschanged', onVoicesReady);
+      };
+      window.speechSynthesis.addEventListener('voiceschanged', onVoicesReady);
     }
 
     utterance.lang = lang;
@@ -143,13 +155,31 @@ export default function AIChatbot() {
 
   // ── Cleanup on unmount ───────────────────────────────────────────────
   useEffect(() => {
-    return () => stopListeningCleanup();
+    return () => {
+      stopListeningCleanup();
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
   }, [stopListeningCleanup]);
+
+  // Cancel speech synthesis when voice mode is toggled off or chat is closed
+  useEffect(() => {
+    if (!voiceMode || !open) {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        setIsSpeaking(false);
+        setSpeakingMsgId(null);
+      }
+    }
+  }, [voiceMode, open]);
 
   // ── Voice Activity Detection ─────────────────────────────────────────
   const startVAD = useCallback((stream: MediaStream, onSilence: () => void) => {
     try {
-      const ctx = new AudioContext();
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 512;
       const source = ctx.createMediaStreamSource(stream);
@@ -183,86 +213,6 @@ export default function AIChatbot() {
       // AudioContext not supported — skip VAD, rely on manual stop
     }
   }, []);
-
-  // ── startListening() — Web Speech API + VAD ──────────────────────────
-  const startListening = useCallback(() => {
-    if (isListening) {
-      // Manual stop
-      recognitionRef.current?.stop();
-      stopListeningCleanup();
-      setIsListening(false);
-      setInterimTranscript('');
-      return;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert('Your browser does not support Voice Recognition.');
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-
-    const recognition = new SpeechRecognition();
-    recognitionRef.current = recognition;
-    recognition.lang = 'id-ID'; // Start with ID, will detect after
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-    recognition.continuous = false;
-
-    recognition.onstart = async () => {
-      setIsListening(true);
-      setInterimTranscript('');
-      sounds.playPop();
-
-      // Start VAD via microphone stream
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        streamRef.current = stream;
-        startVAD(stream, () => {
-          recognition.stop();
-        });
-      } catch {
-        // getUserMedia failed — no VAD, manual stop only
-      }
-    };
-
-    recognition.onresult = (event: any) => {
-      let interim = '';
-      let final = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) final += t;
-        else interim += t;
-      }
-      setInterimTranscript(interim || final);
-      if (final) setInput(prev => prev + final);
-    };
-
-    recognition.onerror = () => {
-      setIsListening(false);
-      setInterimTranscript('');
-      stopListeningCleanup();
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      setInterimTranscript('');
-      stopListeningCleanup();
-      // Auto-send if we have content
-      setInput(prev => {
-        if (prev.trim()) {
-          sendMessage(prev.trim());
-          return '';
-        }
-        return prev;
-      });
-    };
-
-    recognition.start();
-  }, [isListening, startVAD, stopListeningCleanup]);
 
   // ── sendMessage() ─────────────────────────────────────────────────────
   const sendMessage = useCallback(async (text: string) => {
@@ -310,8 +260,9 @@ export default function AIChatbot() {
       const decoder = new TextDecoder();
       let buffer = '';
       let fullText = '';
+      let streamDone = false;
 
-      while (true) {
+      while (!streamDone) {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
@@ -323,12 +274,15 @@ export default function AIChatbot() {
           if (!trimmed || !trimmed.startsWith('data: ')) continue;
           try {
             const chunk = JSON.parse(trimmed.slice(6));
-            if (chunk.done) break;
             if (chunk.text) {
               fullText += chunk.text;
               setMessages(prev =>
                 prev.map(m => m.id === aiMsgId ? { ...m, content: m.content + chunk.text } : m)
               );
+            }
+            if (chunk.done) {
+              streamDone = true;
+              break;
             }
           } catch { /* skip malformed */ }
         }
@@ -352,6 +306,94 @@ export default function AIChatbot() {
       setLoading(false);
     }
   }, [loading, messages, open, minimized, voiceMode, speak]);
+
+  // ── startListening() — Web Speech API + VAD ──────────────────────────
+  const startListening = useCallback(() => {
+    if (isListening) {
+      // Manual stop
+      recognitionRef.current?.stop();
+      stopListeningCleanup();
+      setIsListening(false);
+      setInterimTranscript('');
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Your browser does not support Voice Recognition.');
+      return;
+    }
+
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    
+    // Detect starting language: check last user message language first, fallback to browser language, fallback to en-US.
+    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
+    let startLang = 'en-US';
+    if (lastUserMsg) {
+      startLang = detectLang(lastUserMsg.content);
+    } else if (typeof navigator !== 'undefined' && navigator.language) {
+      startLang = navigator.language.startsWith('id') ? 'id-ID' : 'en-US';
+    }
+    recognition.lang = startLang;
+
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+
+    recognition.onstart = async () => {
+      setIsListening(true);
+      setInterimTranscript('');
+      sounds.playPop();
+
+      // Start VAD via microphone stream
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        streamRef.current = stream;
+        startVAD(stream, () => {
+          recognition.stop();
+        });
+      } catch {
+        // getUserMedia failed — no VAD, manual stop only
+      }
+    };
+
+    recognition.onresult = (event: any) => {
+      let interim = '';
+      let final = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = event.results[i][0].transcript;
+        if (event.results[i].isFinal) final += t;
+        else interim += t;
+      }
+      setInterimTranscript(interim || final);
+      if (final) setInput(prev => prev + final);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      setInterimTranscript('');
+      stopListeningCleanup();
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      setInterimTranscript('');
+      stopListeningCleanup();
+      // Auto-send if we have content
+      const finalInput = inputRefVal.current.trim();
+      if (finalInput) {
+        sendMessage(finalInput);
+      }
+    };
+
+    recognition.start();
+  }, [isListening, startVAD, stopListeningCleanup, sendMessage, messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input); }

@@ -1,33 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+// Import the singleton db instance instead of re-initializing Firebase here.
+// This eliminates the duplicate firebaseConfig block that previously lived
+// in this file and ensures a single Firebase app instance on the server.
+import { db } from '@/lib/firebase';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
-
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-const db = getFirestore(app);
+/** Basic email format validator — avoids a regex library dependency */
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: NextRequest) {
   try {
     const { name, email, message } = await req.json();
 
+    // ── Input validation ──────────────────────────────────────────────────────
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
-      return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'All fields are required.' },
+        { status: 400 }
+      );
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
+    if (!EMAIL_REGEX.test(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email address.' },
+        { status: 400 }
+      );
     }
 
+    // ── Persist to Firestore ──────────────────────────────────────────────────
     await addDoc(collection(db, 'contact_messages'), {
       name: name.trim(),
       email: email.trim().toLowerCase(),
@@ -39,6 +39,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Contact API error:', error);
-    return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error.' },
+      { status: 500 }
+    );
   }
 }

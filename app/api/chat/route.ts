@@ -79,11 +79,15 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Build Gemini conversation history
-    const rawContents = messages.map((msg: { role: string; content: string }) => ({
+    // Build Gemini conversation history.
+    // Compress to the last 10 messages (5 user + 5 assistant turns) to prevent
+    // unbounded token growth in long sessions — reduces latency and API cost.
+    const recentMessages = messages.slice(-10);
+    const rawContents = recentMessages.map((msg: { role: string; content: string }) => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }],
     }));
+
 
     // Deduplicate: merge consecutive same-role messages
     const contents: { role: string; parts: { text: string }[] }[] = [];

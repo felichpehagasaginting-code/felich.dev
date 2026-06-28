@@ -18,13 +18,22 @@ export function useVisitorTracking(path: string = 'home') {
     const pageRef = doc(db, 'page_views', docId);
     const trackView = async () => {
       try {
-        await setDoc(pageRef, { count: increment(1), path }, { merge: true });
+        // Session guard: only write once per path per browser session tab.
+        // This prevents SPA back/forward navigation and hot reloads from
+        // inflating the view count with duplicate Firestore writes.
+        const sessionKey = `pv_counted_${docId}`;
+        const alreadyCounted = sessionStorage.getItem(sessionKey);
+        if (!alreadyCounted) {
+          await setDoc(pageRef, { count: increment(1), path }, { merge: true });
+          sessionStorage.setItem(sessionKey, '1');
+        }
         const snap = await getDoc(pageRef);
         setTotalViews(snap.data()?.count ?? 0);
       } catch (err) {
         console.error('View tracking error:', err);
       }
     };
+
     trackView();
 
     // ── 2. Register live presence in Realtime DB ───────────────────────────

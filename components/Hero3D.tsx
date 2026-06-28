@@ -8,6 +8,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useLayoutStore } from '@/lib/store';
 
+// ScrollTrigger must be registered before any ScrollTrigger instances are created.
 gsap.registerPlugin(ScrollTrigger);
 
 function ParticleSwarm({ isMobile, activeColor }: { isMobile: boolean; activeColor: string }) {
@@ -1240,29 +1241,39 @@ export default function Hero3D() {
   useEffect(() => {
     if (!groupRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top center',
-        end: 'bottom top',
-        scrub: 1,
-      }
-    });
-
-    tl.to(groupRef.current.rotation, {
-      y: Math.PI * 1.5,
-      x: Math.PI / 6,
-      ease: 'none'
-    })
-    .to(groupRef.current.scale, {
-      x: isMobile ? 0.4 : 0.55,
-      y: isMobile ? 0.4 : 0.55,
-      z: isMobile ? 0.4 : 0.55,
-      ease: 'none'
-    }, 0);
+    // gsap.context() scopes all animations and ScrollTriggers created inside
+    // this callback to this component instance. When the component unmounts
+    // (or isMobile changes), only THIS component's animations are reverted —
+    // other page-level ScrollTriggers are left untouched.
+    const ctx = gsap.context(() => {
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top center',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      })
+        .to(groupRef.current!.rotation, {
+          y: Math.PI * 1.5,
+          x: Math.PI / 6,
+          ease: 'none',
+        })
+        .to(
+          groupRef.current!.scale,
+          {
+            x: isMobile ? 0.4 : 0.55,
+            y: isMobile ? 0.4 : 0.55,
+            z: isMobile ? 0.4 : 0.55,
+            ease: 'none',
+          },
+          0
+        );
+    }, containerRef); // scope to this component's DOM subtree
 
     return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      // Reverts only the animations registered in this context.
+      ctx.revert();
     };
   }, [isMobile]);
 
