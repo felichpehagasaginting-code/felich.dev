@@ -5,11 +5,14 @@ import Link from 'next/link';
 import PageTransition from '@/components/PageTransition';
 import { Metadata } from 'next';
 import { getPosts } from '@/lib/sanity';
+import Image from 'next/image';
+import { createMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createMetadata({
   title: 'Blog',
   description: 'Writings on software engineering, AI/ML, and building digital products. Explore technical articles and insights by Felich.',
-};
+  path: '/blog',
+});
 
 export default async function BlogList() {
   // 1. Fetch Local Posts (MDX)
@@ -117,7 +120,13 @@ export default async function BlogList() {
                       {/* Optional: Add image preview if post has one */}
                       {post.frontMatter.image && (
                         <div className="w-full md:w-48 h-32 rounded-2xl overflow-hidden relative border border-white/10">
-                          <img src={post.frontMatter.image} className="object-cover w-full h-full opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" alt="" />
+                          <Image
+                            src={post.frontMatter.image}
+                            alt={`${post.frontMatter.title} cover image`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 12rem"
+                            className="object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                          />
                         </div>
                       )}
                     </div>

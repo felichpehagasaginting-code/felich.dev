@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { sounds } from '@/lib/sounds';
 import { useLayoutStore } from '@/lib/store';
+import { useFocusTrap } from '@/lib/useFocusTrap';
 
 type CommandCategory = 'Navigation' | 'Social' | 'Actions' | 'AI';
 
@@ -47,8 +48,12 @@ export default function CommandPalette() {
   const [copied, setCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { theme, setTheme, triggerWarp } = useLayoutStore();
+
+  // Lock Tab focus inside the palette while it is open
+  useFocusTrap(containerRef, open, { autoFocusFirst: false });
 
   // Build dynamic action commands that need access to store/router
   const dynamicCommands: Command[] = [
@@ -215,6 +220,10 @@ export default function CommandPalette() {
             onClick={() => { setOpen(false); setQuery(''); }}
           />
           <motion.div
+            ref={containerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Command palette"
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
@@ -224,12 +233,19 @@ export default function CommandPalette() {
             <div className="mx-4 rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-2xl shadow-black/30">
               {/* Search input */}
               <div className="flex items-center gap-3 px-4 border-b border-neutral-200 dark:border-neutral-800">
-                <svg className="w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   ref={inputRef}
+                  id="command-palette-input"
                   type="text"
+                  role="combobox"
+                  aria-expanded={open}
+                  aria-autocomplete="list"
+                  aria-controls="command-palette-listbox"
+                  aria-activedescendant={filtered[selectedIndex] ? `cmd-option-${filtered[selectedIndex].id}` : undefined}
+                  aria-label="Search commands"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleInputKeyDown}
@@ -242,10 +258,17 @@ export default function CommandPalette() {
               </div>
 
               {/* Results */}
-              <div ref={listRef} className="max-h-80 overflow-y-auto p-2" data-lenis-prevent>
+              <div
+                ref={listRef}
+                id="command-palette-listbox"
+                role="listbox"
+                aria-label="Command results"
+                className="max-h-80 overflow-y-auto p-2"
+                data-lenis-prevent
+              >
                 {sortedCategories.map((category) => (
-                  <div key={category}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 px-3 py-2 flex items-center gap-2">
+                  <div key={category} role="group" aria-label={category}>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 px-3 py-2 flex items-center gap-2" aria-hidden="true">
                       {category === 'AI' && <span className="text-blue-500">✨</span>}
                       {category}
                     </p>
@@ -256,6 +279,9 @@ export default function CommandPalette() {
                       return (
                         <button
                           key={cmd.id}
+                          id={`cmd-option-${cmd.id}`}
+                          role="option"
+                          aria-selected={isSelected}
                           data-selected={isSelected}
                           onClick={() => handleSelect(cmd)}
                           onMouseEnter={() => { setSelectedIndex(globalIndex); sounds.playHover(); }}
@@ -264,7 +290,7 @@ export default function CommandPalette() {
                               : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
                             }`}
                         >
-                          <span className="text-base w-6 text-center flex-shrink-0">{cmd.icon}</span>
+                          <span className="text-base w-6 text-center flex-shrink-0" aria-hidden="true">{cmd.icon}</span>
                           <span className="flex-1 min-w-0">
                             <span className={`font-medium block ${isSelected ? 'text-primary' : ''}`}>{cmd.label}</span>
                             {cmd.description && (
@@ -272,7 +298,7 @@ export default function CommandPalette() {
                             )}
                           </span>
                           {cmd.external && (
-                            <svg className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Opens in new tab">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
                           )}
@@ -287,8 +313,8 @@ export default function CommandPalette() {
                   </div>
                 ))}
                 {filtered.length === 0 && (
-                  <div className="text-center py-10">
-                    <p className="text-3xl mb-2">🔍</p>
+                  <div className="text-center py-10" role="status">
+                    <p className="text-3xl mb-2" aria-hidden="true">🔍</p>
                     <p className="text-sm text-neutral-400">No results for &quot;{query}&quot;</p>
                   </div>
                 )}

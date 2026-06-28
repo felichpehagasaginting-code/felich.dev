@@ -7,10 +7,20 @@ import { useLayoutStore } from '@/lib/store';
 export default function CustomCursor() {
   const [isPointer, setIsPointer] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const { theme } = useLayoutStore();
 
   const mouseX = useSpring(0, { stiffness: 400, damping: 28 });
   const mouseY = useSpring(0, { stiffness: 400, damping: 28 });
+
+  // Respect OS-level "prefers-reduced-motion" setting
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -22,7 +32,7 @@ export default function CustomCursor() {
       const target = e.target as HTMLElement;
       if (!target) return;
 
-      const isInteractive = 
+      const isInteractive =
         target.tagName === 'BUTTON' ||
         target.tagName === 'A' ||
         target.tagName === 'INPUT' ||
@@ -51,7 +61,9 @@ export default function CustomCursor() {
     };
   }, [mouseX, mouseY, isVisible]);
 
+  // Don't render on touch devices or when reduced motion is preferred
   if (typeof window !== 'undefined' && 'ontouchstart' in window) return null;
+  if (prefersReducedMotion) return null;
 
   const cursorColor = theme === 'yellow' ? '#fbbf24' : '#6366f1';
 

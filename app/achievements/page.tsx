@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import PageTransition from '@/components/PageTransition';
 import { Bot, Library, Trophy, Brain, Mic2, BookOpen, Star, Music, Globe, Medal, Scale, Microscope, GraduationCap, BarChart2, Calculator, Building2, Server, Network, Verified, Sparkles } from 'lucide-react';
 
@@ -659,7 +660,14 @@ export default function Achievements() {
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
                   <div className="relative">
                     <div className="w-24 h-24 rounded-full bg-neutral-100 dark:bg-neutral-800 p-0.5 ring-2 ring-neutral-200 dark:ring-neutral-800 shadow-lg overflow-hidden">
-                       <img src="/images/profile.jpg" alt="Student Profile" className="w-full h-full object-cover animate-fade-in" />
+                       <Image
+                         src="/images/profile.jpg"
+                         alt="Student Profile"
+                         width={96}
+                         height={96}
+                         sizes="6rem"
+                         className="w-full h-full object-cover animate-fade-in"
+                       />
                     </div>
                     <div className="absolute bottom-0 right-0 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white dark:border-neutral-900 flex items-center justify-center shadow">
                        <Verified className="w-3 h-3 text-white" />

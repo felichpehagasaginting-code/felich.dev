@@ -724,3 +724,75 @@ html.lenis body {
   }
 }
 
+/* ── Skip Navigation Link (Accessibility) ────────────────────────────────── */
+.skip-nav {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 999999;
+  padding: 0.75rem 1.5rem;
+  background: #0a0a0a;
+  color: #fff;
+  border-radius: 0 0 0.75rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-decoration: none;
+  outline: 2px solid transparent;
+  transition: top 0.2s ease;
+}
+.skip-nav:focus {
+  top: 0;
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* ── Focus Visible Ring ──────────────────────────────────────────────────── */
+/* Provide a strong, visible focus ring for keyboard users on all interactive elements */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Reduced Motion ──────────────────────────────────────────────────────── */
+/*
+  When the user has requested reduced motion via OS preferences,
+  cancel all CSS animations/transitions to prevent vestibular disorder triggers.
+  JavaScript components using Framer Motion or requestIdleCallback
+  should read window.matchMedia('(prefers-reduced-motion: reduce)') independently.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Specifically disable the noise grain texture animation */
+  body::before {
+    display: none;
+  }
+
+  /* Disable Apple theme background animation */
+  .apple body {
+    animation: none !important;
+    background-size: auto !important;
+    background-attachment: scroll !important;
+  }
+
+  /* Disable blob animations */
+  .animate-blob-1,
+  .animate-blob-2,
+  .animate-blob-3,
+  .animate-apple-glow,
+  .animate-gradient-x,
+  .animate-pulse,
+  .animate-ping,
+  .animate-spin,
+  .animate-fade-in {
+    animation: none !important;
+  }
+}

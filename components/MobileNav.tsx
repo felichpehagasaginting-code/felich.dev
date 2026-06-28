@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { sounds } from '@/lib/sounds';
 import { triggerImpact } from '@/lib/impact';
+import { useFocusTrap } from '@/lib/useFocusTrap';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
@@ -70,6 +71,9 @@ export default function MobileNav() {
   const { mobileMenuOpen, setMobileMenuOpen, theme, setTheme, language, toggleLanguage, triggerWarp } = useLayoutStore();
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Focus trap: lock Tab key inside the drawer while it is open
+  useFocusTrap(menuRef, mobileMenuOpen, { autoFocusFirst: true });
+
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -95,7 +99,9 @@ export default function MobileNav() {
             onClick={() => { setMobileMenuOpen(!mobileMenuOpen); sounds.playPop(); }}
             onMouseEnter={() => sounds.playHover()}
             className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-            aria-label="Toggle menu"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav-drawer"
           >
             {mobileMenuOpen ? (
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,6 +129,10 @@ export default function MobileNav() {
             />
             <motion.div
               ref={menuRef}
+              id="mobile-nav-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
               initial={{ x: '-100%', scale: 0.95 }}
               animate={{ x: 0, scale: 1 }}
               exit={{ x: '-100%', scale: 0.95 }}
@@ -260,7 +270,7 @@ export default function MobileNav() {
 
               <hr className="border-neutral-200 dark:border-neutral-800 mb-4" />
 
-              <nav className="space-y-1">
+              <nav className="space-y-1" aria-label="Primary navigation">
                 {navLinks.map((link, i) => {
                   const isActive = pathname === link.href;
                   return (

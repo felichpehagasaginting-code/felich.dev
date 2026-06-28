@@ -3,11 +3,14 @@ import path from 'path';
 import matter from 'gray-matter';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { Metadata } from 'next';
+import Image from 'next/image';
 import PageTransition from '@/components/PageTransition';
 import Link from 'next/link';
 import BlogViewCounterWrapper from '@/components/BlogViewCounterWrapper';
 import BlogLikeButton from '@/components/BlogLikeButton';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
+import Script from 'next/script';
+import { absoluteUrl, createMetadata } from '@/lib/seo';
 import { 
   MdxH1, MdxH2, MdxH3, MdxP, MdxUl, MdxLi, 
   MdxA, MdxStrong, MdxBlockquote, MdxCode, 
@@ -34,10 +37,15 @@ const componentsMap = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const post = getPost({ slug });
-  return {
+  return createMetadata({
     title: post.frontMatter.title,
     description: post.frontMatter.description,
-  };
+    path: `/blog/${slug}`,
+    image: post.frontMatter.image,
+    type: 'article',
+    publishedTime: post.frontMatter.date,
+    tags: post.frontMatter.topics,
+  });
 }
 
 export async function generateStaticParams() {
@@ -57,9 +65,29 @@ function getPost({ slug }: { slug: string }) {
 export default async function Post({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { frontMatter, content } = getPost({ slug });
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: frontMatter.title,
+    description: frontMatter.description,
+    image: frontMatter.image ? absoluteUrl(frontMatter.image) : undefined,
+    datePublished: frontMatter.date,
+    dateModified: frontMatter.updated ?? frontMatter.date,
+    author: {
+      '@type': 'Person',
+      name: 'Felich',
+      url: 'https://felich.dev',
+    },
+    mainEntityOfPage: absoluteUrl(`/blog/${slug}`),
+  };
 
   return (
     <PageTransition>
+      <Script
+        id={`blog-post-json-ld-${slug}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <ScrollProgressBar />
 
       <article className="max-w-4xl mx-auto py-12 px-6">
@@ -97,7 +125,14 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
 
           {frontMatter.image && (
             <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 mb-16">
-              <img src={frontMatter.image} className="object-cover w-full h-full" alt="" />
+              <Image
+                src={frontMatter.image}
+                alt={`${frontMatter.title} cover image`}
+                fill
+                sizes="(max-width: 1024px) 100vw, 56rem"
+                className="object-cover"
+                priority
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
           )}
@@ -112,7 +147,14 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
         <footer className="mt-24 pt-12 border-t border-neutral-200 dark:border-neutral-800">
           <div className="flex flex-col items-center text-center p-12 rounded-[3rem] bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">
              <div className="w-20 h-20 rounded-full overflow-hidden mb-6 ring-4 ring-primary/20">
-                <img src="/images/profile.jpg" alt="Felich" className="object-cover w-full h-full" />
+                <Image
+                  src="/images/profile.jpg"
+                  alt="Felich"
+                  width={80}
+                  height={80}
+                  sizes="5rem"
+                  className="object-cover w-full h-full"
+                />
              </div>
              <h3 className="text-2xl font-black mb-2">Thanks for reading.</h3>
              <p className="text-neutral-500 dark:text-neutral-400 max-w-sm mb-8 font-medium">

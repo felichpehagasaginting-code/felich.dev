@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Volume2, Bot, Sparkles, X, Mic, MicOff, Send, ChevronUp, ChevronDown, MessageSquare } from 'lucide-react';
 import AuraOrb, { AuraOrbMini } from '@/components/AuraOrb';
+import { useFocusTrap } from '@/lib/useFocusTrap';
 
 type OrbState = 'idle' | 'listening' | 'speaking' | 'thinking';
 
@@ -35,8 +36,8 @@ function detectLang(text: string): 'id-ID' | 'en-US' {
 const VAD_SILENCE_MS = 1500; // stop after 1.5s of silence
 const VAD_SILENCE_THRESHOLD = 10; // RMS amplitude threshold (0-128)
 
-export default function AIChatbot() {
-  const [open, setOpen] = useState(false);
+export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+  const [open, setOpen] = useState(initiallyOpen);
   const [voiceMode, setVoiceMode] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -60,6 +61,18 @@ export default function AIChatbot() {
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap: lock Tab inside the chat window while it is open and visible
+  useFocusTrap(chatRef, open && !minimized, { autoFocusFirst: false });
+
+  useEffect(() => {
+    if (initiallyOpen) {
+      setOpen(true);
+      setMinimized(false);
+      setUnread(0);
+    }
+  }, [initiallyOpen]);
 
   // Ref to track input synchronously for SpeechRecognition callbacks
   const inputRefVal = useRef('');
@@ -407,7 +420,11 @@ export default function AIChatbot() {
         <AnimatePresence>
           {open && (
             <motion.div
+              ref={chatRef}
               key="chatwindow"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Chat with Felich AI"
               initial={{ opacity: 0, scale: 0.92, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.92, y: 20 }}
@@ -435,6 +452,8 @@ export default function AIChatbot() {
                     onClick={() => { setVoiceMode(p => !p); sounds.playSwitch(); }}
                     className={`w-7 h-7 rounded-full flex items-center justify-center transition-all text-sm ${voiceMode ? 'bg-white/30 text-white' : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'}`}
                     title={voiceMode ? 'Switch to Text Mode' : 'Switch to Voice Mode'}
+                    aria-label={voiceMode ? 'Switch to Text Mode' : 'Switch to Voice Mode'}
+                    aria-pressed={voiceMode}
                   >
                     {voiceMode ? <MessageSquare size={14} /> : <Mic size={14} />}
                   </button>
@@ -442,6 +461,8 @@ export default function AIChatbot() {
                     onClick={() => { setMinimized(p => !p); sounds.playSwitch(); }}
                     className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-sm"
                     title={minimized ? 'Expand' : 'Minimize'}
+                    aria-label={minimized ? 'Expand chat window' : 'Minimize chat window'}
+                    aria-expanded={!minimized}
                   >
                     {minimized ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
@@ -517,8 +538,14 @@ export default function AIChatbot() {
                   ) : (
                     /* ── TEXT MODE ───────────────────────────────────── */
                     <>
-                      {/* Messages */}
-                      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth">
+                      {/* Messages — role="log" + aria-live allows screen readers to announce new messages */}
+                      <div
+                        role="log"
+                        aria-live="polite"
+                        aria-label="Chat messages"
+                        aria-relevant="additions"
+                        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth"
+                      >
                         {messages.map(msg => (
                           <motion.div
                             key={msg.id}
@@ -678,6 +705,9 @@ export default function AIChatbot() {
           onClick={() => { setOpen(p => !p); setMinimized(false); setUnread(0); sounds.playPop(); }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
+          aria-label={open ? 'Close Felich AI chat' : 'Open Felich AI chat'}
+          aria-expanded={open}
+          aria-haspopup="dialog"
           className="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white shadow-xl shadow-indigo-500/40 flex items-center justify-center"
           title="Chat with Felich AI"
         >
