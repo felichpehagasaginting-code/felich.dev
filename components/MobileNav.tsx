@@ -98,7 +98,7 @@ export default function MobileNav() {
           <button
             onClick={() => { setMobileMenuOpen(!mobileMenuOpen); sounds.playPop(); }}
             onMouseEnter={() => sounds.playHover()}
-            className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+            className="p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-drawer"
@@ -167,7 +167,7 @@ export default function MobileNav() {
                 <button
                   onClick={() => { setMobileMenuOpen(false); sounds.playPop(); }}
                   onMouseEnter={() => sounds.playHover()}
-                  className="p-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                  className="p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
                   title="Close menu"
                   aria-label="Close menu"
                 >
@@ -189,7 +189,7 @@ export default function MobileNav() {
                       key={l.code}
                       onClick={() => { setLanguage(l.code); sounds.playSwitch(); }}
                       onMouseEnter={() => sounds.playHover()}
-                      className={`px-3 py-1.5 text-[10px] font-black tracking-widest rounded-full transition-all duration-300 ${
+                      className={`min-h-[44px] min-w-[44px] px-3 py-1.5 text-[10px] font-black tracking-widest rounded-full transition-all duration-300 ${
                         language === l.code
                           ? 'bg-primary text-white shadow-lg shadow-primary/25'
                           : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
@@ -254,7 +254,7 @@ export default function MobileNav() {
                           sounds.playSwitch(); 
                         }}
                         onMouseEnter={() => sounds.playHover()}
-                        className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-300 ${
+                        className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-300 ${
                           theme === t.key 
                             ? 'bg-white dark:bg-white/10 text-primary shadow-apple ring-1 ring-black/5 dark:ring-white/10' 
                             : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
@@ -287,7 +287,7 @@ export default function MobileNav() {
                         href={link.href}
                         onClick={() => { setMobileMenuOpen(false); sounds.playPop(); }}
                         onMouseEnter={() => sounds.playHover()}
-                        className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${isActive
+                        className={`flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all ${isActive
                             ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 font-semibold'
                             : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
                           }`}

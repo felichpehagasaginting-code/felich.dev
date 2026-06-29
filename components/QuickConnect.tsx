@@ -55,7 +55,7 @@ export default function QuickConnect() {
                   transition={{ delay: i * 0.04, type: "spring", stiffness: 300 }}
                   onMouseEnter={() => sounds.playHover()}
                   onClick={() => sounds.playPop()}
-                  className="flex items-center gap-3.5 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border border-neutral-200 dark:border-neutral-800 px-4 py-2.5 rounded-2xl shadow-xl hover:shadow-2xl hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-300 group"
+                  className="flex items-center gap-3.5 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border border-neutral-200 dark:border-neutral-800 px-4 py-3 rounded-2xl shadow-xl hover:shadow-2xl hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-300 group"
                 >
                   <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
                     {link.name}

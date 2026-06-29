@@ -127,7 +127,7 @@ function ThemeSwitcher() {
               sounds.playSwitch();
             }}
             onMouseEnter={() => sounds.playHover()}
-            className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-300 ${
+            className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-300 ${
               theme === t.key 
                 ? 'bg-white dark:bg-white/10 text-primary shadow-apple ring-1 ring-black/5 dark:ring-white/10' 
                 : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5'
@@ -164,7 +164,7 @@ function LanguageSwitcher() {
           key={l.code}
           onClick={() => { setLanguage(l.code); sounds.playSwitch(); }}
           onMouseEnter={() => sounds.playHover()}
-          className={`relative px-3 py-1.5 text-[10px] font-black tracking-widest rounded-full transition-all duration-300 ${
+          className={`relative min-h-[44px] min-w-[44px] px-3 py-1.5 text-[10px] font-black tracking-widest rounded-full transition-all duration-300 ${
             language === l.code
               ? 'bg-primary text-white shadow-lg shadow-primary/25'
               : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
@@ -194,7 +194,7 @@ function SoundSwitcher() {
     <button
       onClick={handleToggle}
       onMouseEnter={() => sounds.playHover()}
-      className={`w-11 h-11 flex items-center justify-center rounded-2xl border transition-all duration-500 ${
+      className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-2xl border transition-all duration-500 ${
         isEnabled 
           ? 'bg-primary/5 text-primary border-primary/20 shadow-[0_0_15px_rgba(37,99,235,0.1)]' 
           : 'bg-neutral-100/50 dark:bg-white/5 text-neutral-400 border-neutral-200 dark:border-white/5 opacity-60'
