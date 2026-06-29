@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -38,6 +37,8 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Persist to Firestore ──────────────────────────────────────────────────
+    const db = await getDb();
+    const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
     await addDoc(collection(db, 'contact_messages'), {
       name: name.trim(),
       email: email.trim().toLowerCase(),

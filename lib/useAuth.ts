@@ -1,13 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut as firebaseSignOut,
-  type User,
-} from 'firebase/auth';
-import { auth, googleProvider } from '@/lib/firebase';
+import type { User } from 'firebase/auth';
+import { getAuth, getGoogleProvider } from '@/lib/firebase';
 
 interface UseAuthReturn {
   user: User | null;
@@ -21,17 +16,25 @@ export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    let unsub: () => void;
+    (async () => {
+      const auth = await getAuth();
+      const { onAuthStateChanged } = await import('firebase/auth');
+      unsub = onAuthStateChanged(auth, (currentUser: User | null) => {
+        setUser(currentUser);
+        setLoading(false);
+      });
+    })();
+    return () => unsub?.();
   }, []);
 
   const signInWithGoogle = async () => {
     try {
-      googleProvider.setCustomParameters({ prompt: 'select_account' });
-      await signInWithPopup(auth, googleProvider);
+      const auth = await getAuth();
+      const provider = await getGoogleProvider();
+      const { signInWithPopup } = await import('firebase/auth');
+      provider.setCustomParameters({ prompt: 'select_account' });
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error('Google sign-in error:', error);
     }
@@ -39,7 +42,9 @@ export function useAuth(): UseAuthReturn {
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
+      const auth = await getAuth();
+      const mod = await import('firebase/auth');
+      await mod.signOut(auth);
     } catch (error) {
       console.error('Sign-out error:', error);
     }

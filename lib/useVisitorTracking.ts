@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ref, onValue, set, remove, serverTimestamp, onDisconnect } from 'firebase/database';
-import { doc, setDoc, increment, getDoc } from 'firebase/firestore';
-import { rtdb, db } from '@/lib/firebase';
+import { getDb, getRtdb } from '@/lib/firebase';
 
 /**
  * Tracks total page views (Firestore) + live online visitors (Realtime DB)
@@ -13,14 +11,16 @@ export function useVisitorTracking(path: string = 'home') {
   const [totalViews, setTotalViews] = useState<number | null>(null);
 
   useEffect(() => {
-    // ── 1. Increment total page views in Firestore ─────────────────────────
-    const docId = path.replace(/\//g, '_');
-    const pageRef = doc(db, 'page_views', docId);
-    const trackView = async () => {
+    let unsub: () => void;
+    (async () => {
+      const db = await getDb();
+      const rtdb = await getRtdb();
+      const { doc, setDoc, increment, getDoc } = await import('firebase/firestore');
+      const { ref, onValue, set, remove, serverTimestamp, onDisconnect } = await import('firebase/database');
+
+      const docId = path.replace(/\//g, '_');
+      const pageRef = doc(db, 'page_views', docId);
       try {
-        // Session guard: only write once per path per browser session tab.
-        // This prevents SPA back/forward navigation and hot reloads from
-        // inflating the view count with duplicate Firestore writes.
         const sessionKey = `pv_counted_${docId}`;
         const alreadyCounted = sessionStorage.getItem(sessionKey);
         if (!alreadyCounted) {
@@ -32,27 +32,22 @@ export function useVisitorTracking(path: string = 'home') {
       } catch (err) {
         console.error('View tracking error:', err);
       }
-    };
 
-    trackView();
+      const sessionId = Math.random().toString(36).slice(2);
+      const presenceRef = ref(rtdb, `presence/${path}/${sessionId}`);
+      set(presenceRef, { connectedAt: serverTimestamp() });
+      onDisconnect(presenceRef).remove();
 
-    // ── 2. Register live presence in Realtime DB ───────────────────────────
-    const sessionId = Math.random().toString(36).slice(2);
-    const presenceRef = ref(rtdb, `presence/${path}/${sessionId}`);
+      const presenceListRef = ref(rtdb, `presence/${path}`);
+      unsub = onValue(presenceListRef, (snapshot) => {
+        setOnlineCount(snapshot.size || 0);
+      });
 
-    set(presenceRef, { connectedAt: serverTimestamp() });
-    onDisconnect(presenceRef).remove(); // auto-cleanup on disconnect
-
-    // Listen for total online count on this path
-    const presenceListRef = ref(rtdb, `presence/${path}`);
-    const unsub = onValue(presenceListRef, (snapshot) => {
-      setOnlineCount(snapshot.size || 0);
-    });
-
-    return () => {
-      unsub();
-      remove(presenceRef); // cleanup on unmount
-    };
+      return () => {
+        unsub?.();
+        remove(presenceRef);
+      };
+    })();
   }, [path]);
 
   return { onlineCount, totalViews };

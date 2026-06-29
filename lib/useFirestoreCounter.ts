@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { doc, setDoc, increment, onSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 
 export type PersistenceStrategy = 'localStorage' | 'sessionStorage' | 'none';
 
@@ -75,28 +74,28 @@ export function useFirestoreCounter({
   // ── Real-time Firestore listener ───────────────────────────────────────────
   useEffect(() => {
     if (!docId) return;
-    const ref = doc(db, collectionName, docId);
-    const unsub = onSnapshot(
-      ref,
-      (snap) => {
-        setCount(snap.data()?.[countField] ?? 0);
-        setLoading(false);
-      },
-      (err) => {
-        console.error(`[useFirestoreCounter] Snapshot error on ${collectionName}/${docId}:`, err);
-        setLoading(false);
-      }
-    );
-    return () => unsub();
+    let unsub: () => void;
+    (async () => {
+      const db = await getDb();
+      const { doc, onSnapshot } = await import('firebase/firestore');
+      const ref = doc(db, collectionName, docId);
+      unsub = onSnapshot(
+        ref,
+        (snap: any) => {
+          setCount(snap.data()?.[countField] ?? 0);
+          setLoading(false);
+        },
+        () => setLoading(false)
+      );
+    })();
+    return () => unsub?.();
   }, [collectionName, docId, countField]);
 
   // ── Increment action ───────────────────────────────────────────────────────
   const doIncrement = useCallback(async () => {
     if (hasActed) return;
 
-    const ref = doc(db, collectionName, docId);
     try {
-      // Persist the action before the network call to prevent duplicate taps.
       if (persistenceStrategy !== 'none') {
         const storage =
           persistenceStrategy === 'localStorage' ? localStorage : sessionStorage;
@@ -104,9 +103,11 @@ export function useFirestoreCounter({
       }
       setHasActed(true);
 
+      const db = await getDb();
+      const { doc, setDoc, increment } = await import('firebase/firestore');
+      const ref = doc(db, collectionName, docId);
       await setDoc(ref, { [countField]: increment(1), id: docId }, { merge: true });
     } catch (err) {
-      // Roll back optimistic client-side guard on failure
       if (persistenceStrategy !== 'none') {
         const storage =
           persistenceStrategy === 'localStorage' ? localStorage : sessionStorage;

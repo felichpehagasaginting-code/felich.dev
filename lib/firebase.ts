@@ -1,8 +1,3 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getDatabase } from 'firebase/database';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'demo-key',
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'demo-project.firebaseapp.com',
@@ -14,11 +9,34 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || 'G-ABCDEF',
 };
 
-// Prevent multiple initializations (Next.js hot reload)
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let _app: any;
+let _db: any;
+let _rtdb: any;
+let _auth: any;
+let _googleProvider: any;
+let _initPromise: Promise<void> | null = null;
 
-export const db = getFirestore(app);
-export const rtdb = getDatabase(app);
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export default app;
+async function initFirebase() {
+  if (_initPromise) return _initPromise;
+  _initPromise = (async () => {
+    const [{ initializeApp, getApps, getApp }, { getFirestore }, { getDatabase }, { getAuth, GoogleAuthProvider }] =
+      await Promise.all([
+        import('firebase/app'),
+        import('firebase/firestore'),
+        import('firebase/database'),
+        import('firebase/auth'),
+      ]);
+    const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    _app = app;
+    _db = getFirestore(app);
+    _rtdb = getDatabase(app);
+    _auth = getAuth(app);
+    _googleProvider = new GoogleAuthProvider();
+  })();
+  return _initPromise;
+}
+
+export function getDb() { return initFirebase().then(() => _db); }
+export function getRtdb() { return initFirebase().then(() => _rtdb); }
+export function getAuth() { return initFirebase().then(() => _auth); }
+export function getGoogleProvider() { return initFirebase().then(() => _googleProvider); }

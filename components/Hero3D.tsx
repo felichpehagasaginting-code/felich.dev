@@ -4,12 +4,7 @@ import { useRef, useState, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, OrbitControls, Points, PointMaterial, Environment, Sphere, Torus } from '@react-three/drei';
 import * as THREE from 'three';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useLayoutStore } from '@/lib/store';
-
-// ScrollTrigger must be registered before any ScrollTrigger instances are created.
-gsap.registerPlugin(ScrollTrigger);
 
 function ParticleSwarm({ isMobile, activeColor }: { isMobile: boolean; activeColor: string }) {
   const ref = useRef<THREE.Points>(null);
@@ -1239,41 +1234,39 @@ export default function Hero3D() {
   }, []);
 
   useEffect(() => {
-    if (!groupRef.current) return;
+    const el = containerRef.current;
+    if (!el) return;
 
-    // gsap.context() scopes all animations and ScrollTriggers created inside
-    // this callback to this component instance. When the component unmounts
-    // (or isMobile changes), only THIS component's animations are reverted —
-    // other page-level ScrollTriggers are left untouched.
-    const ctx = gsap.context(() => {
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top center',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      })
-        .to(groupRef.current!.rotation, {
-          y: Math.PI * 1.5,
-          x: Math.PI / 6,
-          ease: 'none',
-        })
-        .to(
-          groupRef.current!.scale,
-          {
-            x: isMobile ? 0.4 : 0.55,
-            y: isMobile ? 0.4 : 0.55,
-            z: isMobile ? 0.4 : 0.55,
-            ease: 'none',
-          },
-          0
-        );
-    }, containerRef); // scope to this component's DOM subtree
+    let current = 0;
+    let target = 0;
+    let rafId: number;
+
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const winH = window.innerHeight;
+      const total = rect.height + winH;
+      target = Math.max(0, Math.min(1, (winH - rect.top) / total));
+    };
+
+    const tick = () => {
+      current += (target - current) * 0.08;
+      if (Math.abs(current - target) < 0.001) current = target;
+      if (groupRef.current) {
+        groupRef.current.rotation.y = current * Math.PI * 1.5;
+        groupRef.current.rotation.x = current * Math.PI / 6;
+        const s = isMobile ? 0.6 - current * 0.2 : 0.85 - current * 0.3;
+        groupRef.current.scale.set(s, s, s);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    rafId = requestAnimationFrame(tick);
 
     return () => {
-      // Reverts only the animations registered in this context.
-      ctx.revert();
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafId);
     };
   }, [isMobile]);
 

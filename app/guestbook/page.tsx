@@ -4,16 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import PageTransition from '@/components/PageTransition';
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  Timestamp,
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { Timestamp } from 'firebase/firestore';
+import { getDb } from '@/lib/firebase';
 import { useAuth } from '@/lib/useAuth';
 
 type Entry = {
@@ -61,16 +53,21 @@ export default function Guestbook() {
 
   // Realtime listener via Firestore
   useEffect(() => {
-    const q = query(collection(db, 'guestbook'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data: Entry[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Entry, 'id'>),
-      }));
-      setEntries(data);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    let unsub: () => void;
+    (async () => {
+      const db = await getDb();
+      const { collection, query, orderBy, onSnapshot } = await import('firebase/firestore');
+      const q = query(collection(db, 'guestbook'), orderBy('createdAt', 'desc'));
+      unsub = onSnapshot(q, (snapshot: any) => {
+        const data: Entry[] = snapshot.docs.map((doc: any) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<Entry, 'id'>),
+        }));
+        setEntries(data);
+        setLoading(false);
+      });
+    })();
+    return () => unsub?.();
   }, []);
 
   const checkRateLimit = useCallback((): boolean => {
@@ -92,6 +89,8 @@ export default function Guestbook() {
 
     setSubmitting(true);
     try {
+      const db = await getDb();
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
       await addDoc(collection(db, 'guestbook'), {
         name: name.trim().slice(0, 100),
         message: message.trim().slice(0, 500),
