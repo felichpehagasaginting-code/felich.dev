@@ -12,11 +12,11 @@ import DynamicFavicon from '@/components/DynamicFavicon';
 import DynamicClientComponents from '@/components/DynamicClientComponents';
 import { createMetadata, siteConfig } from '@/lib/seo';
 
-const AdaptiveBackground = dynamic(() => import('@/components/AdaptiveBackground'), { ssr: false });
-const AppleDock = dynamic(() => import('@/components/AppleDock'), { ssr: false });
-const ScrollProgress = dynamic(() => import('@/components/ScrollProgress'), { ssr: false });
-const SmoothScroll = dynamic(() => import('@/components/SmoothScroll'), { ssr: false });
-const LiveVisitorBadge = dynamic(() => import('@/components/LiveVisitorBadge'), { ssr: false });
+const AdaptiveBackground = dynamic(() => import('@/components/AdaptiveBackground'));
+const AppleDock = dynamic(() => import('@/components/AppleDock'));
+const ScrollProgress = dynamic(() => import('@/components/ScrollProgress'));
+const SmoothScroll = dynamic(() => import('@/components/SmoothScroll'));
+const LiveVisitorBadge = dynamic(() => import('@/components/LiveVisitorBadge'));
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
