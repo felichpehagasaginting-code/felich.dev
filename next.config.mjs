@@ -7,18 +7,20 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compress: true,
+  reactStrictMode: true,
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
-      // Spotify — album art displayed in SpotifyWidget
       { protocol: 'https', hostname: 'i.scdn.co' },
-      // Sanity CDN — blog post images fetched via next-sanity
       { protocol: 'https', hostname: 'cdn.sanity.io' },
-      // GitHub avatars — used in dashboard / contributions widget
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
-      // Unsplash — potential blog/project cover images
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
+  },
+
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion', 'date-fns'],
   },
 
   outputFileTracingRoot: path.resolve(__dirname),

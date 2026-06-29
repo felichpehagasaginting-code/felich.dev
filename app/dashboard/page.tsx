@@ -71,16 +71,10 @@ export default function Dashboard() {
   const [contribData, setContribData] = useState<{ level: number, count: number, date: string }[][]>(() => generateContribData());
 
   useEffect(() => {
-    const username = 'felichpehagasaginting-code';
-    const token = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-
     const fetchData = async () => {
       try {
-        // Fetch repos and contributions in parallel
         const [reposRes, contribRes] = await Promise.allSettled([
-          fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, {
-            headers: token ? { Authorization: `token ${token}` } : {}
-          }).then(async (res) => {
+          fetch('/api/github-repos').then(async (res) => {
             if (!res.ok) throw new Error(`GitHub repos fetch failed: ${res.status}`);
             return res.json();
           }),
@@ -409,9 +403,6 @@ export default function Dashboard() {
             >
               {t('dashboard_get_token')}
             </a>
-            <div className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
-              NEXT_PUBLIC_GITHUB_TOKEN
-            </div>
           </div>
         </motion.div>
       </div>

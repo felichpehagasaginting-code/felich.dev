@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
 import { Inter, Outfit, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
@@ -6,15 +7,16 @@ import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
 import ThemeProvider from '@/components/ThemeProvider';
 import ThemeMetaSync from '@/components/ThemeMetaSync';
-import ScrollProgress from '@/components/ScrollProgress';
 import CustomCursor from '@/components/CustomCursor';
 import DynamicFavicon from '@/components/DynamicFavicon';
 import DynamicClientComponents from '@/components/DynamicClientComponents';
-import AdaptiveBackground from '@/components/AdaptiveBackground';
-import SmoothScroll from '@/components/SmoothScroll';
-import AppleDock from '@/components/AppleDock';
-import LiveVisitorBadge from '@/components/LiveVisitorBadge';
 import { createMetadata, siteConfig } from '@/lib/seo';
+
+const AdaptiveBackground = dynamic(() => import('@/components/AdaptiveBackground'), { ssr: false });
+const AppleDock = dynamic(() => import('@/components/AppleDock'), { ssr: false });
+const ScrollProgress = dynamic(() => import('@/components/ScrollProgress'), { ssr: false });
+const SmoothScroll = dynamic(() => import('@/components/SmoothScroll'), { ssr: false });
+const LiveVisitorBadge = dynamic(() => import('@/components/LiveVisitorBadge'), { ssr: false });
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });

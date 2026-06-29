@@ -1,18 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-// Import the singleton db instance instead of re-initializing Firebase here.
-// This eliminates the duplicate firebaseConfig block that previously lived
-// in this file and ensures a single Firebase app instance on the server.
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { db } from '@/lib/firebase';
 
-/** Basic email format validator — avoids a regex library dependency */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const rateLimiter = new RateLimiterMemory({
+  points: 5,
+  duration: 60,
+});
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, message } = await req.json();
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    try {
+      await rateLimiter.consume(ip);
+    } catch {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429 }
+      );
+    }
 
-    // ── Input validation ──────────────────────────────────────────────────────
+    const { name, email, message } = await req.json();
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return NextResponse.json(
         { error: 'All fields are required.' },

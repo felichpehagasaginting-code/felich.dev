@@ -1,19 +1,19 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import TypingAnimation from '@/components/TypingAnimation';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import PageTransition from '@/components/PageTransition';
-import Hero3DWrapper from '@/components/Hero3DWrapper';
 import Reveal from '@/components/Reveal';
-import { sounds } from '@/lib/sounds';
 import SpotifyWidget from '@/components/SpotifyWidget';
 import LiveVisitorBadge from '@/components/LiveVisitorBadge';
 import Script from 'next/script';
 import LazySection from '@/components/LazySection';
 import { useTranslation } from 'react-i18next';
+
+const Hero3DWrapper = dynamic(() => import('@/components/Hero3DWrapper'), { ssr: false });
 
 // Dynamic imports: both Terminal (~30KB) and SkillsGrid (~74KB of SVG icons)
 // are code-split into separate async chunks that load only when their
@@ -30,23 +30,19 @@ const SkillsGrid = dynamic(() => import('@/components/SkillsGrid'), {
 export default function Home() {
   const { t } = useTranslation();
   const [localTime, setLocalTime] = useState('');
-  
+  const timeFmt = useMemo(() => new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Jakarta',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }), []);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setLocalTime(new Intl.DateTimeFormat('en-US', {
-        timeZone: 'Asia/Jakarta',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      }).format(new Date()));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  const updateTime = useCallback(() => setLocalTime(timeFmt.format(new Date())), [timeFmt]);
 
 
   return (
@@ -105,7 +101,9 @@ export default function Home() {
               </div>
 
                 <div className="flex flex-wrap items-center gap-y-4 gap-x-6 text-sm text-neutral-500 dark:text-neutral-400 mb-8 relative z-10">
-                  <div className="flex items-center gap-2 group cursor-help relative">
+                  <div className="flex items-center gap-2 group cursor-help relative"
+                    onMouseEnter={updateTime}
+                  >
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
