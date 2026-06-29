@@ -62,6 +62,8 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const isAtBottom = useRef(true);
 
   // Focus trap: lock Tab inside the chat window while it is open and visible
   useFocusTrap(chatRef, open && !minimized, { autoFocusFirst: false });
@@ -103,9 +105,16 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
     return () => document.removeEventListener('open-ai-chatbot', handler);
   }, []);
 
+  // ── Track scroll position ───────────────────────────────────────────
+  const handleScroll = useCallback(() => {
+    const el = messagesRef.current;
+    if (!el) return;
+    isAtBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+  }, []);
+
   // ── Auto-scroll ──────────────────────────────────────────────────────
   useEffect(() => {
-    if (open && !minimized) {
+    if (open && !minimized && isAtBottom.current) {
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
       setTimeout(() => inputRef.current?.focus(), 200);
       setUnread(0);
@@ -540,6 +549,8 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                     <>
                       {/* Messages — role="log" + aria-live allows screen readers to announce new messages */}
                       <div
+                        ref={messagesRef}
+                        onScroll={handleScroll}
                         role="log"
                         aria-live="polite"
                         aria-label="Chat messages"
