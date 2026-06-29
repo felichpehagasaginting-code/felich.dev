@@ -149,26 +149,31 @@ function ThemeSwitcher() {
 }
 
 function LanguageSwitcher() {
-  const { language, toggleLanguage } = useLayoutStore();
+  const { language, toggleLanguage, setLanguage } = useLayoutStore();
+  const langs = [
+    { code: 'en', label: 'US' },
+    { code: 'id', label: 'ID' },
+    { code: 'zh', label: 'ZH' },
+    { code: 'de', label: 'DE' },
+  ] as const;
 
   return (
-    <button
-      onClick={() => { toggleLanguage(); sounds.playSwitch(); }}
-      onMouseEnter={() => sounds.playHover()}
-      className="relative flex items-center p-1 rounded-full bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5 group"
-    >
-      <div 
-        className={`absolute inset-1 w-[calc(50%-4px)] bg-primary rounded-full transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-lg shadow-primary/25 ${
-          language === 'id' ? 'translate-x-[calc(100%+0px)]' : 'translate-x-0'
-        }`}
-      />
-      <span className={`relative z-10 px-4 py-1.5 text-[10px] font-black tracking-widest transition-colors duration-300 ${language === 'en' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'}`}>
-        US
-      </span>
-      <span className={`relative z-10 px-4 py-1.5 text-[10px] font-black tracking-widest transition-colors duration-300 ${language === 'id' ? 'text-white' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white'}`}>
-        ID
-      </span>
-    </button>
+    <div className="flex items-center gap-1 p-1 rounded-full bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">
+      {langs.map((l, i) => (
+        <button
+          key={l.code}
+          onClick={() => { setLanguage(l.code); sounds.playSwitch(); }}
+          onMouseEnter={() => sounds.playHover()}
+          className={`relative px-3 py-1.5 text-[10px] font-black tracking-widest rounded-full transition-all duration-300 ${
+            language === l.code
+              ? 'bg-primary text-white shadow-lg shadow-primary/25'
+              : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
+          }`}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
   );
 }
 
