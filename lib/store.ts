@@ -29,7 +29,7 @@ export const useLayoutStore = create<LayoutState>()(
     (set) => ({
       isSidebar: true,
       language: 'en',
-      theme: 'noir',
+      theme: 'vanilla',
       mobileMenuOpen: false,
       toggleLayout: () => set((state) => ({ isSidebar: !state.isSidebar })),
       toggleLanguage: () => set((state) => {
@@ -59,7 +59,7 @@ export const useLayoutStore = create<LayoutState>()(
           return {
             language: persisted.language ?? 'en',
             isSidebar: persisted.isSidebar ?? true,
-            theme: (persisted.theme ? LEGACY_THEME_MAP[persisted.theme] : undefined) ?? 'noir',
+            theme: (persisted.theme ? LEGACY_THEME_MAP[persisted.theme] : undefined) ?? 'vanilla',
           };
         }
         return persistedState as { language: Language; isSidebar: boolean; theme: Theme };

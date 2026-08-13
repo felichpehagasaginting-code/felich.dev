@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="theme-noir dark" suppressHydrationWarning>
+    <html lang="en" className="theme-vanilla" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://firestore.googleapis.com" />

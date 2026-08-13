@@ -6,7 +6,7 @@ describe('useLayoutStore (zustand)', () => {
     useLayoutStore.setState({
       isSidebar: true,
       language: 'en',
-      theme: 'noir',
+      theme: 'vanilla',
       mobileMenuOpen: false,
     });
     localStorage.clear();
@@ -16,7 +16,7 @@ describe('useLayoutStore (zustand)', () => {
     const state = useLayoutStore.getState();
     expect(state.isSidebar).toBe(true);
     expect(state.language).toBe('en');
-    expect(state.theme).toBe('noir');
+    expect(state.theme).toBe('vanilla');
     expect(state.mobileMenuOpen).toBe(false);
   });
 
