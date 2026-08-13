@@ -5,10 +5,10 @@ import AnimatedCounter from '@/components/AnimatedCounter';
 import { useTranslation } from 'react-i18next';
 
 const STATS = [
-  { key: 'stats_skills', end: 32, suffix: '+' },
-  { key: 'stats_achievements', end: 8, suffix: '+' },
+  { key: 'stats_skills', end: 50, suffix: '+' },
+  { key: 'stats_achievements', end: 10, suffix: '+' },
   { key: 'stats_projects', end: 8, suffix: '+' },
-  { key: 'stats_experience', end: 2, suffix: '+' },
+  { key: 'stats_experience', end: 1, suffix: '+' },
 ] as const;
 
 export default function StatsBand() {
