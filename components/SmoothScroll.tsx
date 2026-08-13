@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, createContext, useContext, useState, useCallback } from 'react';
+import { ReactNode, useEffect, createContext, useContext, useState, useCallback, useRef } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -26,6 +26,7 @@ export function useLenis() {
 }
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
   const [lenisInstance, setLenisInstance] = useState<Lenis | null>(null);
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       smoothWheel: true,
     });
 
+    lenisRef.current = lenis;
     setLenisInstance(lenis);
 
     lenis.on('scroll', ScrollTrigger.update);
@@ -49,19 +51,22 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     return () => {
       gsap.ticker.remove(update);
       lenis.destroy();
+      lenisRef.current = null;
       setLenisInstance(null);
     };
   }, []);
 
   const stopScroll = useCallback(() => {
-    lenisInstance?.stop();
+    lenisRef.current?.stop();
     document.body.style.overflow = 'hidden';
-  }, [lenisInstance]);
+    document.documentElement.style.overflow = 'hidden';
+  }, []);
 
   const startScroll = useCallback(() => {
-    lenisInstance?.start();
+    lenisRef.current?.start();
     document.body.style.overflow = '';
-  }, [lenisInstance]);
+    document.documentElement.style.overflow = '';
+  }, []);
 
   return (
     <LenisContext.Provider value={{ lenis: lenisInstance, stopScroll, startScroll }}>

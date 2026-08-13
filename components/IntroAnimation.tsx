@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { useLenis } from './SmoothScroll';
@@ -44,16 +44,29 @@ export default function IntroAnimation() {
   const themeLabelRef = useRef<HTMLSpanElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const { stopScroll, startScroll } = useLenis();
+  const startScrollRef = useRef(startScroll);
 
   useEffect(() => {
-    // Lock body scroll while intro is active on every page refresh
+    startScrollRef.current = startScroll;
+  }, [startScroll]);
+
+  useEffect(() => {
+    // Lock body scroll while intro is active
     stopScroll();
+    return () => {
+      // Ensure scroll is restored when intro completes or unmounts
+      startScrollRef.current();
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
   }, [stopScroll]);
 
-  const completeIntro = () => {
-    startScroll();
+  const completeIntro = useCallback(() => {
+    startScrollRef.current();
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
     setIsActive(false);
-  };
+  }, []);
 
   useGSAP(
     () => {
