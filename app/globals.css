@@ -290,19 +290,26 @@
     padding: 0.625rem 0.75rem;
     font-size: 0.875rem;
     font-weight: 500;
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--text-muted);
     transition: all 0.15s ease;
+  }
+  .nav-link svg {
+    transition: color 0.15s ease;
   }
   .nav-link:hover {
     background: var(--bg-muted);
     color: var(--text-primary);
+    transform: translateX(2px);
   }
   .nav-link.active {
     background: var(--brand-bg);
     color: var(--text-primary);
     font-weight: 600;
-    border-left: 3px solid var(--brand);
+    box-shadow: inset 3px 0 0 var(--brand);
+  }
+  .nav-link.active svg {
+    color: var(--brand);
   }
 
   /* ── Theme Button ────────────────────────────────────────────────────── */
