@@ -67,7 +67,7 @@ CI runs: `lint → type-check → test:unit → test:e2e`. Run in this order bef
 
 ## Conventions
 
-- `next/font/google` for Inter, Outfit, JetBrains Mono via CSS variables.
+- `next/font/google` for Poppins and JetBrains Mono via CSS variables.
 - Tailwind `darkMode: 'class'` — dark classes added/removed by `ThemeProvider`.
 - Animation via framer-motion; `LazySection` wraps heavy code-split components.
 - OG images via Edge API at `app/api/og/`.

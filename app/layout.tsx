@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import dynamic from 'next/dynamic';
-import { Space_Grotesk, DM_Sans, JetBrains_Mono } from 'next/font/google';
+import { Poppins, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import Sidebar from '@/components/Sidebar';
@@ -16,8 +16,7 @@ const ScrollProgress = dynamic(() => import('@/components/ScrollProgress'));
 const SmoothScroll = dynamic(() => import('@/components/SmoothScroll'));
 const LiveVisitorBadge = dynamic(() => import('@/components/LiveVisitorBadge'));
 
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk', weight: ['500', '600', '700'] });
-const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', weight: ['400', '500', '600'] });
+const poppins = Poppins({ subsets: ['latin'], variable: '--font-poppins', weight: ['400', '500', '600', '700'] });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', weight: ['400', '500'] });
 
 export const metadata: Metadata = {
@@ -45,7 +44,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="theme-noir dark" suppressHydrationWarning>
-      <body className={`${spaceGrotesk.variable} ${dmSans.variable} ${mono.variable} font-sans antialiased bg-[var(--bg-base)] text-[var(--text-primary)] transition-colors duration-300 selection:bg-primary/20`}>
+      <body className={`${poppins.variable} ${mono.variable} font-sans antialiased bg-[var(--bg-base)] text-[var(--text-primary)] transition-colors duration-300 selection:bg-primary/20`}>
         {/* Skip Navigation — WCAG 2.4.1: allows keyboard users to bypass repetitive nav blocks */}
         <a href="#main-content" className="skip-nav">
           Skip to main content
