@@ -1,35 +1,56 @@
-# 🚀 Felich Portfolio (v2.0)
+# 🚀 Felich Portfolio
 
-Modern, high-performance portfolio built with **Next.js 14**, **TypeScript**, and **Firebase**. Featuring realtime interactions, dynamic SEO, and a robust CI/CD pipeline.
+Modern, high-performance personal portfolio built with **Next.js 16** (App Router), **TypeScript**, and **Firebase** — featuring three color themes, realtime interactions, MDX content, PWA support, and a fully verified CI pipeline.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14 (App Router), React, TailwindCSS
-- **Animations**: Framer Motion, Three.js (Fiber/Drei)
-- **Backend/Database**: Firebase (Firestore & Realtime Database)
-- **Testing**: Vitest (Unit), Playwright (E2E)
+- **Frontend**: Next.js 16 (App Router, webpack), React 19, TypeScript, TailwindCSS 3
+- **Animations**: Framer Motion, Three.js (React Three Fiber / Drei)
+- **Content**: MDX via `next-mdx-remote` (`content/blog`, `content/projects`)
+- **Backend/Data**: Firebase (Firestore & Realtime Database), Sanity client
+- **State**: Zustand (persisted to localStorage)
+- **i18n**: `react-i18next` — English, Bahasa Indonesia, 中文, Deutsch
+- **Testing**: Vitest (unit), Playwright (E2E, 3 browsers)
+- **PWA**: `@ducanh2912/next-pwa` (offline support, disabled in dev)
 - **CI/CD**: GitHub Actions
-- **PWA**: Integrated for offline support
+
+---
+
+## 🎨 Themes
+
+Three themes powered by CSS variables (`--brand`, `--surface-*`, `--text-*`, ...):
+
+| Theme | Mode | Notes |
+|:---|:---|:---|
+| `noir` | Dark (default) | Signature look, `--brand: #FFFFFF` |
+| `vanilla` | Light | Clean, high-contrast |
+| `violet` | Dark | Purple accents |
+
+The active theme persists to localStorage (store version 2) via `ThemeProvider`; `ThemeMetaSync` keeps `<meta>` and OG colors in sync.
 
 ---
 
 ## 🏁 Quick Start
 
-### 1. Prerequisites
-- Node.js 20+ 
-- npm or yarn
+### Prerequisites
 
-### 2. Installation
+- Node.js 20+
+- npm (the repo uses `legacy-peer-deps` via `.npmrc` — prefer `npm install` over `npm ci`)
+
+### Installation
+
 ```bash
 git clone https://github.com/felichpehagasaginting-code/felich.dev.git
 cd felich.dev
 npm install
 ```
 
-### 3. Environment Setup
+### Environment Setup
+
 Copy the example environment file and fill in your **Firebase** and **Gemini API** credentials:
+
 ```bash
 cp .env.example .env
 ```
@@ -38,60 +59,60 @@ cp .env.example .env
 
 ## 📖 Command Reference
 
-### 💻 Development
-| Command | Description |
-|:---|:---|
-| `npm run dev` | Start Next.js development server on `localhost:3000` |
-| `npm run type-check` | Run TypeScript compiler check (no output) |
+### Development
 
-### 🏗️ Production
 | Command | Description |
 |:---|:---|
-| `npm run build` | Build the application for production |
-| `npm run start` | Start the production server |
+| `npm run dev` | Start the Next.js dev server on `localhost:3000` (webpack) |
+| `npm run dev:all` | Run the dev server alongside the legacy backend watcher |
 
-### 🧪 Testing & Quality
-| Command | Description |
-|:---|:---|
-| `npm run lint` | Run ESLint check for code quality |
-| `npm run test:unit` | Run unit tests using **Vitest** |
-| `npm run test:e2e` | Run end-to-end tests using **Playwright** |
-| `npx playwright test --ui` | Open Playwright's interactive UI for debugging E2E tests |
+### Production
 
-### 🗄️ Legacy Backend (Optional)
 | Command | Description |
 |:---|:---|
-| `npm run backend` | Start the legacy Node.js/Express server (obsolete after Firebase migration) |
+| `npm run build` | Build for production (webpack) |
+| `npm run start` | Serve the production build |
+
+### Quality
+
+| Command | Description |
+|:---|:---|
+| `npm run lint` | ESLint over `app`, `components`, `lib` |
+| `npm run type-check` | `tsc --noEmit` (CI type gate) |
+| `npm run test:unit` | Vitest unit tests |
+| `npm run test:e2e` | Playwright E2E across chromium, firefox, webkit |
+| `npx playwright test --ui` | Playwright interactive UI for debugging E2E tests |
+
+> [!NOTE]
+> E2E serves a **production build** (`npm run build && npm run start`) because `next dev --webpack` is memory-hungry on Windows and dies mid-suite.
 
 ---
 
 ## 🔥 Firebase Features
-The project is fully integrated with Firebase for:
-- **Guestbook**: Realtime messaging via Firestore.
-- **Contact Form**: Direct message storage in Firestore.
-- **Live Visitor Tracking**: Realtime presence via Firebase RTDB.
-- **Analytics**: Project likes and blog view counters.
 
-> [!IMPORTANT]
-> Untuk setup Firebase Console (Firestore Rules, RTDB Rules), silakan cek file [firebase_setup_guide.md](./firebase_setup_guide.md).
+- **Guestbook**: Realtime messaging via Firestore
+- **Contact Form**: Messages stored in Firestore
+- **Live Visitor Tracking**: Realtime presence via RTDB
+- **Analytics**: Project likes and blog view counters
+
+Firestore rules live in `firestore.rules` (indexes in `firestore.indexes.json`).
 
 ---
 
 ## 📈 SEO & Social Sharing
-- **Dynamic OG Images**: Setiap blog post dan project punya gambar preview otomatis via Edge API (`/api/og`).
-- **Structured Data**: JSON-LD (Person & WebSite) terintegrasi buat Google Rich Results.
-- **Dynamic Sitemap**: Sitemap otomatis nge-update setiap ada artikel baru.
+
+- **Dynamic OG Images**: Edge API at `/api/og` generates previews for blog posts and projects
+- **Structured Data**: JSON-LD (Person & WebSite) for Google Rich Results
+- **Dynamic Sitemap**: Auto-updating `sitemap.xml`
 
 ---
 
 ## 🎡 CI/CD Pipeline
-GitHub Actions otomatis nge-check:
-1. **Linter**
-2. **Type Check**
-3. **Unit Tests**
-4. **E2E Tests**
+
+GitHub Actions runs, in order: **lint → type-check → unit tests → E2E tests**.
 
 ---
 
 ## 📄 License
+
 MIT © [Felich](https://github.com/felichpehagasaginting-code)

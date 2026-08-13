@@ -38,17 +38,17 @@ export default function About() {
       <div>
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
           className="mb-8"
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">{t('about')}</h1>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+          <h1 className="text-2xl md:text-4xl font-display font-bold tracking-[-0.01em] text-[var(--text-primary)] mb-1">{t('about')}</h1>
+          <p className="text-[13px] text-[var(--text-muted)]">
             {t('about_desc')}
           </p>
           <div className="flex items-center gap-2 mt-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-[var(--brand-bg)] border border-[var(--brand)]/20 text-[var(--brand)] text-[10px] font-mono font-semibold uppercase tracking-wider" style={{ borderRadius: '4px' }}>
               <Clock className="w-3 h-3" />
               {readingTime} {t('about_reading_time')}
             </span>
@@ -59,36 +59,30 @@ export default function About() {
 
         {/* Bio */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="space-y-4 text-neutral-600 dark:text-neutral-300 leading-relaxed mb-8"
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="space-y-4 text-[13px] text-[var(--text-muted)] leading-relaxed mb-8"
         >
-          <p>
-            {t('bio_p1')}
-          </p>
-          <p>
-            {t('bio_p2')}
-          </p>
-          <p>
-            {t('bio_p3')}
-          </p>
+          <p>{t('bio_p1')}</p>
+          <p>{t('bio_p2')}</p>
+          <p>{t('bio_p3')}</p>
         </motion.div>
 
-        <div className="flex items-center gap-6 mb-12 p-6 rounded-3xl bg-neutral-50/50 dark:bg-neutral-900/30 border border-neutral-200 dark:border-neutral-800 w-fit">
+        <div className="flex items-center gap-6 mb-10 p-5 bg-[var(--bg-surface)] border border-[var(--border-default)] w-fit" style={{ borderRadius: '8px' }}>
           <div className="flex flex-col">
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400 mb-2 flex items-center gap-1.5">
-              <Verified className="w-3 h-3 text-blue-500" /> {t('signature')}
+            <p className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-1 flex items-center gap-1.5">
+              <Verified className="w-3 h-3 text-[var(--brand)]" /> {t('signature')}
             </p>
-            <p className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent drop-shadow-sm select-none font-['Great_Vibes',_cursive]">
+            <p className="text-4xl font-display font-bold text-[var(--brand)] select-none">
               Felich
             </p>
           </div>
-          <div className="w-px h-12 bg-neutral-200 dark:bg-neutral-800" />
-          <div className="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex flex-col gap-1.5 leading-none">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3 text-green-500" /> SYS.AUTH: VERIFIED</span>
+          <div className="w-px h-10 bg-[var(--border-default)]" />
+          <div className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest flex flex-col gap-1.5 leading-none">
+            <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3 text-[var(--success)]" /> SYS.AUTH: VERIFIED</span>
             <span>ID: FLCH-2026-X</span>
-            <span className="opacity-50">TS: {new Date().toLocaleDateString()}</span>
+            <span className="opacity-50" suppressHydrationWarning>TS: {new Date().toLocaleDateString('en-US')}</span>
           </div>
         </div>
 
@@ -107,7 +101,7 @@ export default function About() {
               <Sparkles className="w-6 h-6 text-primary" />
               {t('timeline_title')}
             </h2>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+            <p className="text-[var(--text-muted)] text-sm">
               {t('timeline_desc')}
             </p>
           </div>
@@ -125,9 +119,9 @@ export default function About() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <MessageSquare className="w-6 h-6 text-purple-500" /> {t('testimonials_title')}
+            <MessageSquare className="w-6 h-6 text-[var(--brand)]" /> {t('testimonials_title')}
           </h2>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">{t('testimonials_desc')}</p>
+          <p className="text-[var(--text-muted)] text-sm mb-6">{t('testimonials_desc')}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {testimonials.map((t, i) => (
@@ -137,25 +131,25 @@ export default function About() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 + i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="group p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:border-purple-500/30 transition-all duration-300 hover:shadow-[0_10px_40px_rgba(168,85,247,0.15)] flex flex-col justify-between"
+                className="group p-6 rounded-3xl border border-[var(--border-default)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[var(--brand)]/30 transition-all duration-300 hover:shadow-[0_10px_40px_var(--brand-bg)] flex flex-col justify-between"
               >
                 <div>
-                  <div className="text-4xl text-purple-500/20 mb-2 font-serif group-hover:text-purple-500/40 transition-colors">
+                  <div className="text-4xl text-[var(--brand)]/20 mb-2 font-serif group-hover:text-[var(--brand)]/40 transition-colors">
                     <Quote className="fill-current" />
                   </div>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed mb-6 font-medium relative z-10">
+                  <p className="text-sm text-[var(--text-primary)] leading-relaxed mb-6 font-medium relative z-10">
                     {t.text}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800/50">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-900 border border-neutral-700/50 flex items-center justify-center text-sm font-bold text-white shadow-inner">
+                <div className="flex items-center gap-3 pt-4 border-t border-[var(--border-default)]">
+                  <div className="w-10 h-10 rounded-full bg-[var(--text-primary)] text-[var(--bg-base)] border border-[var(--border-default)] flex items-center justify-center text-sm font-bold shadow-inner">
                     {t.initials}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-r from-neutral-800 to-neutral-600 dark:from-white dark:to-neutral-400 group-hover:from-purple-500 group-hover:to-blue-500 transition-all">
+                    <h4 className="font-bold text-sm bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-muted)] group-hover:from-[var(--brand)] group-hover:to-[var(--brand-strong,var(--brand))] transition-all">
                       {t.name}
                     </h4>
-                    <p className="text-[10px] font-mono uppercase tracking-wider text-neutral-500">{t.role}</p>
+                    <p className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">{t.role}</p>
                   </div>
                 </div>
               </motion.div>

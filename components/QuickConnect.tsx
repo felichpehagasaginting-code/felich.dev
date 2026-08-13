@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { sounds } from '@/lib/sounds';
-import { Mail, FileText, Calendar, MessageCircle, Plus } from 'lucide-react';
+import { Mail, FileText, MessageCircle, Plus } from 'lucide-react';
 
 const GithubIcon = ({ size = 16, strokeWidth = 2.5 }: { size?: number, strokeWidth?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
@@ -19,23 +18,28 @@ const LinkedinIcon = ({ size = 16, strokeWidth = 2.5 }: { size?: number, strokeW
   </svg>
 );
 
+const WhatsAppIcon = ({ size = 16, strokeWidth = 2.5 }: { size?: number, strokeWidth?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 21l1.65-4.9A8.5 8.5 0 1 1 8.9 19.35L3 21z" />
+  </svg>
+);
+
 export default function QuickConnect() {
   const [isOpen, setIsOpen] = useState(false);
 
   const links = [
-    { name: 'Schedule Call', icon: Calendar, url: '#', color: 'group-hover:text-amber-500' },
-    { name: 'WhatsApp', icon: MessageCircle, url: '#', color: 'group-hover:text-green-500' },
-    { name: 'GitHub', icon: GithubIcon, url: 'https://github.com/felichpehagasaginting-code', color: 'group-hover:text-neutral-800 dark:group-hover:text-white' },
-    { name: 'LinkedIn', icon: LinkedinIcon, url: '#', color: 'group-hover:text-blue-500' },
-    { name: 'Email Me', icon: Mail, url: 'mailto:your.email@example.com', color: 'group-hover:text-red-500' },
-    { name: 'Resume (CV)', icon: FileText, url: '#', color: 'group-hover:text-primary' }
+    { name: 'GitHub', icon: GithubIcon, url: 'https://github.com/felichpehagasaginting-code' },
+    { name: 'LinkedIn', icon: LinkedinIcon, url: 'https://www.linkedin.com/in/felich-pehagasa-ginting' },
+    { name: 'WhatsApp', icon: WhatsAppIcon, url: 'https://wa.me/6281234567890' },
+    { name: 'Email Me', icon: Mail, url: 'mailto:hello@felich.dev' },
+    { name: 'Resume (CV)', icon: FileText, url: '/CV_ATS_English.md' },
   ];
 
   return (
     <div className="fixed bottom-6 right-6 z-[89] flex flex-col items-end gap-3 pointer-events-none">
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 15, filter: 'blur(5px)' }}
             animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 0.8, y: 15, filter: 'blur(5px)' }}
@@ -48,19 +52,17 @@ export default function QuickConnect() {
                 <motion.a
                   key={link.name}
                   href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={link.url.startsWith('http') ? '_blank' : undefined}
+                  rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.04, type: "spring", stiffness: 300 }}
-                  onMouseEnter={() => sounds.playHover()}
-                  onClick={() => sounds.playPop()}
-                  className="flex items-center gap-3.5 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border border-neutral-200 dark:border-neutral-800 px-4 py-3 rounded-2xl shadow-xl hover:shadow-2xl hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-300 group"
+                  className="glass-panel flex items-center gap-3.5 px-4 py-3 shadow-xl hover:border-[var(--brand)] transition-all duration-300 group"
                 >
-                  <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+                  <span className="text-sm font-semibold text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors">
                     {link.name}
                   </span>
-                  <div className={`p-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 transition-colors duration-300 ${link.color}`}>
+                  <div className="p-1.5 rounded-lg bg-[var(--bg-muted)] text-[var(--text-muted)] group-hover:text-[var(--brand)] transition-colors duration-300">
                     <Icon size={16} strokeWidth={2.5} />
                   </div>
                 </motion.a>
@@ -71,16 +73,13 @@ export default function QuickConnect() {
       </AnimatePresence>
 
       <button
-        onClick={() => {
-          setIsOpen(!isOpen);
-          sounds.playPop();
-        }}
-        onMouseEnter={() => sounds.playHover()}
-        className={`w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 pointer-events-auto outline-none ${
-          isOpen ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-900' : 'bg-primary text-white'
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 pointer-events-auto outline-none ${
+          isOpen ? 'bg-[var(--brand)] text-[var(--brand-contrast)]' : 'bg-[var(--brand)] text-[var(--brand-contrast)]'
         }`}
         title="Toggle quick links"
         aria-label="Toggle quick links"
+        aria-expanded={isOpen}
       >
         <motion.div
           animate={{ rotate: isOpen ? 135 : 0 }}

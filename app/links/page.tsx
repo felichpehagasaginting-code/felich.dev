@@ -60,7 +60,7 @@ export default function Links() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden ring-4 ring-neutral-200/50 dark:ring-neutral-700/50 shadow-lg mb-4">
+          <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden ring-4 ring-[var(--border-default)] shadow-lg mb-4">
             <Image
               src="/images/profile.jpg"
               alt="Felich"
@@ -71,7 +71,7 @@ export default function Links() {
             />
           </div>
           <h1 className="text-2xl font-bold mb-1">Felich</h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="text-sm text-[var(--text-muted)]">
             Software Engineer • AI Enthusiast
           </p>
         </motion.div>
@@ -110,7 +110,7 @@ export default function Links() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="text-center text-xs text-neutral-400 mt-8"
+          className="text-center text-xs text-[var(--text-muted)] mt-8"
         >
           &copy; {new Date().getFullYear()} Felich. All rights reserved.
         </motion.p>

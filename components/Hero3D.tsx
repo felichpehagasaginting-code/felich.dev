@@ -4,18 +4,33 @@ import { useRef, useState, useMemo, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, OrbitControls, Points, PointMaterial, Environment, Sphere, Torus } from '@react-three/drei';
 import * as THREE from 'three';
+import { useReducedMotion } from 'framer-motion';
 import { useLayoutStore } from '@/lib/store';
+
+// Deterministic PRNG so the particle cloud is identical across page loads
+// (keeps WebGL output stable for visual regression tests).
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 function ParticleSwarm({ isMobile, activeColor }: { isMobile: boolean; activeColor: string }) {
   const ref = useRef<THREE.Points>(null);
   
-  const sphereCount = isMobile ? 600 : 2000;
+  const sphereCount = isMobile ? 300 : 1500;
   const spherePositions = useMemo(() => {
+    const rand = mulberry32(42);
     const positions = new Float32Array(sphereCount * 3);
     for (let i = 0; i < sphereCount; i++) {
-        const r = 2.5 * Math.cbrt(Math.random());
-        const theta = Math.random() * 2 * Math.PI;
-        const phi = Math.acos(2 * Math.random() - 1);
+        const r = 2.5 * Math.cbrt(rand());
+        const theta = rand() * 2 * Math.PI;
+        const phi = Math.acos(2 * rand() - 1);
         
         positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
         positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
@@ -87,10 +102,11 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
   const { theme } = useLayoutStore();
 
   const coreColor = useMemo(() => {
-    if (theme === 'yellow') return '#d97706';
-    if (theme === 'apple') return '#ffffff';
-    return '#3b82f6';
+    if (theme === 'vanilla') return '#6B881F';
+    if (theme === 'violet') return '#D2C3F6';
+    return '#FFFFFF';
   }, [theme]);
+  const isGlass = theme === 'noir' || theme === 'violet';
   
   useFrame((state) => {
     if (!coreRef.current) return;
@@ -104,10 +120,10 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
     <Float floatIntensity={isMobile ? 0.8 : 1.5} speed={isMobile ? 1.5 : 3}>
       <mesh ref={coreRef}>
         <icosahedronGeometry args={[1.3, 0]} />
-        {theme === 'apple' ? (
+        {isGlass ? (
           isMobile ? (
             <meshStandardMaterial
-              color="#ffffff"
+              color={coreColor}
               roughness={0.1}
               metalness={0.1}
               transparent={true}
@@ -116,7 +132,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
             />
           ) : (
             <MeshDistortMaterial
-              color="#ffffff"
+              color={coreColor}
               speed={2}
               distort={0.2}
               radius={1}
@@ -131,7 +147,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
               clearcoat={1}
               clearcoatRoughness={0}
               attenuationDistance={0.5}
-              attenuationColor="#ffffff"
+              attenuationColor={coreColor}
               flatShading={true}
             />
           )
@@ -174,11 +190,11 @@ function InnerCore({ isMobile }: { isMobile: boolean }) {
   const { theme } = useLayoutStore();
   
   const colors = useMemo(() => {
-    if (theme === 'yellow') return { default: new THREE.Color('#fbbf24'), hover: new THREE.Color('#f59e0b') };
-    if (theme === 'apple') return { default: new THREE.Color('#0A84FF'), hover: new THREE.Color('#ffffff') };
+    if (theme === 'vanilla') return { default: new THREE.Color('#6B881F'), hover: new THREE.Color('#556B14') };
+    if (theme === 'violet') return { default: new THREE.Color('#D2C3F6'), hover: new THREE.Color('#BCA8F1') };
     return {
-      default: new THREE.Color('#ec4899'),
-      hover: new THREE.Color('#f43f5e')
+      default: new THREE.Color('#FFFFFF'),
+      hover: new THREE.Color('#E5E5E5')
     }
   }, [theme]);
 
@@ -1174,19 +1190,20 @@ export default function Hero3D() {
   const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [activeTechIndex, setActiveTechIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
   const { theme } = useLayoutStore();
 
   const themeColor = useMemo(() => {
-    if (theme === 'yellow') return '#fbbf24';
-    if (theme === 'apple') return '#ffffff';
-    return '#6366f1';
+    if (theme === 'vanilla') return '#6B881F';
+    if (theme === 'violet') return '#D2C3F6';
+    return '#FFFFFF';
   }, [theme]);
 
   const techStack = useMemo(() => [
     { name: 'Interactive Core', color: themeColor, description: 'Faceted crystal & liquid energy core' },
     { name: 'React', color: '#61dafb', description: 'Frontend development & component architecture' },
     { name: 'TypeScript', color: '#3178c6', description: 'Type-safe systems & robust applications' },
-    { name: 'Next.js', color: theme === 'light' ? '#111111' : '#ffffff', description: 'Server-side rendering & full-stack architecture' },
+    { name: 'Next.js', color: theme === 'vanilla' ? '#111111' : '#ffffff', description: 'Server-side rendering & full-stack architecture' },
     { name: 'Python', color: '#3776ab', description: 'Machine learning, AI & backend data analytics' },
     { name: 'Svelte', color: '#ff3e00', description: 'Cybernetic reactive user interfaces & compilation' },
     { name: 'Vite', color: '#646cff', description: 'Lightning-fast frontend tooling & hot module replacement' },
@@ -1276,15 +1293,16 @@ export default function Hero3D() {
         camera={{ position: [0, 0, isMobile ? 7 : 5], fov: isMobile ? 55 : 45 }}
         className="w-full h-full !absolute inset-0 focus:outline-none"
         dpr={isMobile ? 1 : [1, 1.5]}
-        frameloop={isVisible ? 'always' : 'never'}
+        performance={{ min: 0.5 }}
+        frameloop={prefersReducedMotion || !isVisible ? 'never' : 'always'}
         gl={{ 
           antialias: !isMobile, 
           powerPreference: "high-performance",
           alpha: true 
         }}
       >
-        <ambientLight intensity={theme === 'apple' ? 0.8 : 0.5} />
-        <directionalLight position={[10, 10, 10]} intensity={theme === 'apple' ? 3 : 2} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 10]} intensity={2} />
         <pointLight 
           position={[-10, -10, -10]} 
           intensity={1} 
@@ -1318,10 +1336,10 @@ export default function Hero3D() {
 
       {/* Modern Floating Tech Switcher Dashboard */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 w-full max-w-[320px] px-4 pointer-events-auto">
-        <div className="flex items-center justify-between w-full p-1 rounded-full bg-white/40 dark:bg-neutral-900/40 backdrop-blur-md border border-neutral-200/50 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.06)]">
+        <div className="flex items-center justify-between w-full p-1 rounded-full bg-[var(--glass-bg)] backdrop-blur-md border border-[var(--glass-border)] shadow-[0_8px_32px_0_rgba(0,0,0,0.06)]">
           <button 
             onClick={prevTech} 
-            className="flex items-center justify-center w-7 h-7 rounded-full text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200/50 dark:hover:bg-white/5 active:scale-95 transition-all"
+            className="flex items-center justify-center w-7 h-7 rounded-full text-[var(--text-muted)] hover:bg-[var(--brand-bg)] active:scale-95 transition-all"
             aria-label="Previous technology"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1334,14 +1352,14 @@ export default function Hero3D() {
               className="w-2 h-2 rounded-full transition-colors duration-500 shadow-sm bg-[var(--tech-color)] [box-shadow:0_0_8px_var(--tech-color)]"
               style={{ '--tech-color': techStack[activeTechIndex].color } as React.CSSProperties}
             />
-            <span className="text-xs font-extrabold text-neutral-800 dark:text-neutral-100 tracking-wider">
+            <span className="text-xs font-extrabold text-[var(--text-primary)] tracking-wider">
               {techStack[activeTechIndex].name}
             </span>
           </div>
 
           <button 
             onClick={nextTech} 
-            className="flex items-center justify-center w-7 h-7 rounded-full text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200/50 dark:hover:bg-white/5 active:scale-95 transition-all"
+            className="flex items-center justify-center w-7 h-7 rounded-full text-[var(--text-muted)] hover:bg-[var(--brand-bg)] active:scale-95 transition-all"
             aria-label="Next technology"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1350,7 +1368,7 @@ export default function Hero3D() {
           </button>
         </div>
         
-        <p className="text-[10px] text-neutral-500 dark:text-neutral-400 text-center font-medium select-none min-h-[14px]">
+        <p className="text-[10px] text-[var(--text-muted)] text-center font-medium select-none min-h-[14px]">
           {techStack[activeTechIndex].description}
         </p>
       </div>

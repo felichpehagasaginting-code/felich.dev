@@ -4,7 +4,7 @@ test.describe('Projects Page', () => {
   test('projects page renders', async ({ page }) => {
     await page.goto('/projects');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('#main-content h1')).toBeVisible();
   });
 
   test('displays project cards', async ({ page }) => {

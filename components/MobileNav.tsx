@@ -5,13 +5,12 @@ import { useLayoutStore } from '@/lib/store';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { sounds } from '@/lib/sounds';
-import { triggerImpact } from '@/lib/impact';
 import { useFocusTrap } from '@/lib/useFocusTrap';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
 import Logo from '@/components/Logo';
+import type { Theme } from '@/lib/store';
 
 const navLinks = [
   {
@@ -66,15 +65,19 @@ const navLinks = [
   },
 ];
 
+const themes: { key: Theme; label: string; swatch: string; ring: string }[] = [
+  { key: 'vanilla', label: 'Vanilla', swatch: '#EAF4CE', ring: '#6B881F' },
+  { key: 'noir', label: 'Noir Silver', swatch: '#0F0F0F', ring: '#FFFFFF' },
+  { key: 'violet', label: 'Violet Deep', swatch: '#110B1D', ring: '#D2C3F6' },
+];
+
 export default function MobileNav() {
   const pathname = usePathname();
-  const { mobileMenuOpen, setMobileMenuOpen, theme, setTheme, language, toggleLanguage, setLanguage, triggerWarp } = useLayoutStore();
+  const { mobileMenuOpen, setMobileMenuOpen, theme, setTheme, language, setLanguage } = useLayoutStore();
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Focus trap: lock Tab key inside the drawer while it is open
   useFocusTrap(menuRef, mobileMenuOpen, { autoFocusFirst: true });
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -90,15 +93,14 @@ export default function MobileNav() {
   return (
     <>
       <div className="fixed top-3 left-3 right-3 z-50 lg:hidden pointer-events-none">
-        <div className="flex items-center justify-between px-5 py-3 glass-panel shadow-apple pointer-events-auto liquid-glass !rounded-[1.5rem]">
-          <Link href="/" className="flex items-center gap-2 text-lg font-black tracking-tighter">
-            <Logo className="w-6 h-6" />
-            <span>Felich<span className="text-primary">.dev</span></span>
+        <div className="flex items-center justify-between px-5 py-3 bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-sm pointer-events-auto rounded-lg">
+          <Link href="/" className="flex items-center gap-2 text-base font-display font-bold tracking-tight text-[var(--text-primary)]">
+            <Logo className="w-5 h-5" />
+            <span>Felich<span className="text-[var(--brand)]">.dev</span></span>
           </Link>
           <button
-            onClick={() => { setMobileMenuOpen(!mobileMenuOpen); sounds.playPop(); }}
-            onMouseEnter={() => sounds.playHover()}
-            className="p-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-3 rounded-lg hover:bg-[var(--bg-muted)] transition-colors"
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-drawer"
@@ -123,7 +125,7 @@ export default function MobileNav() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-md z-40 lg:hidden"
+              className="fixed inset-0 bg-[var(--scrim)] backdrop-blur-md z-40 lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
               data-lenis-prevent
             />
@@ -137,13 +139,13 @@ export default function MobileNav() {
               animate={{ x: 0, scale: 1 }}
               exit={{ x: '-100%', scale: 0.95 }}
               transition={{ type: 'spring', damping: 24, stiffness: 250 }}
-              className="fixed left-3 top-3 bottom-3 w-[calc(100vw-1.5rem)] max-w-sm z-50 overflow-y-auto p-6 lg:hidden glass-panel shadow-apple custom-scrollbar liquid-glass !rounded-[2.5rem]"
+              className="fixed left-3 top-3 bottom-3 w-[calc(100vw-1.5rem)] max-w-sm z-50 overflow-y-auto p-6 lg:hidden bg-[var(--bg-surface)] border border-[var(--border-default)] shadow-xl custom-scrollbar rounded-lg"
               data-lenis-prevent
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <Magnetic>
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-neutral-200/50 dark:ring-neutral-700/50">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-[var(--border-default)]">
                       <Image
                         src="/images/profile.jpg"
                         alt="Felich"
@@ -155,9 +157,9 @@ export default function MobileNav() {
                     </div>
                   </Magnetic>
                   <div>
-                    <h2 className="font-bold flex items-center gap-1">
+                    <h2 className="font-bold flex items-center gap-1 text-[var(--text-primary)]">
                       Felich
-                      <svg className="w-3.5 h-3.5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-3.5 h-3.5 text-[var(--brand)]" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </h2>
@@ -165,9 +167,8 @@ export default function MobileNav() {
                 </div>
 
                 <button
-                  onClick={() => { setMobileMenuOpen(false); sounds.playPop(); }}
-                  onMouseEnter={() => sounds.playHover()}
-                  className="p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-lg hover:bg-[var(--bg-muted)] transition-colors"
                   title="Close menu"
                   aria-label="Close menu"
                 >
@@ -177,101 +178,60 @@ export default function MobileNav() {
                 </button>
               </div>
 
-<div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center gap-1 p-1 rounded-full bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">
+              <div className="flex flex-col gap-3 mb-6 w-full">
+                <div
+                  className="flex items-center justify-between gap-1 p-1 rounded-full bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full"
+                  role="group"
+                  aria-label="Language switcher"
+                >
                   {([
                     { code: 'en', label: 'US' },
                     { code: 'id', label: 'ID' },
                     { code: 'zh', label: 'ZH' },
                     { code: 'de', label: 'DE' },
-                  ] as const).map(l => (
+                  ] as const).map((l) => (
                     <button
                       key={l.code}
-                      onClick={() => { setLanguage(l.code); sounds.playSwitch(); }}
-                      onMouseEnter={() => sounds.playHover()}
-                      className={`min-h-[44px] min-w-[44px] px-3 py-1.5 text-[10px] font-black tracking-widest rounded-full transition-all duration-300 ${
+                      onClick={() => setLanguage(l.code)}
+                      className={`relative min-h-[32px] px-3 py-1 flex-1 text-[10px] font-semibold tracking-widest rounded-full transition-all duration-200 text-center ${
                         language === l.code
-                          ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                          : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
+                          ? 'bg-[var(--brand)] text-[var(--brand-contrast)]'
+                          : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                       }`}
+                      aria-label={`Switch language to ${l.code}`}
+                      aria-pressed={language === l.code}
                     >
                       {l.label}
                     </button>
                   ))}
                 </div>
 
-                <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-neutral-100/50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">
-                  {[
-                    { 
-                      key: 'light' as const, 
-                      icon: (
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <circle cx="12" cy="12" r="5" strokeWidth={2} />
-                          <path strokeWidth={2} strokeLinecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42m12.72-12.72l1.42-1.42" />
-                        </svg>
-                      ), 
-                      color: '#ffffff',
-                      label: 'Light Mode'
-                    },
-                    { 
-                      key: 'dark' as const, 
-                      icon: (
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                        </svg>
-                      ), 
-                      color: '#171717',
-                      label: 'Dark Mode'
-                    },
-                    { 
-                      key: 'yellow' as const, 
-                      icon: (
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 1v3M10 1v3M14 1v3" />
-                        </svg>
-                      ), 
-                      color: '#fef9ed',
-                      label: 'Retro Mode'
-                    },
-                    { 
-                      key: 'apple' as const, 
-                      icon: (
-                        <svg className="w-4 h-4" viewBox="0 0 384 512" fill="currentColor">
-                          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-                        </svg>
-                      ), 
-                      color: '#ffffff',
-                      label: 'Liquid Glass'
-                    },
-                  ].map((t) => (
-                    <Magnetic key={t.key}>
-                      <button
-                        onClick={(e) => { 
-                          setTheme(t.key); 
-                          triggerWarp(e.clientX, e.clientY, t.color);
-                          triggerImpact();
-                          sounds.playSwitch(); 
-                        }}
-                        onMouseEnter={() => sounds.playHover()}
-                        className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-300 ${
-                          theme === t.key 
-                            ? 'bg-white dark:bg-white/10 text-primary shadow-apple ring-1 ring-black/5 dark:ring-white/10' 
-                            : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-white'
-                        }`}
-                        aria-label={`Switch to ${t.key} theme`}
-                        title={t.label}
-                      >
-                        <motion.div whileTap={{ scale: 0.9 }}>
-                          {t.icon}
-                        </motion.div>
-                      </button>
-                    </Magnetic>
+                <div
+                  className="flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full justify-around"
+                  role="group"
+                  aria-label="Theme switcher"
+                >
+                  {themes.map((t) => (
+                    <button
+                      key={t.key}
+                      onClick={() => setTheme(t.key)}
+                      className={`w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200 ${
+                        theme === t.key ? 'bg-[var(--brand-bg)] ring-1 ring-[var(--brand)]' : 'hover:bg-[var(--bg-muted)]'
+                      }`}
+                      aria-label={`Switch to ${t.label} theme`}
+                      aria-pressed={theme === t.key}
+                      title={t.label}
+                    >
+                      <span
+                        className="w-4 h-4 rounded-full border"
+                        style={{ backgroundColor: t.swatch, borderColor: t.ring }}
+                      />
+                    </button>
                   ))}
                 </div>
               </div>
 
-              <hr className="border-neutral-200 dark:border-neutral-800 mb-4" />
+              <hr className="border-[var(--border-default)] mb-4" />
 
               <nav className="space-y-1" aria-label="Primary navigation">
                 {navLinks.map((link, i) => {
@@ -285,17 +245,18 @@ export default function MobileNav() {
                     >
                       <Link
                         href={link.href}
-                        onClick={() => { setMobileMenuOpen(false); sounds.playPop(); }}
-                        onMouseEnter={() => sounds.playHover()}
-                        className={`flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all ${isActive
-                            ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 font-semibold'
-                            : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
-                          }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-4 rounded-lg text-sm font-medium transition-all ${
+                          isActive
+                            ? 'bg-[var(--brand-bg)] text-[var(--text-primary)] font-semibold border-l-[3px] border-[var(--brand)]'
+                            : 'text-[var(--text-muted)] hover:bg-[var(--bg-muted)]'
+                        }`}
+                        aria-current={isActive ? 'page' : undefined}
                       >
                         <span className="text-lg">{link.icon}</span>
                         <span>{link.label}</span>
                         {isActive && (
-                          <svg className="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 ml-auto text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         )}

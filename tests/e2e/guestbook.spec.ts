@@ -4,7 +4,7 @@ test.describe('Guestbook Page', () => {
   test('guestbook page renders with title', async ({ page }) => {
     await page.goto('/guestbook');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('h1')).toContainText('Guestbook');
+    await expect(page.locator('#main-content h1')).toContainText('Guestbook');
   });
 
   test('shows sign-in prompt for unauthenticated users', async ({ page }) => {

@@ -12,7 +12,7 @@ export default function BlogViewCounter({ slug }: { slug: string }) {
     <motion.span
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex items-center gap-1.5 text-[11px] text-neutral-400 font-mono"
+      className="flex items-center gap-1.5 text-[11px] text-[var(--text-muted)] font-mono"
       title="Total views — tracked via Firebase"
     >
       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

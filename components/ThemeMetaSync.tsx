@@ -9,10 +9,9 @@ export default function ThemeMetaSync() {
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     const colorMap = {
-      light: '#ffffff',
-      dark: '#0a0a0a',
-      yellow: '#fef9ed',
-      apple: '#000000',
+      vanilla: '#EAF4CE',
+      noir: '#0F0F0F',
+      violet: '#110B1D',
     };
 
     if (metaThemeColor) {
@@ -23,11 +22,11 @@ export default function ThemeMetaSync() {
       meta.content = colorMap[theme];
       document.getElementsByTagName('head')[0].appendChild(meta);
     }
-    
-    // Also update safari pinned tab color
+
     const maskIcon = document.querySelector('link[rel="mask-icon"]');
     if (maskIcon) {
-      maskIcon.setAttribute('color', theme === 'yellow' ? '#d97706' : '#3b82f6');
+      const maskColor = { vanilla: '#6B881F', noir: '#FFFFFF', violet: '#D2C3F6' }[theme];
+      maskIcon.setAttribute('color', maskColor);
     }
   }, [theme]);
 

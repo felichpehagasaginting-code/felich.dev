@@ -68,7 +68,7 @@ test.describe('Accessibility (a11y)', () => {
   test('page has proper heading hierarchy', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    const h1 = page.locator('h1');
+    const h1 = page.locator('#main-content h1');
     await expect(h1.first()).toBeVisible();
   });
 });

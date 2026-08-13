@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { sounds } from '@/lib/sounds';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Volume2, Bot, Sparkles, X, Mic, MicOff, Send, ChevronUp, ChevronDown, MessageSquare } from 'lucide-react';
@@ -43,7 +42,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
     {
       id: '0',
       role: 'assistant',
-      content: "Hi! I'm **Felich AI** 👋 — your guide to Felich's portfolio. Ask me anything about his skills, projects, or how to get in touch!",
+      content: "Nihao! I'm **Felich AI** 👋 — your guide to Felich's portfolio. Ask me anything about his skills, projects, or how to get in touch!",
       timestamp: new Date(),
     },
   ]);
@@ -163,7 +162,6 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
     utterance.onerror = () => { setIsSpeaking(false); setSpeakingMsgId(null); };
 
     window.speechSynthesis.speak(utterance);
-    sounds.playSwitch();
   }, []);
 
   // ── VAD cleanup ──────────────────────────────────────────────────────
@@ -171,7 +169,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
     if (vadTimerRef.current) { clearTimeout(vadTimerRef.current); vadTimerRef.current = null; }
     if (vadFrameRef.current) { cancelAnimationFrame(vadFrameRef.current); vadFrameRef.current = null; }
     if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null; }
-    if (audioCtxRef.current) { audioCtxRef.current.close().catch(() => {}); audioCtxRef.current = null; }
+    if (audioCtxRef.current) { audioCtxRef.current.close().catch(() => { }); audioCtxRef.current = null; }
     analyserRef.current = null;
   }, []);
 
@@ -250,7 +248,6 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
-    sounds.playPop();
 
     const aiMsgId = (Date.now() + 1).toString();
 
@@ -310,8 +307,6 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
         }
       }
 
-      sounds.playSwitch();
-
       // Auto-speak in voice mode
       if (voiceMode && fullText) {
         speak(fullText, aiMsgId);
@@ -353,7 +348,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
 
     const recognition = new SpeechRecognition();
     recognitionRef.current = recognition;
-    
+
     // Detect starting language: check last user message language first, fallback to browser language, fallback to en-US.
     const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
     let startLang = 'en-US';
@@ -371,7 +366,6 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
     recognition.onstart = async () => {
       setIsListening(true);
       setInterimTranscript('');
-      sounds.playPop();
 
       // Start VAD via microphone stream
       try {
@@ -438,17 +432,17 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.92, y: 20 }}
               transition={{ type: 'spring', damping: 24, stiffness: 280 }}
-              className="w-[calc(100vw-3rem)] sm:w-[420px] rounded-3xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-2xl shadow-black/20 flex flex-col"
+              className="w-[calc(100vw-3rem)] sm:w-[420px] rounded-3xl overflow-hidden border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-2xl flex flex-col"
               style={{ height: minimized ? 'auto' : voiceMode ? '480px' : '520px', marginBottom: '0.5rem' }}
             >
               {/* ── Header ────────────────────────────────────────────── */}
-              <div className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 flex-shrink-0">
+              <div className="flex items-center gap-3 px-5 py-3 bg-[var(--bg-muted)] flex-shrink-0">
                 <div className="relative flex-shrink-0">
                   <AuraOrbMini state={orbState} size={36} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-bold text-sm">Felich AI</p>
-                  <p className="text-white/70 text-[10px] font-mono uppercase tracking-wider">
+                  <p className="text-[var(--text-primary)] font-bold text-sm">Felich AI</p>
+                  <p className="text-[var(--text-muted)] text-[10px] font-mono uppercase tracking-wider">
                     {orbState === 'idle' && 'Portfolio Assistant · Online'}
                     {orbState === 'listening' && '🎙 Listening…'}
                     {orbState === 'speaking' && '🔊 Speaking…'}
@@ -458,8 +452,8 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                 <div className="flex items-center gap-1">
                   {/* Toggle voice / text mode */}
                   <button
-                    onClick={() => { setVoiceMode(p => !p); sounds.playSwitch(); }}
-                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all text-sm ${voiceMode ? 'bg-white/30 text-white' : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'}`}
+                    onClick={() => setVoiceMode(p => !p)}
+                    className={`w-7 h-7 rounded-full flex items-center justify-center transition-all text-sm ${voiceMode ? 'bg-[var(--brand-bg)] text-[var(--brand)]' : 'bg-[var(--bg-base)] hover:bg-[var(--brand-bg)] text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                     title={voiceMode ? 'Switch to Text Mode' : 'Switch to Voice Mode'}
                     aria-label={voiceMode ? 'Switch to Text Mode' : 'Switch to Voice Mode'}
                     aria-pressed={voiceMode}
@@ -467,8 +461,8 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                     {voiceMode ? <MessageSquare size={14} /> : <Mic size={14} />}
                   </button>
                   <button
-                    onClick={() => { setMinimized(p => !p); sounds.playSwitch(); }}
-                    className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-sm"
+                    onClick={() => setMinimized(p => !p)}
+                    className="w-7 h-7 rounded-full bg-[var(--bg-base)] hover:bg-[var(--brand-bg)] text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center justify-center transition-colors text-sm"
                     title={minimized ? 'Expand' : 'Minimize'}
                     aria-label={minimized ? 'Expand chat window' : 'Minimize chat window'}
                     aria-expanded={!minimized}
@@ -476,8 +470,8 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                     {minimized ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
                   <button
-                    onClick={() => { setOpen(false); sounds.playSwitch(); }}
-                    className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-sm"
+                    onClick={() => setOpen(false)}
+                    className="w-7 h-7 rounded-full bg-[var(--bg-base)] hover:bg-[var(--brand-bg)] text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center justify-center transition-colors text-sm"
                     title="Close chat"
                     aria-label="Close chat"
                   >
@@ -490,7 +484,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                 <>
                   {/* ── VOICE MODE ────────────────────────────────────── */}
                   {voiceMode ? (
-                    <div className="flex-1 flex flex-col items-center justify-center gap-6 bg-neutral-950 p-6">
+                    <div className="flex-1 flex flex-col items-center justify-center gap-6 bg-[var(--bg-base)] p-6">
                       {/* Big Orb */}
                       <div className="relative">
                         <AuraOrb state={orbState} size={130} />
@@ -505,7 +499,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                               initial={{ opacity: 0, y: 4 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0 }}
-                              className="text-white/60 italic text-sm"
+                              className="text-[var(--text-muted)] italic text-sm"
                             >
                               &quot;{interimTranscript}&quot;
                             </motion.p>
@@ -514,12 +508,12 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                               key="last"
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
-                              className="text-white/80 text-sm leading-relaxed line-clamp-3"
+                              className="text-[var(--text-muted)] text-sm leading-relaxed line-clamp-3"
                             >
                               {messages[messages.length - 1]?.content?.slice(0, 160)}
                             </motion.p>
                           ) : (
-                            <motion.p key="hint" className="text-white/30 text-xs">
+                            <motion.p key="hint" className="text-[var(--text-muted)]/50 text-xs">
                               Tap the mic and ask anything
                             </motion.p>
                           )}
@@ -531,16 +525,15 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                         onClick={startListening}
                         whileHover={{ scale: 1.06 }}
                         whileTap={{ scale: 0.94 }}
-                        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all ${
-                          isListening
-                            ? 'bg-red-500 shadow-red-500/40'
-                            : 'bg-gradient-to-br from-blue-600 to-purple-600 shadow-purple-500/40'
-                        }`}
+                        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all ${isListening
+                          ? 'bg-[var(--danger)] text-white'
+                          : 'bg-[var(--brand)] text-[var(--brand-contrast)]'
+                          }`}
                       >
-                        {isListening ? <MicOff size={26} className="text-white" /> : <Mic size={26} className="text-white" />}
+                        {isListening ? <MicOff size={26} /> : <Mic size={26} />}
                       </motion.button>
 
-                      <p className="text-white/25 text-[10px] font-mono">
+                      <p className="text-[var(--text-muted)]/50 text-[10px] font-mono">
                         {isListening ? 'Tap to stop · Auto-stops on silence' : 'Tap to speak'}
                       </p>
                     </div>
@@ -571,16 +564,15 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                               </div>
                             )}
                             <div
-                              className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed relative group/msg ${
-                                msg.role === 'user'
-                                  ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-tr-sm shadow-md'
-                                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 rounded-tl-sm border border-neutral-200/50 dark:border-neutral-700/50'
-                              }`}
+                              className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed relative group/msg ${msg.role === 'user'
+                                ? 'bg-[var(--brand)] text-[var(--brand-contrast)] rounded-tr-sm shadow-md'
+                                : 'bg-[var(--bg-muted)] text-[var(--text-primary)] rounded-tl-sm border border-[var(--border-default)]'
+                                }`}
                             >
                               {msg.role === 'assistant' && (
                                 <button
                                   onClick={() => speak(msg.content, msg.id)}
-                                  className="absolute -right-10 top-0 p-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400 hover:text-blue-500 opacity-0 group-hover/msg:opacity-100 transition-all shadow-sm"
+                                  className="absolute -right-10 top-0 p-1.5 rounded-full bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-[var(--brand)] opacity-0 group-hover/msg:opacity-100 transition-all shadow-sm"
                                   title="Listen to response"
                                 >
                                   <Volume2 size={12} />
@@ -591,10 +583,10 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                                   remarkPlugins={[remarkGfm]}
                                   components={{
                                     p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
-                                    strong: ({ children }) => <strong className="font-extrabold text-blue-500 dark:text-blue-400">{children}</strong>,
+                                    strong: ({ children }) => <strong className="font-extrabold text-[var(--brand)]">{children}</strong>,
                                     ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
                                     li: ({ children }) => React.createElement('li', { className: 'mb-0.5' }, children),
-                                    code: ({ children }) => <code className="bg-black/10 dark:bg-black/30 px-1 rounded font-mono text-[11px]">{children}</code>,
+                                    code: ({ children }) => <code className="bg-[var(--bg-base)] px-1 rounded font-mono text-[11px]">{children}</code>,
                                   }}
                                 >
                                   {msg.content}
@@ -606,14 +598,14 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                                   {[0, 1, 2, 3].map(i => (
                                     <motion.span
                                       key={i}
-                                      className="w-0.5 bg-blue-400 rounded-full"
+                                      className="w-0.5 bg-[var(--brand)] rounded-full"
                                       animate={{ height: ['4px', '12px', '4px'] }}
                                       transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.12 }}
                                     />
                                   ))}
                                 </div>
                               )}
-                              <p className={`text-[9px] mt-1.5 font-mono ${msg.role === 'user' ? 'text-white/50 text-right' : 'text-neutral-400'}`}>
+                              <p className={`text-[9px] mt-1.5 font-mono ${msg.role === 'user' ? 'text-[var(--brand-contrast)]/60 text-right' : 'text-[var(--text-muted)]'}`}>
                                 {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </p>
                             </div>
@@ -623,11 +615,11 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                         {loading && (
                           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">
                             <AuraOrbMini state="thinking" size={28} />
-                            <div className="bg-neutral-100 dark:bg-neutral-800 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1">
+                            <div className="bg-[var(--bg-muted)] px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1 border border-[var(--border-default)]">
                               {[0, 1, 2].map(i => (
                                 <motion.span
                                   key={i}
-                                  className="w-1.5 h-1.5 bg-neutral-400 rounded-full"
+                                  className="w-1.5 h-1.5 bg-[var(--text-muted)] rounded-full"
                                   animate={{ y: [0, -4, 0] }}
                                   transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15 }}
                                 />
@@ -645,9 +637,9 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="px-4 py-2 bg-red-50 dark:bg-red-950/20 border-t border-red-100 dark:border-red-900/30 overflow-hidden"
+                            className="px-4 py-2 bg-[var(--danger-bg)] border-t border-[var(--danger-border)] overflow-hidden"
                           >
-                            <p className="text-[11px] text-red-500 italic">
+                            <p className="text-[11px] text-[var(--danger)] italic">
                               🎙 &quot;{interimTranscript}&quot;
                             </p>
                           </motion.div>
@@ -661,7 +653,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                             <button
                               key={q}
                               onClick={() => sendMessage(q)}
-                              className="text-[11px] px-3 py-1.5 rounded-full border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-blue-500/50 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all"
+                              className="text-[11px] px-3 py-1.5 rounded-full border border-[var(--border-default)] text-[var(--text-muted)] hover:border-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand-bg)] transition-all"
                             >
                               {q}
                             </button>
@@ -670,11 +662,11 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                       )}
 
                       {/* Input */}
-                      <div className="px-4 pb-4 pt-2 border-t border-neutral-100 dark:border-neutral-800 flex-shrink-0">
-                        <div className="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800 rounded-2xl px-3 py-2 border border-neutral-200 dark:border-neutral-700 focus-within:border-blue-500/50 focus-within:shadow-[0_0_0_3px_rgba(59,130,246,0.1)] transition-all">
+                      <div className="px-4 pb-4 pt-2 border-t border-[var(--border-default)] flex-shrink-0">
+                        <div className="flex items-center gap-2 bg-[var(--bg-muted)] rounded-2xl px-3 py-2 border border-[var(--border-default)] focus-within:border-[var(--brand)] focus-within:shadow-[0_0_0_3px_var(--brand-bg)] transition-all">
                           <button
                             onClick={startListening}
-                            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${isListening ? 'bg-red-500 text-white animate-pulse' : 'text-neutral-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-neutral-700'}`}
+                            className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors flex-shrink-0 ${isListening ? 'bg-[var(--danger)] text-white animate-pulse' : 'text-[var(--text-muted)] hover:text-[var(--brand)] hover:bg-[var(--brand-bg)]'}`}
                             title={isListening ? 'Stop recording' : 'Voice input'}
                           >
                             {isListening ? <MicOff size={16} /> : <Mic size={16} />}
@@ -687,19 +679,19 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                             onKeyDown={handleKeyDown}
                             placeholder={isListening ? 'Listening…' : 'Ask about Felich…'}
                             disabled={loading || isListening}
-                            className="flex-1 bg-transparent text-sm outline-none placeholder:text-neutral-400 disabled:opacity-50"
+                            className="flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--text-muted)] disabled:opacity-50 text-[var(--text-primary)]"
                           />
                           <button
                             onClick={() => sendMessage(input)}
                             disabled={!input.trim() || loading}
-                            className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center disabled:opacity-30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 shadow-md"
+                            className="w-8 h-8 rounded-xl bg-[var(--brand)] text-[var(--brand-contrast)] flex items-center justify-center disabled:opacity-30 hover:scale-105 active:scale-95 transition-all flex-shrink-0 shadow-md"
                             title="Send message"
                             aria-label="Send message"
                           >
                             <Send size={14} />
                           </button>
                         </div>
-                        <p className="text-[9px] text-neutral-400 text-center mt-2 font-mono flex items-center justify-center gap-1">
+                        <p className="text-[9px] text-[var(--text-muted)] text-center mt-2 font-mono flex items-center justify-center gap-1">
                           Powered by Gemini AI <Sparkles size={10} />
                         </p>
                       </div>
@@ -713,13 +705,13 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
 
         {/* ── FAB ──────────────────────────────────────────────────────── */}
         <motion.button
-          onClick={() => { setOpen(p => !p); setMinimized(false); setUnread(0); sounds.playPop(); }}
+          onClick={() => { setOpen(p => !p); setMinimized(false); setUnread(0); }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.94 }}
           aria-label={open ? 'Close Felich AI chat' : 'Open Felich AI chat'}
           aria-expanded={open}
           aria-haspopup="dialog"
-          className="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white shadow-xl shadow-indigo-500/40 flex items-center justify-center"
+          className="relative w-14 h-14 rounded-full bg-[var(--brand)] text-[var(--brand-contrast)] shadow-xl flex items-center justify-center"
           title="Chat with Felich AI"
         >
           <AnimatePresence mode="wait">
@@ -734,13 +726,13 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
             )}
           </AnimatePresence>
 
-          {!open && <span className="absolute inset-0 rounded-full animate-ping bg-indigo-500 opacity-20" />}
+          {!open && <span className="absolute inset-0 rounded-full animate-ping bg-[var(--brand)] opacity-20" />}
 
           {unread > 0 && !open && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-md"
+              className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--danger)] text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-md"
             >
               {unread}
             </motion.span>

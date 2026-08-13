@@ -76,7 +76,7 @@ export default function Uses() {
           className="mb-8"
         >
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Uses</h1>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+          <p className="text-[var(--text-muted)] text-sm">
             The tools, apps, and hardware I use daily for development and productivity.
           </p>
         </motion.div>
@@ -101,11 +101,11 @@ export default function Uses() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: catIndex * 0.1 + i * 0.05 }}
-                    className="group flex flex-col justify-between p-5 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl hover:shadow-[0_10px_40px_rgba(59,130,246,0.1)] hover:-translate-y-1 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden h-full"
+                    className="group flex flex-col justify-between p-5 rounded-3xl border border-[var(--border-default)] bg-[var(--glass-bg)] backdrop-blur-xl hover:shadow-[0_10px_40px_var(--brand-bg)] hover:-translate-y-1 hover:border-[var(--brand)]/30 transition-all duration-300 relative overflow-hidden h-full"
                   >
-                    <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500/0 via-blue-500/50 to-blue-500/0 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-[var(--brand)]/0 via-[var(--brand)]/50 to-[var(--brand)]/0 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     <div className="flex items-start gap-4 relative z-10">
-                      <div className="w-12 h-12 rounded-2xl bg-white dark:bg-neutral-900 shadow-inner flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 border border-neutral-100 dark:border-neutral-800 relative overflow-hidden">
+                      <div className="w-12 h-12 rounded-2xl bg-[var(--bg-surface)] shadow-inner flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 border border-[var(--border-default)] relative overflow-hidden">
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-300" style={{ backgroundColor: item.color }} />
                         <div
                            className="w-6 h-6 flex items-center justify-center relative z-10 transition-transform duration-300 group-hover:scale-105"
@@ -146,7 +146,7 @@ export default function Uses() {
                       </div>
                       <div className="flex-1 min-w-0 pt-0.5">
                         <h3 className="font-extrabold text-sm md:text-base group-hover:text-primary transition-colors tracking-tight leading-snug">{item.name}</h3>
-                        <p className="text-xs font-mono tracking-widest uppercase text-neutral-400 dark:text-neutral-500 mt-1">{item.desc}</p>
+                        <p className="text-xs font-mono tracking-widest uppercase text-[var(--text-muted)] mt-1">{item.desc}</p>
                       </div>
                     </div>
                   </motion.div>

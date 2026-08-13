@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { SkillIcons } from '@/components/SkillIcons';
 import AnimatedDivider from '@/components/AnimatedDivider';
 import Reveal from '@/components/Reveal';
-import { sounds } from '@/lib/sounds';
 
 // ── Static data ─────────────────────────────────────────────────────────────
 // Moved here from page.tsx so it is only bundled as part of the async chunk
@@ -143,7 +142,7 @@ export default function SkillsGrid() {
       </Reveal>
 
       <Reveal delay={0.4}>
-        <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-6">
+        <p className="text-[var(--text-muted)] text-sm mb-6">
           {t('skills_subtitle')}
         </p>
       </Reveal>
@@ -159,8 +158,7 @@ export default function SkillsGrid() {
           return (
             <button
               key={cat.name}
-              onClick={() => { setActiveFilter(cat.name); sounds.playPop(); }}
-              onMouseEnter={() => sounds.playHover()}
+              onClick={() => setActiveFilter(cat.name)}
               className={`filter-pill ${activeFilter === cat.name ? 'active' : ''}`}
             >
               {localizedName}
@@ -186,9 +184,7 @@ export default function SkillsGrid() {
             <motion.div
               key={skill.name}
               layout
-              onMouseEnter={() => sounds.playHover()}
               onClick={() => {
-                sounds.playPop();
                 const link = skillLinks[skill.name];
                 if (link) window.open(link, '_blank');
               }}
@@ -198,11 +194,10 @@ export default function SkillsGrid() {
               whileHover={{
                 scale: 1.05,
                 y: -2,
-                boxShadow: '0 10px 30px -10px rgba(59, 130, 246, 0.3)'
               }}
               whileTap={{ scale: 0.95 }}
-              className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-semibold
-                         bg-white/50 dark:bg-neutral-900/40 backdrop-blur-md border border-neutral-200 dark:border-neutral-800
+              className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold
+                         bg-[var(--bg-surface)] border border-[var(--border-default)]
                          cursor-pointer overflow-hidden transition-all duration-300"
               style={{
                 '--skill-color': skill.color,
@@ -230,38 +225,38 @@ export default function SkillsGrid() {
                 )}
               </motion.div>
 
-              <span className="relative z-10 text-neutral-600 dark:text-neutral-300 transition-colors duration-300 group-hover:text-black dark:group-hover:text-white">
+              <span className="relative z-10 text-[var(--text-primary)] transition-colors duration-300">
                 {skill.name}
               </span>
 
               {/* Technical Meta-Data Tooltip */}
               <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <span className="text-[7px] font-mono text-neutral-400 uppercase tracking-tighter">
+                 <span className="text-[7px] font-mono text-[var(--text-muted)] uppercase tracking-tighter">
                     Spec v1.0
                  </span>
               </div>
 
-              <div className="absolute inset-0 bg-white/95 dark:bg-neutral-950/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center px-4 z-20">
+              <div className="absolute inset-0 bg-[var(--bg-surface)] backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center px-4 z-20">
                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[7px] font-bold font-mono tracking-widest text-primary/70 uppercase">
+                    <span className="text-[7px] font-bold font-mono tracking-widest text-[var(--brand)] uppercase">
                       {skill.category}
                     </span>
-                    <span className="text-[7px] font-mono text-neutral-400">VER_1.2</span>
+                    <span className="text-[7px] font-mono text-[var(--text-muted)]">VER_1.2</span>
                  </div>
 
                  <div className="flex items-center justify-between pointer-events-none">
-                    <span className="text-[9px] font-mono font-bold text-neutral-800 dark:text-neutral-200 uppercase tracking-tighter">Expertise</span>
-                    <span className="text-[9px] font-bold font-mono text-primary">
+                    <span className="text-[9px] font-mono font-bold text-[var(--text-primary)] uppercase tracking-tighter">Expertise</span>
+                    <span className="text-[9px] font-bold font-mono text-[var(--brand)]">
                       {(skill.name.length * 7 + 38) % 30 + 70}%
                     </span>
                  </div>
 
-                 <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-800 mt-1.5 rounded-full overflow-hidden">
+                 <div className="w-full h-1 bg-[var(--bg-muted)] mt-1.5 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${(skill.name.length * 7 + 38) % 30 + 70}%` }}
                       transition={{ duration: 0.8, ease: 'easeOut' }}
-                      className="h-full bg-gradient-to-r from-blue-600 to-primary"
+                      className="h-full bg-[var(--brand)]"
                     />
                  </div>
               </div>

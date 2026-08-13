@@ -15,8 +15,8 @@ export default function BlogLikeButton({ slug }: { slug: string }) {
         whileTap={!hasLiked ? { scale: 0.92 } : {}}
         className={`relative flex items-center justify-center w-20 h-20 rounded-full shadow-2xl transition-all duration-300 ${
           hasLiked
-            ? 'bg-pink-500 text-white shadow-pink-500/40 cursor-default'
-            : 'bg-white dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 border-2 border-neutral-100 dark:border-neutral-800 hover:border-pink-200 dark:hover:border-pink-900/50 hover:text-pink-500 hover:shadow-pink-500/20'
+            ? 'bg-[var(--brand)] text-white cursor-default'
+            : 'bg-[var(--bg-muted)] text-[var(--text-muted)] border-2 border-[var(--border-default)] hover:border-[var(--brand)] hover:text-[var(--brand)]'
         }`}
       >
         {hasLiked && (
@@ -24,7 +24,7 @@ export default function BlogLikeButton({ slug }: { slug: string }) {
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: [1.5, 2.5], opacity: [0.5, 0] }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="absolute inset-0 rounded-full bg-pink-400"
+            className="absolute inset-0 rounded-full bg-[var(--brand)]"
           />
         )}
         <motion.svg
@@ -40,10 +40,10 @@ export default function BlogLikeButton({ slug }: { slug: string }) {
       </motion.button>
 
       <div className="text-center">
-        <span className="block text-2xl font-black text-neutral-800 dark:text-neutral-200">
+        <span className="block text-2xl font-black text-[var(--text-primary)]">
           {loading ? '...' : likes}
         </span>
-        <span className="text-xs font-bold uppercase tracking-widest text-neutral-400">
+        <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {hasLiked ? 'Thank you!' : 'Clap if you liked it'}
         </span>
       </div>

@@ -31,7 +31,7 @@ describe('useBlogViews', () => {
     expect(typeof result.current === 'number' || result.current === null).toBe(true);
   });
 
-  it('uses sessionStorage for view dedup', async () => {
+  it('sets sessionStorage for view dedup on mount', async () => {
     const { useBlogViews } = await import('@/lib/useBlogViews');
     renderHook(() => useBlogViews('test-view'));
     expect(sessionStorage.getItem('viewed_blog_test-view')).toBe('true');

@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Software Engineer specializing in AI Engineering and FinTech solutions.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#2563eb',
+    background_color: '#0F0F0F',
+    theme_color: '#0F0F0F',
     icons: [
       {
         src: '/icon',

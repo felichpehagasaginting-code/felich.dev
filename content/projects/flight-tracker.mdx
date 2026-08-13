@@ -1,0 +1,26 @@
+---
+title: "FlightTracker"
+description: "Automated real-time flight ticket price tracker specifically engineered for monitoring KNO (Medan) to CGK (Jakarta) routes via Playwright Google Flights scraping, paired with instant Telegram alert dispatch."
+type: "Web"
+category: "Personal Project"
+featured: true
+techStack: ["JavaScript", "Playwright", "Node.js", "Telegram Bot API", "Cron Scheduler", "Automation"]
+features: [
+  "Automated Google Flights Scraping Engine",
+  "Instant Telegram Push Notifications",
+  "Medan (KNO) to Jakarta (CGK) Price Monitor",
+  "Cron-based Periodic Price Checking",
+  "Configurable Price Drop Thresholds"
+]
+github: "https://github.com/felichpehagasaginting-code/FlightTracker"
+live: ""
+date: "2026-08-12"
+---
+
+### Problem & Motivation
+Airline ticket pricing algorithms frequently fluctuate based on booking velocity and demand surges. Manually monitoring flight fares between Medan (KNO) and Jakarta (CGK) to secure optimal pricing is time-consuming and inefficient.
+
+### Technical Architecture & Implementation
+- **Scraping Engine**: Developed using **Node.js** and **Playwright headless browser automation** to navigate Google Flights DOM structures, handle dynamic SSR loading, and extract live flight fare data without triggering anti-bot protections.
+- **Notification Pipeline**: Integrates directly with the **Telegram Bot API** via webhook payload dispatch. When a ticket price drops below a pre-configured price threshold, instant notifications with flight timing, airline provider, and direct booking URLs are pushed to the user's mobile device.
+- **Scheduling**: Driven by background cron tasks for periodic execution at scheduled intervals.

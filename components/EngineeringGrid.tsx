@@ -32,9 +32,9 @@ export default function EngineeringGrid() {
   }, [mouseX, mouseY]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden opacity-20 dark:opacity-40">
+    <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden opacity-25">
       {/* Base Grid */}
-      <div 
+      <div
         className="absolute inset-0"
         style={{
           backgroundImage: `
@@ -42,30 +42,16 @@ export default function EngineeringGrid() {
             linear-gradient(to bottom, currentColor 1.5px, transparent 1.5px)
           `,
           backgroundSize: 'clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px)',
-          color: 'rgba(0, 0, 0, 0.04)',
+          color: 'var(--border-default)',
         }}
       />
-      
-      <div className="dark:block hidden">
-        <div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, currentColor 1.5px, transparent 1.5px),
-              linear-gradient(to bottom, currentColor 1.5px, transparent 1.5px)
-            `,
-            backgroundSize: 'clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px)',
-            color: 'rgba(255, 255, 255, 0.02)',
-          }}
-        />
-      </div>
 
       {/* Radial Gradient Glow following mouse */}
       {showGlow && (
         <motion.div
           className="absolute inset-0 z-10"
           style={{
-            background: `radial-gradient(600px circle at var(--x) var(--y), rgba(59, 130, 246, 0.08), transparent 40%)`,
+            background: `radial-gradient(600px circle at var(--x) var(--y), var(--brand-bg), transparent 40%)`,
             // @ts-ignore
             '--x': springX,
             '--y': springY,
@@ -74,12 +60,12 @@ export default function EngineeringGrid() {
       )}
 
       {/* Subtle Dot Pattern Overlay */}
-      <div 
-        className="absolute inset-0 opacity-[0.15] dark:opacity-[0.1]"
+      <div
+        className="absolute inset-0 opacity-[0.12]"
         style={{
           backgroundImage: 'radial-gradient(currentColor 0.5px, transparent 0.5px)',
           backgroundSize: '10px 10px',
-          color: 'inherit'
+          color: 'var(--border-default)',
         }}
       />
     </div>

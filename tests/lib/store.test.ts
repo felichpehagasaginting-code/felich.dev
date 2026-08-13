@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useLayoutStore } from '@/lib/store';
 
 describe('useLayoutStore (zustand)', () => {
@@ -6,9 +6,8 @@ describe('useLayoutStore (zustand)', () => {
     useLayoutStore.setState({
       isSidebar: true,
       language: 'en',
-      theme: 'dark',
+      theme: 'noir',
       mobileMenuOpen: false,
-      warp: null,
     });
     localStorage.clear();
   });
@@ -17,9 +16,8 @@ describe('useLayoutStore (zustand)', () => {
     const state = useLayoutStore.getState();
     expect(state.isSidebar).toBe(true);
     expect(state.language).toBe('en');
-    expect(state.theme).toBe('dark');
+    expect(state.theme).toBe('noir');
     expect(state.mobileMenuOpen).toBe(false);
-    expect(state.warp).toBeNull();
   });
 
   it('toggleLayout flips isSidebar', () => {
@@ -47,10 +45,10 @@ describe('useLayoutStore (zustand)', () => {
   });
 
   it('setTheme changes theme', () => {
-    useLayoutStore.getState().setTheme('light');
-    expect(useLayoutStore.getState().theme).toBe('light');
-    useLayoutStore.getState().setTheme('apple');
-    expect(useLayoutStore.getState().theme).toBe('apple');
+    useLayoutStore.getState().setTheme('vanilla');
+    expect(useLayoutStore.getState().theme).toBe('vanilla');
+    useLayoutStore.getState().setTheme('violet');
+    expect(useLayoutStore.getState().theme).toBe('violet');
   });
 
   it('setMobileMenuOpen controls mobile menu', () => {
@@ -58,15 +56,6 @@ describe('useLayoutStore (zustand)', () => {
     expect(useLayoutStore.getState().mobileMenuOpen).toBe(true);
     useLayoutStore.getState().setMobileMenuOpen(false);
     expect(useLayoutStore.getState().mobileMenuOpen).toBe(false);
-  });
-
-  it('triggerWarp sets warp and clears after timeout', () => {
-    vi.useFakeTimers();
-    useLayoutStore.getState().triggerWarp(100, 200, '#ff0000');
-    expect(useLayoutStore.getState().warp).toEqual({ x: 100, y: 200, color: '#ff0000' });
-    vi.advanceTimersByTime(1000);
-    expect(useLayoutStore.getState().warp).toBeNull();
-    vi.useRealTimers();
   });
 
   it('cycles through 4 languages correctly', () => {
@@ -81,15 +70,17 @@ describe('useLayoutStore (zustand)', () => {
     expect(useLayoutStore.getState().language).toBe('en');
   });
 
-  it('persists isSidebar and language to localStorage', () => {
+  it('persists theme, isSidebar and language to localStorage', () => {
     useLayoutStore.getState().setLanguage('id');
     useLayoutStore.getState().toggleLayout();
+    useLayoutStore.getState().setTheme('vanilla');
     const persisted = localStorage.getItem('felich-portfolio-layout');
     expect(persisted).not.toBeNull();
     if (persisted) {
       const parsed = JSON.parse(persisted);
       expect(parsed.state.language).toBe('id');
       expect(parsed.state.isSidebar).toBe(false);
+      expect(parsed.state.theme).toBe('vanilla');
     }
   });
 });

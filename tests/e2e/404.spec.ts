@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('404 Not Found Page', () => {
   test('shows 404 page for unknown routes', async ({ page }) => {
     await page.goto('/this-page-does-not-exist');
-    await expect(page.locator('text=404')).toBeVisible();
+    await expect(page.locator('#main-content').getByRole('heading', { name: '404' })).toBeVisible();
     await expect(page.locator('text=Lost in Space')).toBeVisible();
   });
 

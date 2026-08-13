@@ -16,9 +16,10 @@ export default function ProjectsServer() {
       projects = files.map((filename) => {
         const slug = filename.replace('.mdx', '');
         const markdownWithMeta = fs.readFileSync(path.join(directory, filename), 'utf-8');
-        const { data: frontMatter } = matter(markdownWithMeta);
+        const { data: frontMatter, content } = matter(markdownWithMeta);
         return {
           slug,
+          content,
           ...frontMatter,
         };
       });

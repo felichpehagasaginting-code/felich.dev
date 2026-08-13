@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { sounds } from '@/lib/sounds';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PulseSync() {
@@ -10,13 +9,8 @@ export default function PulseSync() {
   useEffect(() => {
     const interval = setInterval(() => {
       setPulse(true);
-      // Play a very subtle hover-like sound but quieter
-      // Note: we might need a specific 'tick' sound if available, 
-      // but playHover is subtle enough.
-      sounds.playHover();
-      
       setTimeout(() => setPulse(false), 2000);
-    }, 10000); // Every 10 seconds for subtle ambiance
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);

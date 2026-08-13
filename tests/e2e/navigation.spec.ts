@@ -4,7 +4,7 @@ test.describe('Navigation & Core Pages', () => {
   test('homepage has correct title and hero', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/Felich/);
-    await expect(page.locator('h1')).toContainText('Felich');
+    await expect(page.locator('#main-content h1')).toContainText('Felich');
   });
 
   test('navigation links work correctly', async ({ page }) => {
@@ -22,7 +22,7 @@ test.describe('Navigation & Core Pages', () => {
   test('loading state renders on navigation', async ({ page }) => {
     await page.goto('/about');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('#main-content h1')).toBeVisible();
   });
 
   test('skip navigation link is present and functional', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Navigation & Core Pages', () => {
   test('page has structured data (JSON-LD)', async ({ page }) => {
     await page.goto('/');
     const jsonld = page.locator('script[type="application/ld+json"]');
-    await expect(jsonld).toBeVisible();
+    await expect(jsonld).toBeAttached();
     const content = await jsonld.textContent();
     expect(content).toContain('Person');
     expect(content).toContain('Felich');

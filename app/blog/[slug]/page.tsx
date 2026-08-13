@@ -94,7 +94,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
         <div className="mb-12">
           <Link 
             href="/blog" 
-            className="group inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-neutral-500 hover:text-primary transition-colors"
+            className="group inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-[var(--text-muted)] hover:text-primary transition-colors"
           >
             <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -108,7 +108,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
             {frontMatter.title}
           </h1>
           
-          <div className="flex items-center flex-wrap gap-6 text-xs font-bold uppercase tracking-widest text-neutral-500 mb-12">
+          <div className="flex items-center flex-wrap gap-6 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-12">
             <div className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-primary" />
               {new Date(frontMatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -116,7 +116,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
             <BlogViewCounterWrapper slug={slug} />
             <div className="flex gap-2">
               {frontMatter.topics?.map((topic: string) => (
-                <span key={topic} className="px-3 py-1 bg-neutral-100 dark:bg-white/5 rounded-full border border-neutral-200 dark:border-white/5">
+                <span key={topic} className="px-3 py-1 bg-[var(--bg-muted)] rounded-full border border-[var(--border-default)]">
                   {topic}
                 </span>
               ))}
@@ -124,7 +124,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
           </div>
 
           {frontMatter.image && (
-            <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 mb-16">
+            <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl border border-[var(--border-default)] mb-16">
               <Image
                 src={frontMatter.image}
                 alt={`${frontMatter.title} cover image`}
@@ -144,8 +144,8 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
 
         <BlogLikeButton slug={slug} />
 
-        <footer className="mt-24 pt-12 border-t border-neutral-200 dark:border-neutral-800">
-          <div className="flex flex-col items-center text-center p-12 rounded-[3rem] bg-neutral-50 dark:bg-white/5 border border-neutral-200 dark:border-white/5">
+        <footer className="mt-24 pt-12 border-t border-[var(--border-default)]">
+          <div className="flex flex-col items-center text-center p-12 rounded-[3rem] bg-[var(--bg-muted)] border border-[var(--border-default)]">
              <div className="w-20 h-20 rounded-full overflow-hidden mb-6 ring-4 ring-primary/20">
                 <Image
                   src="/images/profile.jpg"
@@ -157,7 +157,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
                 />
              </div>
              <h3 className="text-2xl font-black mb-2">Thanks for reading.</h3>
-             <p className="text-neutral-500 dark:text-neutral-400 max-w-sm mb-8 font-medium">
+             <p className="text-[var(--text-muted)] max-w-sm mb-8 font-medium">
                I write about building premium digital experiences and exploring the frontiers of AI.
              </p>
              <Link href="/contact" className="px-8 py-3 rounded-full bg-primary text-white font-black uppercase tracking-widest shadow-lg shadow-primary/25 hover:scale-105 transition-transform active:scale-95">

@@ -13,7 +13,7 @@ export default function LayoutToggle() {
       onClick={toggleLayout}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      className="fixed top-4 right-4 z-50 p-3 rounded-xl bg-white/90 dark:bg-neutral-900/90 backdrop-blur-xl shadow-xl border border-neutral-200/50 dark:border-neutral-800/50 hover:shadow-2xl transition-all lg:hidden"
+      className="fixed top-4 right-4 z-50 p-3 rounded-xl bg-[var(--glass-bg)] backdrop-blur-xl shadow-xl border border-[var(--glass-border)] hover:shadow-2xl transition-all lg:hidden"
     >
       {isSidebar ? (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -3,18 +3,16 @@
 import { useEffect } from 'react';
 import { useLayoutStore } from '@/lib/store';
 
+const DARK_THEMES = new Set(['noir', 'violet']);
+
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useLayoutStore();
 
   useEffect(() => {
     const html = document.documentElement;
-    // Remove all theme classes
-    html.classList.remove('light', 'dark', 'yellow', 'apple');
-    // Add current theme
-    html.classList.add(theme);
-    if (theme === 'apple') {
-      html.classList.add('dark');
-    }
+    html.classList.remove('theme-vanilla', 'theme-noir', 'theme-violet');
+    html.classList.add(`theme-${theme}`);
+    html.classList.toggle('dark', DARK_THEMES.has(theme));
   }, [theme]);
 
   return <>{children}</>;

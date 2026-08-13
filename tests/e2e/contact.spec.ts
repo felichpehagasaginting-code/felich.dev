@@ -7,7 +7,7 @@ test.describe('Contact Page', () => {
   });
 
   test('displays contact form', async ({ page }) => {
-    await expect(page.locator('h1')).toContainText('Contact');
+    await expect(page.locator('#main-content h1')).toContainText('Contact');
     await expect(page.locator('input[placeholder="Name"]')).toBeVisible();
     await expect(page.locator('input[placeholder="Email"]')).toBeVisible();
     await expect(page.locator('textarea[placeholder="Message"]')).toBeVisible();

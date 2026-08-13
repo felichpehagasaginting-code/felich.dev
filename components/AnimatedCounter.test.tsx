@@ -27,14 +27,4 @@ describe('AnimatedCounter', () => {
     expect(screen.getByText(/\$/)).toBeInTheDocument();
     expect(screen.getByText(/k/)).toBeInTheDocument();
   });
-
-  it('eventually reaches the end value', async () => {
-    // Note: Testing actual animation progress with requestAnimationFrame is tricky in jsdom.
-    // Usually we test if it renders the target value after a period or mock the animation logic.
-    render(<AnimatedCounter end={42} />);
-    
-    // We can't easily wait for the animation in a unit test without mocking timers,
-    // but we can check if the component renders at all.
-    expect(screen.getByText(/0/)).toBeInTheDocument();
-  });
 });

@@ -4,8 +4,6 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 const BackToTop = dynamic(() => import('@/components/BackToTop'), { ssr: false });
-const EasterEgg = dynamic(() => import('@/components/EasterEgg'), { ssr: false });
-const ThemeWarp = dynamic(() => import('@/components/ThemeWarp'), { ssr: false });
 const EngineeringGrid = dynamic(() => import('@/components/EngineeringGrid'), { ssr: false });
 const PulseSync = dynamic(() => import('@/components/PulseSync'), { ssr: false });
 const QuickConnect = dynamic(() => import('@/components/QuickConnect'), { ssr: false });
@@ -44,10 +42,8 @@ export default function DynamicClientComponents() {
     <>
       <PulseSync />
       <EngineeringGrid />
-      <ThemeWarp />
       <CommandPalette />
       <BackToTop />
-      <EasterEgg />
       <QuickConnect />
       {shouldLoadChatbot && <AIChatbot initiallyOpen={openChatbotOnLoad} />}
     </>

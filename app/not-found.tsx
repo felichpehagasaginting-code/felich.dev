@@ -1,15 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 const glitchText = '404';
 
 function GlitchText() {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    // Glitch jitter is motion-heavy; skip it for reduced-motion users
+    if (prefersReducedMotion) return;
     const interval = setInterval(() => {
       setOffset({
         x: Math.random() * 8 - 4,
@@ -18,25 +21,25 @@ function GlitchText() {
       setTimeout(() => setOffset({ x: 0, y: 0 }), 100);
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <div className="relative select-none mb-6">
       {/* Glitch layers */}
       <span
-        className="absolute inset-0 text-8xl md:text-[10rem] font-black text-blue-500/30 blur-[1px]"
+        className="absolute inset-0 text-8xl md:text-[10rem] font-black text-[var(--brand)]/30 blur-[1px]"
         style={{ transform: `translate(${offset.x}px, ${offset.y}px)`, clipPath: 'inset(20% 0 30% 0)' }}
       >
         {glitchText}
       </span>
       <span
-        className="absolute inset-0 text-8xl md:text-[10rem] font-black text-pink-500/30 blur-[1px]"
+        className="absolute inset-0 text-8xl md:text-[10rem] font-black text-[var(--brand)]/30 blur-[1px]"
         style={{ transform: `translate(${-offset.x}px, ${-offset.y}px)`, clipPath: 'inset(50% 0 10% 0)' }}
       >
         {glitchText}
       </span>
       {/* Main text */}
-      <h1 className="text-8xl md:text-[10rem] font-black bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient-x relative">
+      <h1 className="text-8xl md:text-[10rem] font-black bg-gradient-to-r from-[var(--brand)] via-[var(--brand)] to-[var(--brand-strong,var(--brand))] bg-clip-text text-transparent animate-gradient-x relative">
         {glitchText}
       </h1>
     </div>
@@ -45,6 +48,7 @@ function GlitchText() {
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
   useEffect(() => setMounted(true), []);
 
   return (
@@ -80,22 +84,24 @@ export default function NotFound() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-neutral-500 dark:text-neutral-400 text-sm mb-8 max-w-sm mx-auto"
+          className="text-[var(--text-muted)] text-sm mb-8 max-w-sm mx-auto"
         >
           The page you&apos;re looking for has drifted into another galaxy.
           Let&apos;s navigate you back to safety.
         </motion.p>
 
         {/* Animated scan line */}
-        <motion.div
-          className="w-48 h-[2px] mx-auto mb-8 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-800"
-        >
+        {!prefersReducedMotion && (
           <motion.div
-            className="h-full w-1/3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
-            animate={{ x: ['-100%', '400%'] }}
-            transition={{ duration: 2, ease: 'easeInOut', repeat: Infinity }}
-          />
-        </motion.div>
+            className="w-48 h-[2px] mx-auto mb-8 rounded-full overflow-hidden bg-[var(--bg-muted)]"
+          >
+            <motion.div
+              className="h-full w-1/3 bg-gradient-to-r from-[var(--brand)] via-[var(--brand)] to-[var(--brand-strong,var(--brand))] rounded-full"
+              animate={{ x: ['-100%', '400%'] }}
+              transition={{ duration: 2, ease: 'easeInOut', repeat: Infinity }}
+            />
+          </motion.div>
+        )}
 
         <div className="flex items-center justify-center gap-3">
           <Link href="/">
@@ -114,7 +120,7 @@ export default function NotFound() {
             <motion.span
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-neutral-200 dark:border-neutral-700 font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[var(--border-default)] font-semibold text-sm hover:bg-[var(--bg-muted)] transition-all"
             >
               Contact Me
             </motion.span>

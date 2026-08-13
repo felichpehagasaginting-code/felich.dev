@@ -48,7 +48,7 @@ export default function Reveal({ children, width = "fit-content", delay = 0.25, 
           bottom: 4,
           left: 0,
           right: 0,
-          background: "var(--primary, #3b82f6)",
+          background: "var(--brand)",
           zIndex: 20,
         }}
       />

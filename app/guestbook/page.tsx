@@ -122,18 +122,19 @@ export default function Guestbook() {
     <PageTransition>
       <div>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl md:text-4xl font-bold">Guestbook</h1>
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] font-bold uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl md:text-4xl font-display font-bold tracking-[-0.01em] text-[var(--text-primary)]">Guestbook</h1>
+            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--success)]/10 border border-[var(--success)]/20 text-[var(--success)] text-[10px] font-mono font-semibold uppercase tracking-wider" style={{ borderRadius: '4px' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)]" />
               Live
             </span>
           </div>
-          <p className="text-neutral-500 dark:text-neutral-400 text-sm">
+          <p className="text-[13px] text-[var(--text-muted)] mt-1">
             Leave a message for me and other visitors. ✍️
           </p>
         </motion.div>
@@ -147,7 +148,7 @@ export default function Guestbook() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mb-4 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 text-sm font-medium"
+              className="mb-4 p-4 rounded-xl bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/30 text-sm font-medium"
             >
               ✅ Your message is live! Thanks for signing the guestbook 🎉
             </motion.div>
@@ -161,7 +162,7 @@ export default function Guestbook() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mb-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-sm font-medium flex items-center gap-2"
+              className="mb-4 p-4 rounded-xl bg-[var(--warning)]/10 text-[var(--warning)] border border-[var(--warning)]/30 text-sm font-medium flex items-center gap-2"
             >
               <span className="text-base">⏳</span>
               Please wait <strong>{cooldown}s</strong> before posting again.
@@ -179,13 +180,13 @@ export default function Guestbook() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 text-center"
+            className="mb-8 p-6 rounded-2xl border border-[var(--border-default)] bg-[var(--glass-bg)] text-center"
           >
             <p className="text-2xl mb-2">✍️</p>
-            <p className="font-semibold text-neutral-800 dark:text-neutral-100 mb-1">
+            <p className="font-semibold text-[var(--text-primary)] mb-1">
               Sign in to leave a message
             </p>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-5">
+            <p className="text-[var(--text-muted)] text-sm mb-5">
               A quick Google sign-in keeps things spam-free 🛡️
             </p>
             <motion.button
@@ -193,7 +194,7 @@ export default function Guestbook() {
               onClick={signInWithGoogle}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-800 dark:text-neutral-100 font-semibold text-sm shadow-md hover:shadow-lg transition-all"
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-primary)] font-semibold text-sm shadow-md hover:shadow-lg transition-all"
             >
               {/* Google SVG icon */}
               <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -211,10 +212,10 @@ export default function Guestbook() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mb-8 p-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50"
+            className="mb-8 p-5 rounded-2xl border border-[var(--border-default)] bg-[var(--glass-bg)]"
           >
             {/* User Info Bar */}
-            <div className="flex items-center justify-between mb-4 pb-4 border-b border-neutral-100 dark:border-neutral-800">
+            <div className="flex items-center justify-between mb-4 pb-4 border-b border-[var(--border-default)]">
               <div className="flex items-center gap-2.5">
                 {user.photoURL ? (
                   <Image
@@ -232,13 +233,13 @@ export default function Guestbook() {
                 )}
                 <div>
                   <p className="text-sm font-semibold leading-none">{user.displayName}</p>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">{user.email}</p>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{user.email}</p>
                 </div>
               </div>
               <button
                 id="guestbook-signout"
                 onClick={signOut}
-                className="text-xs text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
+                className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
               >
                 Sign out
               </button>
@@ -272,7 +273,7 @@ export default function Guestbook() {
                 className="form-input mb-1 disabled:opacity-50"
                 aria-label="Your message"
               />
-              <p className="text-[11px] text-neutral-400 mb-4 text-right">
+              <p className="text-[11px] text-[var(--text-muted)] mb-4 text-right">
                 {message.length}/500
               </p>
 
@@ -301,7 +302,7 @@ export default function Guestbook() {
 
         {/* Entry count */}
         {!loading && (
-          <p className="text-xs text-neutral-400 mb-4 font-mono">
+          <p className="text-xs text-[var(--text-muted)] mb-4 font-mono">
             {entries.length} {entries.length === 1 ? 'message' : 'messages'} — synced live via
             Firebase
           </p>
@@ -310,14 +311,22 @@ export default function Guestbook() {
         {/* Entries */}
         <div className="space-y-3">
           {loading ? (
-            <div className="flex justify-center p-8">
-              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="space-y-3 animate-pulse">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="p-4 rounded-2xl bg-[var(--bg-muted)] border border-[var(--border-default)] flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-[var(--bg-muted)] flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-32 bg-[var(--bg-muted)] rounded" />
+                    <div className="h-3.5 w-full bg-[var(--bg-muted)] rounded" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : entries.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-12 text-neutral-400"
+              className="text-center py-12 text-[var(--text-muted)]"
             >
               <p className="text-4xl mb-3">✍️</p>
               <p className="text-sm">Be the first to sign the guestbook!</p>
@@ -332,10 +341,10 @@ export default function Guestbook() {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ delay: i * 0.04 }}
                   layout
-                  className="p-4 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/50 hover:shadow-md transition-all"
+                  className="p-4 rounded-2xl border border-[var(--border-default)] bg-[var(--glass-bg)] hover:shadow-md transition-all"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-lg flex-shrink-0 overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-[var(--bg-muted)] flex items-center justify-center text-lg flex-shrink-0 overflow-hidden">
                       {entry.avatar?.startsWith('http') ? (
                         <Image
                           src={entry.avatar}
@@ -352,11 +361,11 @@ export default function Guestbook() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-bold text-sm">{entry.name}</span>
-                        <span className="text-[10px] text-neutral-400">
+                        <span className="text-[10px] text-[var(--text-muted)]">
                           {formatDate(entry.createdAt)}
                         </span>
                       </div>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-300 break-words">
+                      <p className="text-sm text-[var(--text-primary)] break-words">
                         {entry.message}
                       </p>
                     </div>

@@ -15,7 +15,7 @@ export async function GET() {
     }
 
     const response = await fetch(
-      `https://api.github.com/users/${username}/repos?sort=updated&per_page=6`,
+      `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`,
       { headers, next: { revalidate: 3600 } }
     );
 

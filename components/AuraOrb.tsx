@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { motion, animate, useMotionValue, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 type OrbState = 'idle' | 'listening' | 'speaking' | 'thinking';
 
@@ -11,39 +10,41 @@ interface AuraOrbProps {
   className?: string;
 }
 
-// Colour palettes per state
-const STATE_CONFIG = {
+// Theme-driven palettes per state (resolved via CSS variables per theme)
+const STATE_CONFIG: Record<OrbState, {
+  colors: string[];
+  ringOpacity: number;
+  ringScale: number;
+  pulseSpeed: number;
+  glowColor: string;
+}> = {
   idle: {
-    colors: ['#6366f1', '#818cf8', '#a5b4fc'],
+    colors: ['var(--brand)', 'var(--brand-strong, var(--brand))', 'var(--brand)'],
     ringOpacity: 0.15,
     ringScale: 1,
     pulseSpeed: 4,
-    glowColor: 'rgba(99, 102, 241, 0.25)',
-    label: 'Ready',
+    glowColor: 'var(--brand-bg)',
   },
   listening: {
-    colors: ['#ef4444', '#f97316', '#fbbf24'],
-    ringOpacity: 0.35,
-    ringScale: 1.3,
+    colors: ['var(--danger)', 'var(--warning)', 'var(--brand)'],
+    ringOpacity: 0.25,
+    ringScale: 1.2,
     pulseSpeed: 1.2,
-    glowColor: 'rgba(239, 68, 68, 0.4)',
-    label: 'Listening…',
+    glowColor: 'var(--brand-bg)',
   },
   speaking: {
-    colors: ['#3b82f6', '#8b5cf6', '#ec4899'],
-    ringOpacity: 0.4,
-    ringScale: 1.5,
+    colors: ['var(--success)', 'var(--brand)', 'var(--brand-strong, var(--brand))'],
+    ringOpacity: 0.25,
+    ringScale: 1.3,
     pulseSpeed: 0.9,
-    glowColor: 'rgba(139, 92, 246, 0.45)',
-    label: 'Speaking…',
+    glowColor: 'var(--brand-bg)',
   },
   thinking: {
-    colors: ['#10b981', '#06b6d4', '#6366f1'],
-    ringOpacity: 0.25,
+    colors: ['var(--warning)', 'var(--brand)', 'var(--brand-strong, var(--brand))'],
+    ringOpacity: 0.2,
     ringScale: 1.1,
     pulseSpeed: 1.8,
-    glowColor: 'rgba(16, 185, 129, 0.3)',
-    label: 'Thinking…',
+    glowColor: 'var(--brand-bg)',
   },
 };
 
@@ -63,11 +64,11 @@ export default function AuraOrb({ state, size = 80, className = '' }: AuraOrbPro
       className={`relative flex items-center justify-center select-none ${className}`}
       style={{ width: size, height: size }}
     >
-      {/* Glow shadow */}
+      {/* Soft ambient glow */}
       <div
         className="absolute inset-0 rounded-full transition-all duration-700"
         style={{
-          boxShadow: `0 0 ${size * 0.6}px ${size * 0.15}px ${config.glowColor}`,
+          boxShadow: `0 0 ${size * 0.2}px ${config.glowColor}`,
         }}
       />
 

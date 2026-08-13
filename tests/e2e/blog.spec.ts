@@ -4,7 +4,7 @@ test.describe('Blog Pages', () => {
   test('blog list page renders with posts', async ({ page }) => {
     await page.goto('/blog');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('h1')).toContainText('Archive');
+    await expect(page.locator('#main-content h1')).toContainText('Archive');
     const posts = page.locator('h2');
     const count = await posts.count();
     expect(count).toBeGreaterThanOrEqual(1);
@@ -37,7 +37,7 @@ test.describe('Blog Pages', () => {
     if (href) {
       await page.goto(href);
       const jsonld = page.locator('script[type="application/ld+json"]');
-      await expect(jsonld).toBeVisible();
+      await expect(jsonld).toBeAttached();
       const content = await jsonld.textContent();
       expect(content).toContain('BlogPosting');
     }

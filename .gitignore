@@ -31,3 +31,14 @@ yarn-error.log*
 # ide
 .vscode/
 
+# tooling caches / artifacts
+/.poolside/
+/playwright-report/
+
+# stray generated files
+/common.json
+/contribs.html
+/erp.json
+/test_parse.js
+/torvalds.html
+

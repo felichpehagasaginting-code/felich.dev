@@ -31,13 +31,14 @@ describe('useBlogLikes', () => {
     expect(typeof result.current.toggleLike).toBe('function');
   });
 
-  it('uses localStorage for persistence', async () => {
+  it('sets localStorage on toggle', async () => {
     const { useBlogLikes } = await import('@/lib/useBlogLikes');
-    renderHook(() => useBlogLikes('test-slug'));
-    expect(localStorage.getItem).toBeDefined();
+    const { result } = renderHook(() => useBlogLikes('test-slug'));
+    result.current.toggleLike();
+    expect(localStorage.getItem('liked_blog_test-slug')).toBe('true');
   });
 
-  it('detects previous likes from localStorage', async () => {
+  it('reads previous likes from localStorage', async () => {
     localStorage.setItem('liked_blog_test-slug', 'true');
     const { useBlogLikes } = await import('@/lib/useBlogLikes');
     const { result } = renderHook(() => useBlogLikes('test-slug'));

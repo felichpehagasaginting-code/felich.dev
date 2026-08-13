@@ -23,7 +23,7 @@ export default function AnimatedDivider({ className = '' }: { className?: string
         whileInView={{ scaleX: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.5, ease: "circOut" }}
-        className="h-[1px] md:h-[2px] w-full bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent origin-left"
+        className="h-[1px] md:h-[2px] w-full bg-gradient-to-r from-transparent via-[var(--border-default)] to-transparent origin-left"
       />
       
       {/* Gliding Light Streak */}
@@ -31,7 +31,7 @@ export default function AnimatedDivider({ className = '' }: { className?: string
         initial={{ left: '-20%' }}
         whileInView={{ left: '120%' }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.5 }}
-        className="absolute top-0 h-[1px] md:h-[2px] w-[30%] bg-gradient-to-r from-transparent via-blue-500/50 dark:via-blue-400/50 to-transparent shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+        className="absolute top-0 h-[1px] md:h-[2px] w-[30%] bg-gradient-to-r from-transparent via-[var(--brand)]/50 to-transparent"
       />
     </div>
   );

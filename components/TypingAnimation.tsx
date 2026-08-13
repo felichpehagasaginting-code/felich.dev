@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface TypingAnimationProps {
   texts: string[];
@@ -21,8 +21,16 @@ export default function TypingAnimation({
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    // Typewriter effect is motion-heavy; show the first text statically for
+    // users who prefer reduced motion.
+    if (prefersReducedMotion) {
+      setDisplayText(texts[0]);
+      return;
+    }
+
     let timeout: NodeJS.Timeout;
     const currentFullText = texts[currentTextIndex];
 
@@ -52,7 +60,7 @@ export default function TypingAnimation({
     }
 
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, currentTextIndex, texts, typingSpeed, deletingSpeed, pauseDuration]);
+  }, [displayText, isDeleting, currentTextIndex, texts, typingSpeed, deletingSpeed, pauseDuration, prefersReducedMotion]);
 
   return (
     <span className={`inline-flex items-center ${className}`}>

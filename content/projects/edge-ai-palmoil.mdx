@@ -1,0 +1,26 @@
+---
+title: "Edge AI PalmOil"
+description: "Automated FFB (Fresh Fruit Bunch) classification system powered by MAX78000 ultra-low-power Edge AI hardware, ESP-12E gateway (MQTT/LoRa failover), TimescaleDB, and a real-time web dashboard."
+type: ["Web", "IoT"]
+category: "Personal Project"
+featured: true
+techStack: ["Python", "MAX78000", "ESP-12E", "MQTT/LoRa", "TimescaleDB", "Edge AI", "IoT"]
+features: [
+  "MAX78000 Hardware Neural Acceleration",
+  "ESP-12E Gateway with MQTT & LoRa Failover",
+  "TimescaleDB Time-Series Data Storage",
+  "Real-Time Web Analytics Dashboard",
+  "Automated FFB Ripeness Grading"
+]
+github: "https://github.com/felichpehagasaginting-code/Edge_AI_PalmOil"
+live: ""
+date: "2026-06-20"
+---
+
+### Problem & Motivation
+Grading oil palm Fresh Fruit Bunches (FFB) at palm oil mills is historically done manually by inspectors, creating inconsistency in quality ratings and vulnerability to human bias.
+
+### Technical Architecture & Implementation
+- **Edge Inference**: Deploys lightweight convolutional neural networks directly onto the **Analog Devices / Maxim MAX78000** microcontroller. The CNN performs sub-second image classification of palm fruit ripeness at ultra-low power consumption.
+- **Gateway & Failover**: Connected via an **ESP-12E gateway** equipped with dual-protocol failover (MQTT over Wi-Fi / Cellular with automatic fallback to LoRa for long-range remote plantation transmission).
+- **Data & Dashboard**: Ingests telemetry streams into **TimescaleDB** time-series database and displays live operational metrics, ripeness distributions, and sensor logs on a real-time web dashboard.

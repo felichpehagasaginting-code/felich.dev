@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { sounds } from '@/lib/sounds';
 import { useLayoutStore } from '@/lib/store';
 import { useFocusTrap } from '@/lib/useFocusTrap';
 
@@ -50,7 +49,7 @@ export default function CommandPalette() {
   const listRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { theme, setTheme, triggerWarp } = useLayoutStore();
+  const { theme, setTheme } = useLayoutStore();
 
   // Lock Tab focus inside the palette while it is open
   useFocusTrap(containerRef, open, { autoFocusFirst: false });
@@ -72,37 +71,31 @@ export default function CommandPalette() {
       },
     },
     {
-      id: 'theme-dark',
-      label: 'Switch to Dark Mode',
+      id: 'theme-noir',
+      label: 'Switch to Noir Silver',
+      description: 'Monochrome cinematic dark',
       icon: '🌙',
       category: 'Actions',
-      keywords: ['dark', 'theme', 'mode'],
-      action: () => { setTheme('dark'); triggerWarp(window.innerWidth / 2, window.innerHeight / 2, '#171717'); },
+      keywords: ['dark', 'noir', 'theme', 'mode'],
+      action: () => { setTheme('noir'); },
     },
     {
-      id: 'theme-light',
-      label: 'Switch to Light Mode',
+      id: 'theme-vanilla',
+      label: 'Switch to Vanilla',
+      description: 'Light cream & pastel matcha',
       icon: '☀️',
       category: 'Actions',
-      keywords: ['light', 'theme', 'mode'],
-      action: () => { setTheme('light'); triggerWarp(window.innerWidth / 2, window.innerHeight / 2, '#ffffff'); },
+      keywords: ['light', 'vanilla', 'theme', 'mode'],
+      action: () => { setTheme('vanilla'); },
     },
     {
-      id: 'theme-retro',
-      label: 'Switch to Retro Mode',
-      icon: '⚡',
+      id: 'theme-violet',
+      label: 'Switch to Violet Deep',
+      description: 'Ambient royal night',
+      icon: '🔮',
       category: 'Actions',
-      keywords: ['yellow', 'retro', 'theme', 'mode'],
-      action: () => { setTheme('yellow'); triggerWarp(window.innerWidth / 2, window.innerHeight / 2, '#fef9ed'); },
-    },
-    {
-      id: 'toggle-sound',
-      label: 'Toggle Sound Effects',
-      description: 'Mute/unmute UI sounds',
-      icon: '🔊',
-      category: 'Actions',
-      keywords: ['sound', 'mute', 'audio'],
-      action: () => { sounds.toggle(); },
+      keywords: ['violet', 'purple', 'theme', 'mode'],
+      action: () => { setTheme('violet'); },
     },
   ];
 
@@ -131,7 +124,6 @@ export default function CommandPalette() {
       setOpen(false);
       setQuery('');
       setSelectedIndex(0);
-      sounds.playPop();
 
       if (cmd.id === 'ai-chat') {
         // Dispatch custom event to open AI chatbot
@@ -182,13 +174,9 @@ export default function CommandPalette() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setOpen((prev) => {
-          sounds.playSwitch();
-          return !prev;
-        });
+        setOpen((prev) => !prev);
       }
       if (e.key === 'Escape') {
-        if (open) sounds.playSwitch();
         setOpen(false);
         setQuery('');
       }
@@ -230,10 +218,10 @@ export default function CommandPalette() {
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className="fixed top-[15%] left-1/2 -translate-x-1/2 w-full max-w-xl z-[101]"
           >
-            <div className="mx-4 rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-2xl shadow-black/30">
+            <div className="mx-4 rounded-2xl overflow-hidden border border-[var(--border-default)] bg-[var(--bg-surface)] shadow-2xl">
               {/* Search input */}
-              <div className="flex items-center gap-3 px-4 border-b border-neutral-200 dark:border-neutral-800">
-                <svg className="w-5 h-5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <div className="flex items-center gap-3 px-4 border-b border-[var(--border-default)]">
+                <svg className="w-5 h-5 text-[var(--text-muted)] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
@@ -250,9 +238,9 @@ export default function CommandPalette() {
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleInputKeyDown}
                   placeholder="Search pages, actions, social links..."
-                  className="flex-1 py-4 bg-transparent text-sm outline-none placeholder:text-neutral-400"
+                  className="flex-1 py-4 bg-transparent text-sm outline-none placeholder:text-[var(--text-muted)]"
                 />
-                <kbd className="hidden sm:inline-flex px-2 py-1 text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-400 rounded border border-neutral-200 dark:border-neutral-700">
+                <kbd className="hidden sm:inline-flex px-2 py-1 text-[10px] font-mono bg-[var(--bg-muted)] text-[var(--text-muted)] rounded border border-[var(--border-default)]">
                   ESC
                 </kbd>
               </div>
@@ -268,8 +256,8 @@ export default function CommandPalette() {
               >
                 {sortedCategories.map((category) => (
                   <div key={category} role="group" aria-label={category}>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 px-3 py-2 flex items-center gap-2" aria-hidden="true">
-                      {category === 'AI' && <span className="text-blue-500">✨</span>}
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)] px-3 py-2 flex items-center gap-2" aria-hidden="true">
+                      {category === 'AI' && <span className="text-[var(--brand)]">✨</span>}
                       {category}
                     </p>
                     {grouped[category].map((cmd) => {
@@ -284,26 +272,26 @@ export default function CommandPalette() {
                           aria-selected={isSelected}
                           data-selected={isSelected}
                           onClick={() => handleSelect(cmd)}
-                          onMouseEnter={() => { setSelectedIndex(globalIndex); sounds.playHover(); }}
+                          onMouseEnter={() => setSelectedIndex(globalIndex)}
                           className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-left ${isSelected
-                              ? 'bg-neutral-100 dark:bg-neutral-800 ring-1 ring-primary/30'
-                              : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
+                              ? 'bg-[var(--bg-muted)] ring-1 ring-[var(--brand)]/30'
+                              : 'hover:bg-[var(--bg-muted)]/50'
                             }`}
                         >
                           <span className="text-base w-6 text-center flex-shrink-0" aria-hidden="true">{cmd.icon}</span>
                           <span className="flex-1 min-w-0">
-                            <span className={`font-medium block ${isSelected ? 'text-primary' : ''}`}>{cmd.label}</span>
+                            <span className={`font-medium block ${isSelected ? 'text-[var(--brand)]' : 'text-[var(--text-primary)]'}`}>{cmd.label}</span>
                             {cmd.description && (
-                              <span className="text-[11px] text-neutral-400 truncate block">{cmd.description}</span>
+                              <span className="text-[11px] text-[var(--text-muted)] truncate block">{cmd.description}</span>
                             )}
                           </span>
                           {cmd.external && (
-                            <svg className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Opens in new tab">
+                            <svg className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Opens in new tab">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                             </svg>
                           )}
                           {cmd.id === 'ai-chat' && isSelected && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-semibold flex-shrink-0">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--brand-bg)] text-[var(--brand)] font-semibold flex-shrink-0">
                               New
                             </span>
                           )}
@@ -315,23 +303,23 @@ export default function CommandPalette() {
                 {filtered.length === 0 && (
                   <div className="text-center py-10" role="status">
                     <p className="text-3xl mb-2" aria-hidden="true">🔍</p>
-                    <p className="text-sm text-neutral-400">No results for &quot;{query}&quot;</p>
+                    <p className="text-sm text-[var(--text-muted)]">No results for &quot;{query}&quot;</p>
                   </div>
                 )}
               </div>
 
               {/* Footer */}
-              <div className="px-4 py-2.5 border-t border-neutral-100 dark:border-neutral-800 flex items-center gap-4 text-[10px] text-neutral-400 font-mono">
+              <div className="px-4 py-2.5 border-t border-[var(--border-default)] flex items-center gap-4 text-[10px] text-[var(--text-muted)] font-mono">
                 <span className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700">↑↓</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-[var(--bg-muted)] rounded border border-[var(--border-default)]">↑↓</kbd>
                   navigate
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700">↵</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-[var(--bg-muted)] rounded border border-[var(--border-default)]">↵</kbd>
                   select
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded border border-neutral-200 dark:border-neutral-700">esc</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-[var(--bg-muted)] rounded border border-[var(--border-default)]">esc</kbd>
                   close
                 </span>
                 <span className="ml-auto opacity-60">{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>

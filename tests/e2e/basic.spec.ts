@@ -7,7 +7,7 @@ test('homepage has title and hero text', async ({ page }: { page: Page }) => {
   await expect(page).toHaveTitle(/Felich/);
 
   // Check hero section
-  const hero = page.locator('h1');
+  const hero = page.locator('#main-content h1');
   await expect(hero).toContainText('Felich');
 });
 
@@ -20,5 +20,5 @@ test('navigation works', async ({ page }: { page: Page }) => {
   await aboutLink.click();
 
   await expect(page).toHaveURL(/\/about/);
-  await expect(page.locator('h1')).toContainText('About');
+  await expect(page.locator('#main-content h1')).toContainText('About');
 });

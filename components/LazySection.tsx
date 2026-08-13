@@ -39,7 +39,7 @@ export default function LazySection({ children, height = '200px' }: LazySectionP
       ) : (
         <div 
           style={{ '--lazy-height': height } as React.CSSProperties} 
-          className="w-full rounded-3xl bg-neutral-100/40 dark:bg-neutral-900/20 border border-neutral-200/30 dark:border-neutral-800/30 animate-pulse h-[var(--lazy-height)]" 
+          className="w-full rounded-3xl bg-[var(--bg-muted)] border border-[var(--border-default)] animate-pulse h-[var(--lazy-height)]" 
         />
       )}
     </div>

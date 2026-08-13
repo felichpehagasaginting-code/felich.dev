@@ -3,6 +3,46 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
+type ThemeKey = 'vanilla' | 'noir' | 'violet';
+
+const THEME_PALETTE: Record<ThemeKey, {
+  bg: string;
+  surface: string;
+  textPrimary: string;
+  textMuted: string;
+  border: string;
+  brand: string;
+  brandBg: string;
+}> = {
+  vanilla: {
+    bg: '#EAF4CE',
+    surface: '#FAFFEB',
+    textPrimary: '#121410',
+    textMuted: '#525844',
+    border: 'rgba(107, 136, 31, 0.35)',
+    brand: '#556B14',
+    brandBg: 'rgba(107, 136, 31, 0.12)',
+  },
+  noir: {
+    bg: '#0F0F0F',
+    surface: '#1A1A1A',
+    textPrimary: '#FFFFFF',
+    textMuted: '#A1A1A1',
+    border: 'rgba(255, 255, 255, 0.16)',
+    brand: '#FFFFFF',
+    brandBg: 'rgba(255, 255, 255, 0.12)',
+  },
+  violet: {
+    bg: '#110B1D',
+    surface: '#22163B',
+    textPrimary: '#F5F0FF',
+    textMuted: '#A895C9',
+    border: 'rgba(210, 195, 246, 0.35)',
+    brand: '#D2C3F6',
+    brandBg: 'rgba(210, 195, 246, 0.16)',
+  },
+};
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -10,6 +50,9 @@ export async function GET(req: NextRequest) {
     const description = searchParams.get('description') || 'Software Engineer | AI & FinTech';
     const type = searchParams.get('type') || 'page'; // blog, project, page
     const category = searchParams.get('category') || '';
+    const themeParam = searchParams.get('theme') as ThemeKey | null;
+    const theme = THEME_PALETTE[themeParam as ThemeKey] ? (themeParam as ThemeKey) : 'noir';
+    const palette = THEME_PALETTE[theme];
 
     return new ImageResponse(
       (
@@ -21,33 +64,21 @@ export async function GET(req: NextRequest) {
             flexDirection: 'column',
             alignItems: 'flex-start',
             justifyContent: 'center',
-            backgroundColor: '#0a0a0a',
+            backgroundColor: palette.bg,
             padding: '80px',
             fontFamily: 'sans-serif',
           }}
         >
-          {/* Background Gradient Mesh */}
+          {/* Ambient orb */}
           <div
             style={{
               position: 'absolute',
-              top: -100,
+              top: -120,
               right: -100,
               width: 600,
               height: 600,
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
-              filter: 'blur(60px)',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              bottom: -150,
-              left: -150,
-              width: 500,
-              height: 500,
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)',
+              background: `radial-gradient(circle, ${palette.brandBg} 0%, transparent 70%)`,
               filter: 'blur(60px)',
             }}
           />
@@ -57,9 +88,9 @@ export async function GET(req: NextRequest) {
             style={{
               display: 'flex',
               padding: '8px 16px',
-              borderRadius: '12px',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.2)',
+              borderRadius: '9999px',
+              backgroundColor: palette.brandBg,
+              border: `1px solid ${palette.border}`,
               marginBottom: '24px',
             }}
           >
@@ -67,12 +98,12 @@ export async function GET(req: NextRequest) {
               style={{
                 fontSize: '14px',
                 fontWeight: 'bold',
-                color: '#3b82f6',
+                color: palette.brand,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
               }}
             >
-              {type === 'blog' ? '📝 Article' : type === 'project' ? '🚀 Project' : '🌐 Felich.dev'}
+              {type === 'blog' ? 'Article' : type === 'project' ? 'Project' : 'Felich.dev'}
               {category ? ` • ${category}` : ''}
             </span>
           </div>
@@ -81,12 +112,13 @@ export async function GET(req: NextRequest) {
           <div
             style={{
               fontSize: '64px',
-              fontWeight: 900,
-              color: 'white',
+              fontWeight: 700,
+              color: palette.textPrimary,
               lineHeight: 1.1,
               marginBottom: '24px',
               maxWidth: '900px',
               display: 'flex',
+              letterSpacing: '-0.01em',
             }}
           >
             {title}
@@ -96,7 +128,7 @@ export async function GET(req: NextRequest) {
           <div
             style={{
               fontSize: '28px',
-              color: '#a3a3a3',
+              color: palette.textMuted,
               lineHeight: 1.4,
               maxWidth: '800px',
               marginBottom: '48px',
@@ -112,7 +144,7 @@ export async function GET(req: NextRequest) {
               display: 'flex',
               alignItems: 'center',
               width: '100%',
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+              borderTop: `1px solid ${palette.border}`,
               paddingTop: '32px',
             }}
           >
@@ -120,22 +152,22 @@ export async function GET(req: NextRequest) {
               style={{
                 width: '48px',
                 height: '48px',
-                borderRadius: '50%',
-                backgroundColor: '#3b82f6',
+                borderRadius: '12px',
+                backgroundColor: palette.brand,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '24px',
                 fontWeight: 'bold',
-                color: 'white',
+                color: palette.bg,
                 marginRight: '16px',
               }}
             >
               F
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '20px', fontWeight: 'bold', color: 'white' }}>Felich</span>
-              <span style={{ fontSize: '14px', color: '#737373' }}>felich.dev</span>
+              <span style={{ fontSize: '20px', fontWeight: 'bold', color: palette.textPrimary }}>Felich</span>
+              <span style={{ fontSize: '14px', color: palette.textMuted }}>felich.dev</span>
             </div>
           </div>
         </div>

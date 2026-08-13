@@ -27,7 +27,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
+    // Production build + start: the dev server (next dev --webpack) is
+    // memory-hungry on Windows and dies mid-suite, failing whole browser
+    // projects with "Could not connect to server".
+    command: 'npm run build && npm run start',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
   },

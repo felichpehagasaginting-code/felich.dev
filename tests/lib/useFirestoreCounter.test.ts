@@ -2,7 +2,17 @@ import { renderHook, act, cleanup } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/lib/firebase', () => ({
-  getDb: vi.fn(() => Promise.resolve('mock-db')),
+  getDb: vi.fn(() => Promise.resolve({ _mock: true })),
+}));
+
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(() => ({ id: 'test' })),
+  onSnapshot: vi.fn((_ref: any, cb: any) => {
+    cb({ data: () => ({ count: 5 }), exists: true });
+    return vi.fn();
+  }),
+  setDoc: vi.fn(() => Promise.resolve()),
+  increment: vi.fn((n: number) => n),
 }));
 
 describe('useFirestoreCounter', () => {
@@ -47,22 +57,19 @@ describe('useFirestoreCounter', () => {
     expect(result.current.hasActed).toBe(true);
   });
 
-  it('increment sets hasActed to true and persists', async () => {
+  it('optimistically sets hasActed on increment before Firebase resolves', async () => {
     const { useFirestoreCounter } = await import('@/lib/useFirestoreCounter');
     const { result } = renderHook(() => useFirestoreCounter(defaultOptions));
     expect(result.current.hasActed).toBe(false);
-    await act(async () => {
-      await result.current.increment();
-    });
-    // Note: hasActed is set optimistically. If the firebase call fails,
-    // it gets rolled back. In mock env, the dynamic import('firebase/firestore')
-    // doesn't resolve to our mock, so the call fails and hasActed reverts to false.
-    // This test verifies the optimistic update behavior.
+
+    act(() => { result.current.increment(); });
+    expect(result.current.hasActed).toBe(true);
   });
 
   it('uses sessionStorage when persistenceStrategy is sessionStorage', async () => {
+    localStorage.setItem('viewed_blog_test-view', 'true');
     const { useFirestoreCounter } = await import('@/lib/useFirestoreCounter');
-    renderHook(() =>
+    const { result } = renderHook(() =>
       useFirestoreCounter({
         collection: 'blog_views',
         docId: 'test-view',
@@ -70,7 +77,7 @@ describe('useFirestoreCounter', () => {
         storageKey: 'viewed_blog_test-view',
       })
     );
-    sessionStorage.setItem('viewed_blog_test-view', 'true');
+    expect(result.current.hasActed).toBe(false);
   });
 
   it('hasActed is false when persistenceStrategy is none', async () => {
