@@ -11,19 +11,23 @@ vi.mock('firebase/firestore', () => ({
     cb({ data: () => ({ count: 5 }), exists: true });
     return vi.fn();
   }),
-  setDoc: vi.fn(() => Promise.resolve()),
-  increment: vi.fn((n: number) => n),
 }));
+
+const mockFetch = vi.fn(() =>
+  Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ success: true }) })
+);
 
 describe('useFirestoreCounter', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
     sessionStorage.clear();
+    vi.stubGlobal('fetch', mockFetch);
   });
 
   afterEach(() => {
     cleanup();
+    vi.unstubAllGlobals();
   });
 
   const defaultOptions = {
@@ -94,8 +98,25 @@ describe('useFirestoreCounter', () => {
     expect(result.current.hasActed).toBe(false);
   });
 
+  it('posts an increment to the counters API', async () => {
+    const { useFirestoreCounter } = await import('@/lib/useFirestoreCounter');
+    const { result } = renderHook(() => useFirestoreCounter(defaultOptions));
+    await act(async () => {
+      await result.current.increment();
+    });
+    expect(mockFetch).toHaveBeenCalledWith(
+      '/api/counters',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ collection: 'blog_likes', slug: 'test-post' }),
+      })
+    );
+    expect(result.current.hasActed).toBe(true);
+  });
+
   it('handles errors during increment gracefully', async () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockFetch.mockRejectedValueOnce(new Error('network down'));
     const { useFirestoreCounter } = await import('@/lib/useFirestoreCounter');
     const { result } = renderHook(() => useFirestoreCounter(defaultOptions));
     await act(async () => {

@@ -75,20 +75,35 @@ export function useFirestoreCounter({
   useEffect(() => {
     if (!docId) return;
     let unsub: () => void;
+    let active = true;
     (async () => {
-      const db = await getDb();
-      const { doc, onSnapshot } = await import('firebase/firestore');
-      const ref = doc(db, collectionName, docId);
-      unsub = onSnapshot(
-        ref,
-        (snap: any) => {
-          setCount(snap.data()?.[countField] ?? 0);
-          setLoading(false);
-        },
-        () => setLoading(false)
-      );
+      try {
+        const db = await getDb();
+        if (!active) return;
+        const { doc, onSnapshot } = await import('firebase/firestore');
+        if (!active) return;
+        const ref = doc(db, collectionName, docId);
+        if (!active) return;
+        unsub = onSnapshot(
+          ref,
+          (snap: any) => {
+            if (active) {
+              setCount(snap.data()?.[countField] ?? 0);
+              setLoading(false);
+            }
+          },
+          () => {
+            if (active) setLoading(false);
+          }
+        );
+      } catch {
+        if (active) setLoading(false);
+      }
     })();
-    return () => unsub?.();
+    return () => {
+      active = false;
+      unsub?.();
+    };
   }, [collectionName, docId, countField]);
 
   // ── Increment action ───────────────────────────────────────────────────────
@@ -103,10 +118,16 @@ export function useFirestoreCounter({
       }
       setHasActed(true);
 
-      const db = await getDb();
-      const { doc, setDoc, increment } = await import('firebase/firestore');
-      const ref = doc(db, collectionName, docId);
-      await setDoc(ref, { [countField]: increment(1), id: docId }, { merge: true });
+      // Writes go through the API route (Admin SDK + server-side rate limiting)
+      // instead of direct Firestore writes, so clients cannot spam counters.
+      const res = await fetch('/api/counters', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collection: collectionName, slug: docId }),
+      });
+      if (!res.ok) {
+        throw new Error(`Counter increment failed (${res.status})`);
+      }
     } catch (err) {
       if (persistenceStrategy !== 'none') {
         const storage =

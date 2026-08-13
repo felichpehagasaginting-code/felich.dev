@@ -13,6 +13,7 @@ const AIChatbot = dynamic(() => import('@/components/AIChatbot'), { ssr: false }
 export default function DynamicClientComponents() {
   const [shouldLoadChatbot, setShouldLoadChatbot] = useState(false);
   const [openChatbotOnLoad, setOpenChatbotOnLoad] = useState(false);
+  const [mountedSecondary, setMountedSecondary] = useState(false);
 
   useEffect(() => {
     const loadChatbot = () => setShouldLoadChatbot(true);
@@ -25,8 +26,14 @@ export default function DynamicClientComponents() {
 
     const idleId =
       'requestIdleCallback' in window
-        ? window.requestIdleCallback(loadChatbot, { timeout: 8000 })
-        : globalThis.setTimeout(loadChatbot, 8000);
+        ? window.requestIdleCallback(() => {
+            setMountedSecondary(true);
+            loadChatbot();
+          }, { timeout: 1500 })
+        : globalThis.setTimeout(() => {
+            setMountedSecondary(true);
+            loadChatbot();
+          }, 1000);
 
     return () => {
       document.removeEventListener('open-ai-chatbot', openChatbot);
@@ -40,11 +47,15 @@ export default function DynamicClientComponents() {
 
   return (
     <>
-      <PulseSync />
-      <EngineeringGrid />
       <CommandPalette />
       <BackToTop />
       <QuickConnect />
+      {mountedSecondary && (
+        <>
+          <PulseSync />
+          <EngineeringGrid />
+        </>
+      )}
       {shouldLoadChatbot && <AIChatbot initiallyOpen={openChatbotOnLoad} />}
     </>
   );

@@ -11,18 +11,21 @@ vi.mock('firebase/firestore', () => ({
     cb({ data: () => ({ count: 7 }), exists: true });
     return vi.fn();
   }),
-  setDoc: vi.fn(() => Promise.resolve()),
-  increment: vi.fn((n: number) => n),
 }));
 
 describe('useBlogViews', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     sessionStorage.clear();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({ ok: true, status: 200 }))
+    );
   });
 
   afterEach(() => {
     cleanup();
+    vi.unstubAllGlobals();
   });
 
   it('returns a number or null', async () => {

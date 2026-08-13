@@ -1,6 +1,16 @@
 import { NextRequest } from 'next/server';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent';
+
+const rateLimiter = new RateLimiterMemory({
+  points: 20,
+  duration: 60,
+});
+
+const MAX_MESSAGES = 10;
+const MAX_MESSAGE_LENGTH = 1000;
+const GEMINI_TIMEOUT_MS = 30_000;
 
 
 const SYSTEM_PROMPT = `You are "Felich AI", a smart, friendly, and concise portfolio assistant for Felich Pehagasa Ginting. 
@@ -61,6 +71,16 @@ Never make up information. If a question is off-topic, politely redirect to Feli
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    try {
+      await rateLimiter.consume(ip);
+    } catch {
+      return new Response(JSON.stringify({ error: 'Too many requests. Please try again later.' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -68,6 +88,24 @@ export async function POST(req: NextRequest) {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // Validate each message before it reaches the Gemini API
+    if (messages.length > MAX_MESSAGES) {
+      return new Response(JSON.stringify({ error: 'Too many messages' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    for (const msg of messages) {
+      const role = (msg as { role?: unknown })?.role;
+      const content = (msg as { content?: unknown })?.content;
+      if ((role !== 'user' && role !== 'assistant') || typeof content !== 'string' || content.length === 0 || content.length > MAX_MESSAGE_LENGTH) {
+        return new Response(JSON.stringify({ error: 'Invalid message payload' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -123,13 +161,21 @@ export async function POST(req: NextRequest) {
       },
     };
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), GEMINI_TIMEOUT_MS);
+
     const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}&alt=sse`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
+      signal: controller.signal,
+    }).catch((err) => {
+      clearTimeout(timeout);
+      throw err;
     });
 
     if (!response.ok) {
+      clearTimeout(timeout);
       const errText = await response.text();
       console.error(`Gemini API error (${response.status}):`, errText);
       return new Response(
@@ -144,6 +190,7 @@ export async function POST(req: NextRequest) {
       async start(controller) {
         const reader = response.body?.getReader();
         if (!reader) {
+          clearTimeout(timeout);
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`));
           controller.close();
           return;
@@ -195,6 +242,7 @@ export async function POST(req: NextRequest) {
           console.error('Stream read error:', err);
         }
 
+        clearTimeout(timeout);
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`));
         controller.close();
       },

@@ -6,6 +6,25 @@ vi.mock('@/lib/firebase', () => ({
   getRtdb: vi.fn(() => Promise.resolve('mock-rtdb')),
 }));
 
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(() => ({ id: 'mock-doc' })),
+  getDoc: vi.fn(() => Promise.resolve({ data: () => ({ count: 10 }), exists: true })),
+}));
+
+vi.mock('firebase/database', () => ({
+  ref: vi.fn(() => ({ id: 'mock-ref' })),
+  set: vi.fn(() => Promise.resolve()),
+  remove: vi.fn(() => Promise.resolve()),
+  onValue: vi.fn((_ref: any, cb: any) => {
+    if (typeof cb === 'function') {
+      cb({ size: 1 });
+    }
+    return vi.fn();
+  }),
+  onDisconnect: vi.fn(() => ({ remove: vi.fn() })),
+  serverTimestamp: vi.fn(() => 123456789),
+}));
+
 describe('useVisitorTracking', () => {
   beforeEach(() => {
     vi.clearAllMocks();

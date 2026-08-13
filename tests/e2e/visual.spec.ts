@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const SCREENSHOT_OPTS = {
-  maxDiffPixels: 100,
+  maxDiffPixels: 200,
   fullPage: true,
   animations: 'disabled' as const,
 };

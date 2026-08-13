@@ -1,24 +1,32 @@
 import { renderHook } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/lib/firebase', () => ({
   getDb: vi.fn(() => Promise.resolve({ _mock: true })),
 }));
 
 vi.mock('firebase/firestore', () => ({
-  doc: vi.fn(() => ({ id: 'test' })),
+  doc: vi.fn((...args: any[]) => ({ id: args[2] || 'test' })),
   onSnapshot: vi.fn((_ref: any, cb: any) => {
-    cb({ data: () => ({ count: 3 }), exists: true });
+    if (typeof cb === 'function') {
+      cb({ data: () => ({ count: 3 }), exists: true });
+    }
     return vi.fn();
   }),
-  setDoc: vi.fn(() => Promise.resolve()),
-  increment: vi.fn((n: number) => n),
 }));
 
 describe('useProjectLikes', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({ ok: true, status: 200 }))
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it('returns the expected API shape', async () => {

@@ -24,6 +24,8 @@ const SUGGESTED_QUESTIONS = [
   'How to contact?',
 ];
 
+const MAX_INPUT_LENGTH = 1000;
+
 // ── Language detection ────────────────────────────────────────────────────
 const ID_KEYWORDS = /\b(dan|yang|dengan|adalah|saya|kamu|untuk|tidak|ini|itu|di|ke|dari|pada|juga|bisa|ada|apa|bagaimana|kenapa|siapa|sudah|belum|mau|akan|karena)\b/i;
 function detectLang(text: string): 'id-ID' | 'en-US' {
@@ -241,7 +243,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
     const userMsg: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: text.trim(),
+      content: text.trim().slice(0, MAX_INPUT_LENGTH),
       timestamp: new Date(),
     };
 
@@ -675,8 +677,9 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                             ref={inputRef}
                             type="text"
                             value={input}
-                            onChange={e => setInput(e.target.value)}
+                            onChange={e => setInput(e.target.value.slice(0, MAX_INPUT_LENGTH))}
                             onKeyDown={handleKeyDown}
+                            maxLength={MAX_INPUT_LENGTH}
                             placeholder={isListening ? 'Listening…' : 'Ask about Felich…'}
                             disabled={loading || isListening}
                             className="flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--text-muted)] disabled:opacity-50 text-[var(--text-primary)]"

@@ -5,44 +5,75 @@ service cloud.firestore {
     match /guestbook/{messageId} {
       // Anyone can read guestbook entries
       allow read: if true;
-      
+
       // Only authenticated users can create messages
-      allow create: if request.auth != null 
+      allow create: if request.auth != null
                     // UID must match the token's UID
                     && request.auth.uid == request.resource.data.uid
                     // Name must be string & under 100 chars
-                    && request.resource.data.name is string 
+                    && request.resource.data.name is string
                     && request.resource.data.name.size() <= 100
                     // Message must be string & under 500 chars
-                    && request.resource.data.message is string 
-                    && request.resource.data.message.size() <= 500;
-      
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() <= 500
+                    // createdAt must be a server timestamp (anti-spoof)
+                    && request.resource.data.createdAt == request.time;
+
       // Users can only delete their own messages
-      allow delete: if request.auth != null 
+      allow delete: if request.auth != null
                     && request.auth.uid == resource.data.uid;
-                    
+
       // No one can update an existing message once posted
       allow update: if false;
     }
-    // Counters for Blog Views
+
+    // contact_messages: written server-side via the contact API.
+    // The Admin SDK bypasses rules; the validation below guards the
+    // client-SDK fallback path when Admin credentials are not configured.
+    match /contact_messages/{messageId} {
+      // Messages are private — only the owner reads them via the API (Admin SDK).
+      allow read: if false;
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() <= 100
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() <= 320
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() <= 2000
+                    && request.resource.data.read == false
+                    && request.resource.data.createdAt == request.time;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // Counters (blog views/likes, project likes, page views):
+    // client reads only — all writes go through the /api/counters route
+    // (Admin SDK + server-side rate limiting) to prevent abuse.
     match /blog_views/{slug} {
       allow read: if true;
-      allow create: if request.resource.data.count == 1 && request.resource.data.slug == slug;
-      allow update: if request.resource.data.count == resource.data.count + 1 && request.resource.data.slug == slug;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
-    // Counters for Blog Likes
     match /blog_likes/{slug} {
       allow read: if true;
-      allow create: if request.resource.data.count == 1 && request.resource.data.slug == slug;
-      allow update: if request.resource.data.count == resource.data.count + 1 && request.resource.data.slug == slug;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
-    // Counters for Project Likes
     match /project_likes/{slug} {
       allow read: if true;
-      allow create: if request.resource.data.count == 1 && request.resource.data.slug == slug;
-      allow update: if request.resource.data.count == resource.data.count + 1 && request.resource.data.slug == slug;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    match /page_views/{slug} {
+      allow read: if true;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }

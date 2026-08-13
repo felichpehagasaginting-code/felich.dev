@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
+import { getAdminDb } from '@/lib/firebase-admin';
 import { getDb } from '@/lib/firebase';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,15 +38,29 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Persist to Firestore ──────────────────────────────────────────────────
-    const db = await getDb();
-    const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
-    await addDoc(collection(db, 'contact_messages'), {
+    // Preferred: Admin SDK (bypasses rules; rate limiting happens in this route).
+    // Fallback: client SDK — Firestore rules validate the payload client-side.
+    const payload = {
       name: name.trim(),
       email: email.trim().toLowerCase(),
       message: message.trim(),
-      createdAt: serverTimestamp(),
       read: false,
-    });
+    };
+    const adminDb = getAdminDb();
+    if (adminDb) {
+      const { FieldValue } = await import('firebase-admin/firestore');
+      await adminDb.collection('contact_messages').add({
+        ...payload,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+    } else {
+      const db = await getDb();
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      await addDoc(collection(db, 'contact_messages'), {
+        ...payload,
+        createdAt: serverTimestamp(),
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

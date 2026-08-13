@@ -25,7 +25,7 @@ export default function Hero() {
   return (
     <section className="mb-12 flex flex-col md:flex-row items-center gap-12 md:gap-8 overflow-visible">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         style={{ perspective: 1000 }}
