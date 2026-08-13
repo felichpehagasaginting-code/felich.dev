@@ -1292,13 +1292,15 @@ export default function Hero3D() {
       <Canvas
         camera={{ position: [0, 0, isMobile ? 7 : 5], fov: isMobile ? 55 : 45 }}
         className="w-full h-full !absolute inset-0 focus:outline-none"
-        dpr={isMobile ? 1 : [1, 1.5]}
+        dpr={isMobile ? 1 : [1, Math.min(1.5, typeof window !== 'undefined' ? window.devicePixelRatio : 1)]}
         performance={{ min: 0.5 }}
         frameloop={prefersReducedMotion || !isVisible ? 'never' : 'always'}
         gl={{ 
           antialias: !isMobile, 
           powerPreference: "high-performance",
-          alpha: true 
+          alpha: true,
+          stencil: false,
+          depth: true,
         }}
       >
         <ambientLight intensity={0.5} />

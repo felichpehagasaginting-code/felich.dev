@@ -9,6 +9,9 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   compress: true,
   reactStrictMode: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -20,7 +23,43 @@ const nextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion', 'date-fns', 'firebase', '@react-three/drei'],
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      'date-fns',
+      'firebase',
+      '@react-three/drei',
+      'three',
+      '@react-three/fiber',
+      'gsap',
+      'react-i18next',
+    ],
+  },
+
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          three: {
+            test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
+            name: 'three-vendor',
+            priority: 30,
+          },
+          framework: {
+            test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+            name: 'framework-vendor',
+            priority: 40,
+          },
+          commons: {
+            name: 'commons',
+            minChunks: 2,
+            priority: 20,
+          },
+        },
+      };
+    }
+    return config;
   },
 
   async headers() {

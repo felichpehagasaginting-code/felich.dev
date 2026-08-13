@@ -205,7 +205,9 @@
     background-color: var(--bg-surface);
     border: 1px solid var(--border-default);
     border-radius: 8px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   .card-hover:hover {
@@ -221,6 +223,8 @@
     border: 1px solid var(--glass-border);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   /* ── Pill Badge (metadata, JetBrains Mono 10px) ─────────────────────── */
@@ -513,6 +517,13 @@ html.lenis body {
 }
 
 @layer utilities {
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+  }
+
   /* Blueprint grid background for architectural sections */
   .architectural-grid {
     background-image:
