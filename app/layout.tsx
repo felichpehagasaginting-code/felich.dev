@@ -44,6 +44,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="theme-noir dark" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+      </head>
       <body className={`${poppins.variable} ${mono.variable} font-sans antialiased bg-[var(--bg-base)] text-[var(--text-primary)] transition-colors duration-300 selection:bg-primary/20`}>
         {/* Skip Navigation — WCAG 2.4.1: allows keyboard users to bypass repetitive nav blocks */}
         <a href="#main-content" className="skip-nav">
