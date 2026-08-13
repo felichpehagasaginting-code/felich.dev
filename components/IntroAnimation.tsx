@@ -16,7 +16,6 @@ const THEME_PALETTES = {
     text: '#1A1A16',
     muted: '#55554E',
     brand: '#6B881F',
-    border: 'rgba(107, 136, 31, 0.25)',
     name: 'VANILLA MATCHA',
   },
   noir: {
@@ -24,7 +23,6 @@ const THEME_PALETTES = {
     text: '#F5F5F6',
     muted: '#A6A6AC',
     brand: '#CDCDD6',
-    border: 'rgba(212, 212, 220, 0.2)',
     name: 'NOIR SILVER',
   },
   lavender: {
@@ -32,7 +30,6 @@ const THEME_PALETTES = {
     text: '#232327',
     muted: '#5F5F66',
     brand: '#7C6FC4',
-    border: 'rgba(124, 111, 196, 0.3)',
     name: 'LAVENDER VIOLET',
   },
 };
@@ -157,40 +154,43 @@ export default function IntroAnimation() {
         2.9
       );
 
-      // ── Phase 2: Fade Out Preloader Elements ──
-      tl.to(['.intro-counter-wrapper', '.intro-theme-indicator'], {
+      // ── Phase 2: Fade Out Preloader Stage ──
+      tl.to('.intro-stage-preloader', {
         opacity: 0,
-        y: -30,
-        duration: 0.4,
-        ease: 'power3.in',
+        y: -25,
+        scale: 0.96,
+        duration: 0.35,
+        ease: 'power2.in',
       });
 
-      // ── Phase 3: Name & Role Reveal ──
+      // ── Phase 3: Reveal Center Name & Attributes (True Vertical Center) ──
+      tl.set('.intro-stage-reveal', { opacity: 1 });
+
       tl.fromTo(
         '.intro-name-char',
-        { y: 70, opacity: 0, filter: 'blur(8px)' },
+        { y: 50, opacity: 0, filter: 'blur(8px)' },
         {
           y: 0,
           opacity: 1,
           filter: 'blur(0px)',
-          duration: 0.7,
-          stagger: 0.035,
+          duration: 0.6,
+          stagger: 0.03,
           ease: 'power4.out',
         },
-        '-=0.1'
+        '-=0.05'
       );
 
       tl.fromTo(
         '.intro-role-badge',
-        { scale: 0.88, opacity: 0, y: 15 },
+        { scale: 0.9, opacity: 0, y: 15 },
         {
           scale: 1,
           opacity: 1,
           y: 0,
-          duration: 0.5,
-          ease: 'back.out(1.7)',
+          duration: 0.45,
+          ease: 'back.out(1.6)',
         },
-        '-=0.3'
+        '-=0.25'
       );
 
       tl.fromTo(
@@ -206,14 +206,14 @@ export default function IntroAnimation() {
         '-=0.2'
       );
 
-      // Hold briefly for visual impact
-      tl.to({}, { duration: 0.9 });
+      // Hold reveal for visual impact
+      tl.to({}, { duration: 0.85 });
 
-      // ── Phase 4: Curtain Slide Exit ──
-      tl.to('.intro-content', {
+      // ── Phase 4: Fade Out Reveal & Slide Curtain Exit ──
+      tl.to('.intro-stage-reveal', {
         opacity: 0,
-        y: -40,
-        duration: 0.5,
+        y: -35,
+        duration: 0.45,
         ease: 'power3.in',
       });
 
@@ -221,10 +221,10 @@ export default function IntroAnimation() {
         container,
         {
           yPercent: -100,
-          duration: 1.1,
+          duration: 1.0,
           ease: 'power4.inOut',
         },
-        '-=0.3'
+        '-=0.25'
       );
     },
     { scope: containerRef, dependencies: [isActive] }
@@ -237,16 +237,16 @@ export default function IntroAnimation() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[99999] flex flex-col justify-between p-8 md:p-16 select-none overflow-hidden font-sans"
+      className="fixed inset-0 z-[99999] select-none overflow-hidden font-sans"
       style={{ fontFamily: "var(--font-poppins), 'Poppins', sans-serif" }}
     >
-      {/* Background Subtle Noise Mesh */}
-      <div className="absolute inset-0 pointer-events-none opacity-15">
-        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-current rounded-full blur-[160px] opacity-20 animate-blob-1" />
+      {/* Background Subtle Noise Mesh & Ambient Glow */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-current rounded-full blur-[180px] opacity-15" />
       </div>
 
       {/* Top Header */}
-      <div className="relative z-10 flex justify-between items-center text-xs font-medium tracking-wider uppercase">
+      <div className="absolute top-0 left-0 right-0 p-6 md:p-12 z-20 flex justify-between items-center text-xs font-medium tracking-wider uppercase">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75" />
@@ -263,16 +263,17 @@ export default function IntroAnimation() {
         </button>
       </div>
 
-      {/* Main Center Content */}
-      <div className="intro-content relative z-10 my-auto flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
-        {/* Phase 1: Counter Wrapper */}
-        <div className="intro-counter-wrapper mb-8 flex flex-col items-center">
+      {/* ── Center Stage 1: Preloader (Centered 50% / 50%) ── */}
+      <div className="intro-stage-preloader absolute inset-0 z-10 flex flex-col items-center justify-center text-center p-6 pointer-events-none">
+        {/* Counter */}
+        <div className="flex flex-col items-center">
           <span
             ref={counterRef}
-            className="text-7xl md:text-9xl font-black tracking-tight"
+            className="text-7xl md:text-9xl font-black tracking-tight leading-none"
           >
             00%
           </span>
+
           {/* Progress Bar Container */}
           <div className="w-64 md:w-80 h-1.5 bg-current/15 rounded-full overflow-hidden mt-6 relative">
             <div
@@ -283,19 +284,22 @@ export default function IntroAnimation() {
           </div>
         </div>
 
-        {/* Phase 1: Theme Indicator Message */}
-        <div className="intro-theme-indicator h-6 mb-4">
+        {/* Theme Indicator Message */}
+        <div className="h-6 mt-5 flex items-center justify-center">
           <span
             ref={themeLabelRef}
-            className="text-xs font-bold tracking-widest uppercase opacity-70"
+            className="text-xs font-bold tracking-widest uppercase opacity-75 px-3 py-1 rounded-full border border-current/15 bg-current/5"
           >
             VANILLA MATCHA
           </span>
         </div>
+      </div>
 
-        {/* Phase 2: Staggered Name Reveal */}
-        <div className="overflow-hidden py-2 my-2">
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tight flex flex-wrap justify-center gap-x-3 gap-y-1">
+      {/* ── Center Stage 2: Name & Attributes Reveal (Centered 50% / 50%) ── */}
+      <div className="intro-stage-reveal absolute inset-0 z-10 flex flex-col items-center justify-center text-center p-6 pointer-events-none opacity-0 max-w-4xl mx-auto">
+        {/* Staggered Name Reveal */}
+        <div className="overflow-hidden py-1">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tight flex flex-wrap justify-center gap-x-3 gap-y-1.5 leading-tight">
             {nameString.split(' ').map((word, wordIdx) => (
               <span key={wordIdx} className="inline-block whitespace-nowrap overflow-hidden">
                 {word.split('').map((char, charIdx) => (
@@ -312,21 +316,21 @@ export default function IntroAnimation() {
           </h1>
         </div>
 
-        {/* Phase 2: Role Badge */}
-        <div className="intro-role-badge mt-3" style={{ opacity: 0 }}>
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-current/25 bg-current/10 backdrop-blur-xl shadow-xl">
-            <span className="text-sm md:text-base font-bold tracking-wider uppercase">
+        {/* Role Badge */}
+        <div className="intro-role-badge mt-4" style={{ opacity: 0 }}>
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-current/20 bg-current/10 backdrop-blur-xl shadow-lg">
+            <span className="text-xs sm:text-sm md:text-base font-bold tracking-wider uppercase">
               SOFTWARE & PRODUCT ENGINEER
             </span>
           </div>
         </div>
 
-        {/* Phase 2: Focus Tags */}
-        <div className="flex flex-wrap justify-center items-center gap-3 mt-6">
+        {/* Focus Tags */}
+        <div className="flex flex-wrap justify-center items-center gap-2.5 mt-5">
           {['APPLIED AI', 'INTELLIGENT SYSTEMS', 'AGRI-TECH'].map((tag, idx) => (
             <span
               key={idx}
-              className="intro-tags-item opacity-0 text-xs font-semibold tracking-wider px-3.5 py-1.5 rounded-full border border-current/20 bg-current/5 uppercase"
+              className="intro-tags-item opacity-0 text-[11px] font-semibold tracking-wider px-3.5 py-1.5 rounded-full border border-current/15 bg-current/5 uppercase"
             >
               {tag}
             </span>
@@ -334,8 +338,8 @@ export default function IntroAnimation() {
         </div>
       </div>
 
-      {/* Footer Info (Clean Branding - No Tech Stack Credits) */}
-      <div className="relative z-10 flex justify-between items-center text-xs font-medium uppercase tracking-wider opacity-70">
+      {/* Footer Info */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 z-20 flex justify-between items-center text-xs font-medium uppercase tracking-wider opacity-70">
         <span>INDONESIA 🇮🇩</span>
         <span>FELICH.DEV</span>
       </div>
