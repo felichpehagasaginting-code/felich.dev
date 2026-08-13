@@ -46,19 +46,11 @@ export default function IntroAnimation() {
   const { stopScroll, startScroll } = useLenis();
 
   useEffect(() => {
-    // Check if intro has already been played in this session
-    const hasPlayed = sessionStorage.getItem('felich_intro_played');
-    if (hasPlayed === 'true') {
-      setIsActive(false);
-      return;
-    }
-
-    // Lock body scroll while intro is active
+    // Lock body scroll while intro is active on every page refresh
     stopScroll();
   }, [stopScroll]);
 
   const completeIntro = () => {
-    sessionStorage.setItem('felich_intro_played', 'true');
     startScroll();
     setIsActive(false);
   };
