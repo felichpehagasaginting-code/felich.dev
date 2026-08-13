@@ -66,10 +66,86 @@ const navLinks = [
   },
 ];
 
-const themes: { key: Theme; label: string; swatch: string; ring: string }[] = [
-  { key: 'vanilla', label: 'Vanilla', swatch: '#EAF4CE', ring: '#6B881F' },
-  { key: 'noir', label: 'Noir Silver', swatch: '#202025', ring: '#CDCDD6' },
-  { key: 'violet', label: 'Lavender', swatch: '#EFEBFA', ring: '#7C6FC4' },
+const themes: {
+  key: Theme;
+  label: string;
+  shortLabel: string;
+  swatch: string;
+  ring: string;
+  icon: (active: boolean) => React.ReactNode;
+}[] = [
+  {
+    key: 'vanilla',
+    label: 'Vanilla Matcha',
+    shortLabel: 'Matcha',
+    swatch: '#EAF4CE',
+    ring: '#6B881F',
+    icon: (active) => (
+      <svg
+        className={`w-4 h-4 transition-transform duration-200 ${
+          active ? 'text-[#6B881F] scale-110' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.8}
+          d="M12 3c-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9s9-4.03 9-9c0-4.97-4.03-9-9-9zm0 0v18M5 12h14"
+        />
+      </svg>
+    ),
+  },
+  {
+    key: 'noir',
+    label: 'Noir Silver',
+    shortLabel: 'Noir',
+    swatch: '#202025',
+    ring: '#CDCDD6',
+    icon: (active) => (
+      <svg
+        className={`w-4 h-4 transition-transform duration-200 ${
+          active ? 'text-[#CDCDD6] scale-110' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.8}
+          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+        />
+      </svg>
+    ),
+  },
+  {
+    key: 'violet',
+    label: 'Lavender Violet',
+    shortLabel: 'Lavender',
+    swatch: '#EFEBFA',
+    ring: '#7C6FC4',
+    icon: (active) => (
+      <svg
+        className={`w-4 h-4 transition-transform duration-200 ${
+          active ? 'text-[#7C6FC4] scale-110' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.8}
+          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 function ThemeSwitcher() {
@@ -77,27 +153,38 @@ function ThemeSwitcher() {
 
   return (
     <div
-      className="flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-muted)]/50 border border-[var(--border-default)] h-10"
+      className="flex items-center justify-between gap-1 p-1 rounded-xl bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full h-11"
       role="group"
       aria-label="Theme switcher"
     >
-      {themes.map((t) => (
-        <button
-          key={t.key}
-          onClick={() => setTheme(t.key)}
-          className={`w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200 ${
-            theme === t.key ? 'bg-[var(--brand-bg)] ring-1 ring-[var(--brand)]' : 'hover:bg-[var(--bg-muted)]'
-          }`}
-          aria-label={`Switch to ${t.label} theme`}
-          aria-pressed={theme === t.key}
-          title={t.label}
-        >
-          <span
-            className="w-4 h-4 rounded-full border"
-            style={{ backgroundColor: t.swatch, borderColor: t.ring }}
-          />
-        </button>
-      ))}
+      {themes.map((t) => {
+        const isActive = theme === t.key;
+        return (
+          <button
+            key={t.key}
+            onClick={() => setTheme(t.key)}
+            className={`relative flex-1 h-9 flex items-center justify-center gap-1.5 rounded-lg transition-all duration-200 group ${
+              isActive
+                ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-default)]'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]/50'
+            }`}
+            aria-label={`Switch to ${t.label} theme`}
+            aria-pressed={isActive}
+            title={t.label}
+          >
+            <div className="relative flex items-center justify-center">
+              {t.icon(isActive)}
+              <span
+                className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-[var(--bg-surface)]"
+                style={{ backgroundColor: t.ring }}
+              />
+            </div>
+            <span className="text-[10px] font-bold tracking-wider uppercase hidden sm:inline-block">
+              {t.shortLabel}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -136,11 +223,14 @@ function LanguageSwitcher() {
   );
 }
 
-function SectionLabel({ children }: { children: string }) {
+function SectionLabel({ children, icon }: { children: string; icon?: React.ReactNode }) {
   return (
-    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)] mb-1.5 px-1">
-      {children}
-    </p>
+    <div className="flex items-center justify-between px-1 mb-1.5">
+      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)] flex items-center gap-1.5">
+        {icon}
+        {children}
+      </p>
+    </div>
   );
 }
 
@@ -223,11 +313,27 @@ export default function Sidebar() {
       {/* ── Language & theme ───────────────────────────────────────────── */}
       <div className="space-y-3 mb-5">
         <div>
-          <SectionLabel>Language</SectionLabel>
+          <SectionLabel
+            icon={
+              <svg className="w-3.5 h-3.5 text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+              </svg>
+            }
+          >
+            Language
+          </SectionLabel>
           <LanguageSwitcher />
         </div>
         <div>
-          <SectionLabel>Theme</SectionLabel>
+          <SectionLabel
+            icon={
+              <svg className="w-3.5 h-3.5 text-[var(--brand)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
+            }
+          >
+            Theme
+          </SectionLabel>
           <ThemeSwitcher />
         </div>
       </div>

@@ -65,10 +65,86 @@ const navLinks = [
   },
 ];
 
-const themes: { key: Theme; label: string; swatch: string; ring: string }[] = [
-  { key: 'vanilla', label: 'Vanilla', swatch: '#EAF4CE', ring: '#6B881F' },
-  { key: 'noir', label: 'Noir Silver', swatch: '#202025', ring: '#CDCDD6' },
-  { key: 'violet', label: 'Lavender', swatch: '#EFEBFA', ring: '#7C6FC4' },
+const themes: {
+  key: Theme;
+  label: string;
+  shortLabel: string;
+  swatch: string;
+  ring: string;
+  icon: (active: boolean) => React.ReactNode;
+}[] = [
+  {
+    key: 'vanilla',
+    label: 'Vanilla Matcha',
+    shortLabel: 'Matcha',
+    swatch: '#EAF4CE',
+    ring: '#6B881F',
+    icon: (active) => (
+      <svg
+        className={`w-4 h-4 transition-transform duration-200 ${
+          active ? 'text-[#6B881F] scale-110' : 'text-[var(--text-muted)]'
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.8}
+          d="M12 3c-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9s9-4.03 9-9c0-4.97-4.03-9-9-9zm0 0v18M5 12h14"
+        />
+      </svg>
+    ),
+  },
+  {
+    key: 'noir',
+    label: 'Noir Silver',
+    shortLabel: 'Noir',
+    swatch: '#202025',
+    ring: '#CDCDD6',
+    icon: (active) => (
+      <svg
+        className={`w-4 h-4 transition-transform duration-200 ${
+          active ? 'text-[#CDCDD6] scale-110' : 'text-[var(--text-muted)]'
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.8}
+          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+        />
+      </svg>
+    ),
+  },
+  {
+    key: 'violet',
+    label: 'Lavender Violet',
+    shortLabel: 'Lavender',
+    swatch: '#EFEBFA',
+    ring: '#7C6FC4',
+    icon: (active) => (
+      <svg
+        className={`w-4 h-4 transition-transform duration-200 ${
+          active ? 'text-[#7C6FC4] scale-110' : 'text-[var(--text-muted)]'
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.8}
+          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export default function MobileNav() {
@@ -207,27 +283,38 @@ export default function MobileNav() {
                 </div>
 
                 <div
-                  className="flex items-center gap-1 p-1 rounded-lg bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full justify-around"
+                  className="flex items-center gap-1 p-1 rounded-xl bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full justify-around h-11"
                   role="group"
                   aria-label="Theme switcher"
                 >
-                  {themes.map((t) => (
-                    <button
-                      key={t.key}
-                      onClick={() => setTheme(t.key)}
-                      className={`w-8 h-8 flex items-center justify-center rounded-md transition-all duration-200 ${
-                        theme === t.key ? 'bg-[var(--brand-bg)] ring-1 ring-[var(--brand)]' : 'hover:bg-[var(--bg-muted)]'
-                      }`}
-                      aria-label={`Switch to ${t.label} theme`}
-                      aria-pressed={theme === t.key}
-                      title={t.label}
-                    >
-                      <span
-                        className="w-4 h-4 rounded-full border"
-                        style={{ backgroundColor: t.swatch, borderColor: t.ring }}
-                      />
-                    </button>
-                  ))}
+                  {themes.map((t) => {
+                    const isActive = theme === t.key;
+                    return (
+                      <button
+                        key={t.key}
+                        onClick={() => setTheme(t.key)}
+                        className={`relative flex-1 h-9 flex items-center justify-center gap-1.5 rounded-lg transition-all duration-200 group ${
+                          isActive
+                            ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-default)]'
+                            : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                        }`}
+                        aria-label={`Switch to ${t.label} theme`}
+                        aria-pressed={isActive}
+                        title={t.label}
+                      >
+                        <div className="relative flex items-center justify-center">
+                          {t.icon(isActive)}
+                          <span
+                            className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-[var(--bg-surface)]"
+                            style={{ backgroundColor: t.ring }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold tracking-wider uppercase">
+                          {t.shortLabel}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
