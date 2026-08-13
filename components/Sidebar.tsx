@@ -69,7 +69,6 @@ const navLinks = [
 const themes: {
   key: Theme;
   label: string;
-  shortLabel: string;
   swatch: string;
   ring: string;
   icon: (active: boolean) => React.ReactNode;
@@ -77,72 +76,66 @@ const themes: {
   {
     key: 'vanilla',
     label: 'Vanilla Matcha',
-    shortLabel: 'Matcha',
     swatch: '#EAF4CE',
     ring: '#6B881F',
     icon: (active) => (
       <svg
         className={`w-4 h-4 transition-transform duration-200 ${
-          active ? 'text-[#6B881F] scale-110' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+          active ? 'scale-110' : 'group-hover:scale-110'
         }`}
+        viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        viewBox="0 0 24 24"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.8}
-          d="M12 3c-4.97 0-9 4.03-9 9 0 4.97 4.03 9 9 9s9-4.03 9-9c0-4.97-4.03-9-9-9zm0 0v18M5 12h14"
-        />
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
       </svg>
     ),
   },
   {
     key: 'noir',
     label: 'Noir Silver',
-    shortLabel: 'Noir',
     swatch: '#202025',
     ring: '#CDCDD6',
     icon: (active) => (
       <svg
         className={`w-4 h-4 transition-transform duration-200 ${
-          active ? 'text-[#CDCDD6] scale-110' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+          active ? 'scale-110' : 'group-hover:scale-110'
         }`}
+        viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        viewBox="0 0 24 24"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.8}
-          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-        />
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
       </svg>
     ),
   },
   {
     key: 'violet',
     label: 'Lavender Violet',
-    shortLabel: 'Lavender',
     swatch: '#EFEBFA',
     ring: '#7C6FC4',
     icon: (active) => (
       <svg
         className={`w-4 h-4 transition-transform duration-200 ${
-          active ? 'text-[#7C6FC4] scale-110' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+          active ? 'scale-110' : 'group-hover:scale-110'
         }`}
+        viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        viewBox="0 0 24 24"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={1.8}
-          d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-        />
+        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+        <path d="M5 3v4" />
+        <path d="M19 17v4" />
       </svg>
     ),
   },
@@ -153,7 +146,7 @@ function ThemeSwitcher() {
 
   return (
     <div
-      className="flex items-center justify-between gap-1 p-1 rounded-xl bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full h-11"
+      className="flex items-center justify-between gap-1 p-1 rounded-full bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full h-10"
       role="group"
       aria-label="Theme switcher"
     >
@@ -163,25 +156,16 @@ function ThemeSwitcher() {
           <button
             key={t.key}
             onClick={() => setTheme(t.key)}
-            className={`relative flex-1 h-9 flex items-center justify-center gap-1.5 rounded-lg transition-all duration-200 group ${
+            className={`relative h-8 flex-1 rounded-full transition-all duration-200 flex items-center justify-center group cursor-pointer ${
               isActive
-                ? 'bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm border border-[var(--border-default)]'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)]/50'
+                ? 'bg-[var(--brand)] text-[var(--brand-contrast)] shadow-sm'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)]'
             }`}
             aria-label={`Switch to ${t.label} theme`}
             aria-pressed={isActive}
             title={t.label}
           >
-            <div className="relative flex items-center justify-center">
-              {t.icon(isActive)}
-              <span
-                className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full border border-[var(--bg-surface)]"
-                style={{ backgroundColor: t.ring }}
-              />
-            </div>
-            <span className="text-[10px] font-bold tracking-wider uppercase hidden sm:inline-block">
-              {t.shortLabel}
-            </span>
+            {t.icon(isActive)}
           </button>
         );
       })}
