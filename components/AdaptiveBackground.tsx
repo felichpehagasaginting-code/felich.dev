@@ -6,8 +6,8 @@ import { useLayoutStore, type Theme } from '@/lib/store';
 
 const THEME_ORB: Record<Theme, { glow: string; accent: string }> = {
   vanilla: { glow: 'rgba(107, 136, 31, 0.14)', accent: 'rgba(85, 107, 20, 0.10)' },
-  noir: { glow: 'rgba(255, 255, 255, 0.07)', accent: 'rgba(255, 255, 255, 0.05)' },
-  violet: { glow: 'rgba(167, 139, 250, 0.12)', accent: 'rgba(183, 164, 252, 0.08)' },
+  noir: { glow: 'rgba(205, 205, 214, 0.08)', accent: 'rgba(205, 205, 214, 0.06)' },
+  violet: { glow: 'rgba(139, 122, 207, 0.16)', accent: 'rgba(124, 111, 196, 0.10)' },
 };
 
 export default function AdaptiveBackground() {

@@ -212,7 +212,7 @@ export default function Contact() {
                   href="https://www.instagram.com/fel.comp"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-xs font-bold text-center transition-all active:scale-95 shadow-lg shadow-primary/20"
+                  className="block w-full py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-[var(--brand-contrast)] text-xs font-bold text-center transition-all active:scale-95 shadow-lg shadow-primary/20"
                 >
                   Follow on Instagram
                 </a>
@@ -330,7 +330,7 @@ export default function Contact() {
             disabled={isLoading}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
-            className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-dark disabled:bg-[var(--bg-muted)] text-white font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-dark disabled:bg-[var(--bg-muted)] text-[var(--brand-contrast)] font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             {isLoading ? 'Sending...' : 'Send Message'}
           </motion.button>

@@ -40,7 +40,7 @@ CI runs: `lint → type-check → test:unit → test:e2e`. Run in this order bef
 ## UI / State
 
 - Zustand store (`lib/store.ts`) persisted to localStorage key `felich-portfolio-layout` (partial: `language`, `isSidebar`).
-- 3 themes: `noir`, `vanilla`, `violet` (noir = default, dark; vanilla = light). Persisted as `theme` (store version 2) via `ThemeProvider`; `ThemeMetaSync` syncs meta/OG colors.
+- 3 themes: `noir`, `vanilla`, `violet` (noir = default, dark; vanilla & violet "Lavender" = light). Persisted as `theme` (store version 2) via `ThemeProvider`; `ThemeMetaSync` syncs meta/OG colors.
 - Tailwind `darkMode: 'class'` (noir is `dark`); theme via CSS vars in `app/globals.css` (`--brand`, `--surface-*`, `--text-*`, `--danger-*`, ...); Tailwind aliases `primary`, `brand.*`, `surface.*` in `tailwind.config.ts`.
 - i18n: `react-i18next` with 4 languages (en, id, zh, de). Translations live in `app/i18n.ts` (not separate files).
 - Smooth scroll via Lenis (`SmoothScroll` component wraps main content).

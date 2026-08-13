@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useLayoutStore } from '@/lib/store';
 
-const DARK_THEMES = new Set(['noir', 'violet']);
+const DARK_THEMES = new Set(['noir']);
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useLayoutStore();

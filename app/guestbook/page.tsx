@@ -283,7 +283,7 @@ export default function Guestbook() {
                 disabled={submitting || cooldown > 0}
                 whileHover={{ scale: submitting || cooldown > 0 ? 1 : 1.01 }}
                 whileTap={{ scale: submitting || cooldown > 0 ? 1 : 0.99 }}
-                className="px-6 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary-dark transition-colors shadow-lg disabled:opacity-70 flex items-center gap-2"
+                className="px-6 py-2.5 rounded-xl bg-primary text-[var(--brand-contrast)] font-semibold text-sm hover:bg-primary-dark transition-colors shadow-lg disabled:opacity-70 flex items-center gap-2"
               >
                 {submitting ? (
                   <>

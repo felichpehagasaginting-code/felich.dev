@@ -219,7 +219,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
               >
                 <span>{label}</span>
                 <span className={`text-[9px] px-1 py-0.5 font-mono ${
-                  activeType === type ? 'bg-white/20' : 'bg-[var(--bg-muted)] text-[var(--text-muted)]'
+                    activeType === type ? 'bg-[var(--brand-contrast)]/15' : 'bg-[var(--bg-muted)] text-[var(--text-muted)]'
                 }`} style={{ borderRadius: '4px' }}>
                   {count}
                 </span>
@@ -408,7 +408,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                         href={proj.live}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-1.5 text-[11px] font-semibold flex items-center gap-1.5 bg-[var(--brand)] text-white hover:brightness-110 transition-all"
+                        className="px-3 py-1.5 text-[11px] font-semibold flex items-center gap-1.5 bg-[var(--brand)] text-[var(--brand-contrast)] hover:brightness-110 transition-all"
                         style={{ borderRadius: '6px' }}
                       >
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -465,7 +465,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setSelectedProject(null)}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-alias z-0"
+                className="fixed inset-0 bg-[var(--scrim)] backdrop-blur-sm cursor-alias z-0"
               />
               
               <motion.div
@@ -561,7 +561,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                       )}
                       
                       {selectedProject.live && selectedProject.live !== "" && (
-                        <a href={selectedProject.live} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 p-3 bg-[var(--brand)] text-white hover:brightness-110 transition-all group" style={{ borderRadius: '6px' }}>
+                        <a href={selectedProject.live} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 p-3 bg-[var(--brand)] text-[var(--brand-contrast)] hover:brightness-110 transition-all group" style={{ borderRadius: '6px' }}>
                           <div className="flex items-center gap-2.5">
                             <svg className="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             <span className="text-[11px] font-semibold">{t('projects_modal_live')}</span>

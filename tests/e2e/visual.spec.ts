@@ -28,6 +28,9 @@ async function preparePage(page: Page, url: string, mountLazy = false) {
       // PulseSync overlay only appears every 10s; hide it so a slow machine
       // can't make the snapshot non-deterministic.
       'div[class*="pointer-events-none"][class*="border-4"]{visibility:hidden!important}',
+      // LiveVisitorBadge polls Firebase RTDB (online count / views) which
+      // resolves at different times per run under the fake clock; hide it.
+      'div[class*="liquid-glass"]{visibility:hidden!important}',
     ].join(' '),
   });
   // Let one-shot WAAPI entrance animations (AdaptiveBackground 3s fade, page
@@ -62,7 +65,12 @@ async function preparePage(page: Page, url: string, mountLazy = false) {
 test.describe('Visual Regression (Screenshots)', () => {
   test('homepage matches snapshot', async ({ page }) => {
     await preparePage(page, '/', true);
-    await expect(page).toHaveScreenshot('homepage.png', SCREENSHOT_OPTS);
+    // Mask the Hero3D WebGL canvas: shader color output varies between GPU
+    // runs even with frameloop 'never', so it can't be compared bit-for-bit.
+    await expect(page).toHaveScreenshot('homepage.png', {
+      ...SCREENSHOT_OPTS,
+      mask: [page.locator('canvas')],
+    });
   });
 
   test('blog page matches snapshot', async ({ page }) => {

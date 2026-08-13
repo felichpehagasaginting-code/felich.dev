@@ -104,7 +104,7 @@ function CoreShape({ isMobile }: { isMobile: boolean }) {
   const coreColor = useMemo(() => {
     if (theme === 'vanilla') return '#6B881F';
     if (theme === 'violet') return '#D2C3F6';
-    return '#FFFFFF';
+    return '#CDCDD6';
   }, [theme]);
   const isGlass = theme === 'noir' || theme === 'violet';
   
@@ -193,8 +193,8 @@ function InnerCore({ isMobile }: { isMobile: boolean }) {
     if (theme === 'vanilla') return { default: new THREE.Color('#6B881F'), hover: new THREE.Color('#556B14') };
     if (theme === 'violet') return { default: new THREE.Color('#D2C3F6'), hover: new THREE.Color('#BCA8F1') };
     return {
-      default: new THREE.Color('#FFFFFF'),
-      hover: new THREE.Color('#E5E5E5')
+      default: new THREE.Color('#CDCDD6'),
+      hover: new THREE.Color('#E4E4EA')
     }
   }, [theme]);
 
@@ -1196,7 +1196,7 @@ export default function Hero3D() {
   const themeColor = useMemo(() => {
     if (theme === 'vanilla') return '#6B881F';
     if (theme === 'violet') return '#D2C3F6';
-    return '#FFFFFF';
+    return '#CDCDD6';
   }, [theme]);
 
   const techStack = useMemo(() => [

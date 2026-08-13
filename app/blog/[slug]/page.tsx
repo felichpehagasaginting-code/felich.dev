@@ -160,7 +160,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
              <p className="text-[var(--text-muted)] max-w-sm mb-8 font-medium">
                I write about building premium digital experiences and exploring the frontiers of AI.
              </p>
-             <Link href="/contact" className="px-8 py-3 rounded-full bg-primary text-white font-black uppercase tracking-widest shadow-lg shadow-primary/25 hover:scale-105 transition-transform active:scale-95">
+             <Link href="/contact" className="px-8 py-3 rounded-full bg-primary text-[var(--brand-contrast)] font-black uppercase tracking-widest shadow-lg shadow-primary/25 hover:scale-105 transition-transform active:scale-95">
                 Let&apos;s Connect
              </Link>
           </div>

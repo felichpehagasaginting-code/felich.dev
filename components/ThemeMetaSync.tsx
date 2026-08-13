@@ -10,8 +10,8 @@ export default function ThemeMetaSync() {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     const colorMap = {
       vanilla: '#EAF4CE',
-      noir: '#0F0F0F',
-      violet: '#110B1D',
+      noir: '#202025',
+      violet: '#EFEBFA',
     };
 
     if (metaThemeColor) {
@@ -25,7 +25,7 @@ export default function ThemeMetaSync() {
 
     const maskIcon = document.querySelector('link[rel="mask-icon"]');
     if (maskIcon) {
-      const maskColor = { vanilla: '#6B881F', noir: '#FFFFFF', violet: '#D2C3F6' }[theme];
+      const maskColor = { vanilla: '#6B881F', noir: '#CDCDD6', violet: '#7C6FC4' }[theme];
       maskIcon.setAttribute('color', maskColor);
     }
   }, [theme]);

@@ -6,35 +6,35 @@
   /* ── Design System — 3 Themes (dyslove.design reference) ────────────── */
   /* :root defaults to Noir Silver (theme-noir values per spec blueprint) */
   :root {
-    --bg-base: #0F0F0F;
-    --bg-surface: #1A1A1A;
-    --bg-muted: #282828;
-    --text-primary: #FFFFFF;
-    --text-muted: #A1A1A1;
-    --border-default: rgba(255, 255, 255, 0.16);
-    --brand: #FFFFFF;
-    --brand-bg: rgba(255, 255, 255, 0.12);
+    --bg-base: #202025;
+    --bg-surface: #2B2B31;
+    --bg-muted: #38383F;
+    --text-primary: #F5F5F6;
+    --text-muted: #A6A6AC;
+    --border-default: rgba(212, 212, 220, 0.16);
+    --brand: #CDCDD6;
+    --brand-bg: rgba(205, 205, 214, 0.12);
 
     /* Derived tokens (same source of truth per theme) */
-    --brand-strong: #FFFFFF;
-    --brand-contrast: #0F0F0F;
-    --surface-hover: #232323;
-    --glass-bg: rgba(26, 26, 26, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.16);
-    --scrim: rgba(0, 0, 0, 0.6);
+    --brand-strong: #E4E4EA;
+    --brand-contrast: #18181D;
+    --surface-hover: #34343B;
+    --glass-bg: rgba(43, 43, 49, 0.75);
+    --glass-border: rgba(212, 212, 220, 0.16);
+    --scrim: rgba(12, 12, 15, 0.6);
     --success: #4ADE80;
     --warning: #FBBF24;
-    --danger: #F87171;
+    --danger: #EF4444;
     --danger-bg: rgba(248, 113, 113, 0.10);
     --danger-border: rgba(248, 113, 113, 0.30);
 
     /* Terminal widget (VFS simulation) */
-    --term-bg: #0B0B0B;
-    --term-header: #161616;
-    --term-border: rgba(255, 255, 255, 0.08);
-    --term-text: #E6E6E6;
-    --term-dim: #8A8A8A;
-    --term-accent: #FFFFFF;
+    --term-bg: #19191E;
+    --term-header: #232329;
+    --term-border: rgba(212, 212, 220, 0.08);
+    --term-text: #F0F0F2;
+    --term-dim: #9A9AA0;
+    --term-accent: #CDCDD6;
 
     color-scheme: dark;
   }
@@ -44,8 +44,8 @@
     --bg-base: #EAF4CE;
     --bg-surface: #FAFFEB;
     --bg-muted: #DBE8B5;
-    --text-primary: #121410;
-    --text-muted: #525844;
+    --text-primary: #1A1A16;
+    --text-muted: #55554E;
     --border-default: #C4D696;
     --brand: #6B881F;
     --brand-bg: rgba(107, 136, 31, 0.10);
@@ -65,77 +65,77 @@
     --term-bg: #F6FAE4;
     --term-header: #E7EFC7;
     --term-border: rgba(85, 107, 20, 0.18);
-    --term-text: #20280F;
-    --term-dim: #5D6B3F;
+    --term-text: #20201C;
+    --term-dim: #5A5A53;
     --term-accent: #4A5D12;
 
     color-scheme: light;
   }
 
-  /* Theme B: Noir Silver — Monochrome Cinematic Dark */
+  /* Theme B: Noir Silver — Graphite & Silver */
   .theme-noir {
-    --bg-base: #0F0F0F;
-    --bg-surface: #1A1A1A;
-    --bg-muted: #282828;
-    --text-primary: #FFFFFF;
-    --text-muted: #A1A1A1;
-    --border-default: rgba(255, 255, 255, 0.16);
-    --brand: #FFFFFF;
-    --brand-bg: rgba(255, 255, 255, 0.12);
+    --bg-base: #202025;
+    --bg-surface: #2B2B31;
+    --bg-muted: #38383F;
+    --text-primary: #F5F5F6;
+    --text-muted: #A6A6AC;
+    --border-default: rgba(212, 212, 220, 0.16);
+    --brand: #CDCDD6;
+    --brand-bg: rgba(205, 205, 214, 0.12);
 
-    --brand-strong: #FFFFFF;
-    --brand-contrast: #0F0F0F;
-    --surface-hover: #232323;
-    --glass-bg: rgba(26, 26, 26, 0.75);
-    --glass-border: rgba(255, 255, 255, 0.16);
-    --scrim: rgba(0, 0, 0, 0.6);
+    --brand-strong: #E4E4EA;
+    --brand-contrast: #18181D;
+    --surface-hover: #34343B;
+    --glass-bg: rgba(43, 43, 49, 0.75);
+    --glass-border: rgba(212, 212, 220, 0.16);
+    --scrim: rgba(12, 12, 15, 0.6);
     --success: #4ADE80;
     --warning: #FBBF24;
-    --danger: #F87171;
+    --danger: #EF4444;
     --danger-bg: rgba(248, 113, 113, 0.10);
     --danger-border: rgba(248, 113, 113, 0.30);
 
-    --term-bg: #0B0B0B;
-    --term-header: #161616;
-    --term-border: rgba(255, 255, 255, 0.08);
-    --term-text: #E6E6E6;
-    --term-dim: #8A8A8A;
-    --term-accent: #FFFFFF;
+    --term-bg: #19191E;
+    --term-header: #232329;
+    --term-border: rgba(212, 212, 220, 0.08);
+    --term-text: #F0F0F2;
+    --term-dim: #9A9AA0;
+    --term-accent: #CDCDD6;
 
     color-scheme: dark;
   }
 
-  /* Theme C: Violet Deep — Ambient Royal Night */
+  /* Theme C: Lavender — Soft Purple Daylight */
   .theme-violet {
-    --bg-base: #110B1D;
-    --bg-surface: #22163B;
-    --bg-muted: #36255C;
-    --text-primary: #F5F0FF;
-    --text-muted: #B0A0CF;
-    --border-default: rgba(210, 195, 246, 0.22);
-    --brand: #D2C3F6;
-    --brand-bg: rgba(210, 195, 246, 0.14);
+    --bg-base: #EFEBFA;
+    --bg-surface: #F7F5FF;
+    --bg-muted: #E3DDF5;
+    --text-primary: #232327;
+    --text-muted: #5F5F66;
+    --border-default: rgba(139, 122, 207, 0.28);
+    --brand: #7C6FC4;
+    --brand-bg: rgba(210, 195, 246, 0.35);
 
-    --brand-strong: #BCA8F1;
-    --brand-contrast: #110B1D;
-    --surface-hover: #2B1C4A;
-    --glass-bg: rgba(34, 22, 59, 0.78);
-    --glass-border: rgba(210, 195, 246, 0.22);
-    --scrim: rgba(5, 3, 10, 0.65);
-    --success: #86EFAC;
-    --warning: #FCD34D;
-    --danger: #FCA5A5;
-    --danger-bg: rgba(252, 165, 165, 0.10);
-    --danger-border: rgba(252, 165, 165, 0.30);
+    --brand-strong: #6B5BB5;
+    --brand-contrast: #FFFFFF;
+    --surface-hover: #EDE8FB;
+    --glass-bg: rgba(247, 245, 255, 0.78);
+    --glass-border: rgba(139, 122, 207, 0.35);
+    --scrim: rgba(36, 31, 61, 0.45);
+    --success: #2E6B35;
+    --warning: #8A6200;
+    --danger: #B42318;
+    --danger-bg: rgba(180, 35, 24, 0.08);
+    --danger-border: rgba(180, 35, 24, 0.25);
 
-    --term-bg: #0C0818;
-    --term-header: #1B1430;
-    --term-border: rgba(210, 195, 246, 0.14);
-    --term-text: #EAE4F8;
-    --term-dim: #9A8ABC;
-    --term-accent: #C6B5F4;
+    --term-bg: #F4F1FC;
+    --term-header: #E6E0F8;
+    --term-border: rgba(107, 91, 181, 0.18);
+    --term-text: #212128;
+    --term-dim: #616168;
+    --term-accent: #6B5BB5;
 
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   html {
@@ -195,7 +195,7 @@
   }
 
   .theme-violet body::before {
-    opacity: 0.03;
+    opacity: 0.04;
   }
 }
 

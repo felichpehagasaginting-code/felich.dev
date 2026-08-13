@@ -68,8 +68,8 @@ const navLinks = [
 
 const themes: { key: Theme; label: string; swatch: string; ring: string }[] = [
   { key: 'vanilla', label: 'Vanilla', swatch: '#EAF4CE', ring: '#6B881F' },
-  { key: 'noir', label: 'Noir Silver', swatch: '#0F0F0F', ring: '#FFFFFF' },
-  { key: 'violet', label: 'Violet Deep', swatch: '#110B1D', ring: '#D2C3F6' },
+  { key: 'noir', label: 'Noir Silver', swatch: '#202025', ring: '#CDCDD6' },
+  { key: 'violet', label: 'Lavender', swatch: '#EFEBFA', ring: '#7C6FC4' },
 ];
 
 function ThemeSwitcher() {

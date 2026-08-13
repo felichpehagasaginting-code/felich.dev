@@ -348,9 +348,9 @@ export default function Terminal() {
         output = (
           <div className="flex flex-col gap-1">
             <span className="text-[var(--term-accent)] font-bold">[ SYSTEM THEMES ]</span>
-            <span>1. <span className="text-[var(--term-text)] font-bold">Noir Silver</span> (Default · Cinematic Dark)</span>
+            <span>1. <span className="text-[var(--term-text)] font-bold">Noir Silver</span> (Default · Graphite Silver)</span>
             <span>2. <span className="text-[var(--term-accent)]">Vanilla</span> (Light Cream)</span>
-            <span>3. <span className="text-[var(--term-accent)]">Violet Deep</span> (Ambient Royal)</span>
+            <span>3. <span className="text-[var(--term-accent)]">Lavender</span> (Soft Purple)</span>
             <span className="text-[10px] mt-1 opacity-70">Use the UI toggle to switch instantly.</span>
           </div>
         );

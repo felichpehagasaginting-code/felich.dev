@@ -73,7 +73,7 @@ export default function CommandPalette() {
     {
       id: 'theme-noir',
       label: 'Switch to Noir Silver',
-      description: 'Monochrome cinematic dark',
+      description: 'Graphite & silver dark',
       icon: '🌙',
       category: 'Actions',
       keywords: ['dark', 'noir', 'theme', 'mode'],
@@ -90,11 +90,11 @@ export default function CommandPalette() {
     },
     {
       id: 'theme-violet',
-      label: 'Switch to Violet Deep',
-      description: 'Ambient royal night',
+      label: 'Switch to Lavender',
+      description: 'Soft purple daylight',
       icon: '🔮',
       category: 'Actions',
-      keywords: ['violet', 'purple', 'theme', 'mode'],
+      keywords: ['violet', 'lavender', 'purple', 'theme', 'mode'],
       action: () => { setTheme('violet'); },
     },
   ];
@@ -204,7 +204,7 @@ export default function CommandPalette() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-[var(--scrim)] backdrop-blur-sm z-[100]"
             onClick={() => { setOpen(false); setQuery(''); }}
           />
           <motion.div

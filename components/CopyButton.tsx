@@ -50,7 +50,7 @@ export default function CopyButton({ text, label, className = '' }: CopyButtonPr
             initial={{ opacity: 0, y: 8, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.9 }}
-            className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-semibold whitespace-nowrap shadow-lg z-50"
+            className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-primary text-[var(--brand-contrast)] text-xs font-semibold whitespace-nowrap shadow-lg z-50"
           >
             Copied! ✓
           </motion.div>

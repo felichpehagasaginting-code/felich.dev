@@ -373,7 +373,7 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand)]/0 via-[var(--brand)]/5 to-[var(--brand)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
               <div className="flex items-start gap-5 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-[var(--bg-muted)] flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--brand)] group-hover:text-white transition-all duration-300 shadow-inner group-hover:rotate-3">
+                <div className="w-14 h-14 rounded-2xl bg-[var(--bg-muted)] flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--brand)] group-hover:text-[var(--brand-contrast)] transition-all duration-300 shadow-inner group-hover:rotate-3">
                   <Folder className="w-7 h-7" />
                 </div>
                 <div className="flex-1 min-w-0">

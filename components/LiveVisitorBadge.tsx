@@ -26,7 +26,7 @@ export default function LiveVisitorBadge({
         initial={{ opacity: 0, y: -20, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         whileHover={{ scale: 1.05 }}
-        className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-3xl shadow-lg liquid-glass group"
+        className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-3xl shadow-lg liquid-glass group"
       >
         {/* Live online indicator */}
         <div className="flex items-center gap-1.5">
@@ -39,14 +39,14 @@ export default function LiveVisitorBadge({
               key={onlineCount}
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-[9px] font-black text-green-500 dark:text-green-400 uppercase tracking-tighter font-mono"
+              className="text-[9px] font-black text-green-600 dark:text-green-400 uppercase tracking-tighter font-mono"
             >
               {Math.max(onlineCount, 1)}L
             </motion.span>
           </AnimatePresence>
         </div>
 
-        <div className="w-px h-2.5 bg-white/10" />
+        <div className="w-px h-2.5 bg-[var(--border-default)]" />
 
         {/* Total views */}
         <div className="flex items-center gap-1">

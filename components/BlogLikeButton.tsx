@@ -15,7 +15,7 @@ export default function BlogLikeButton({ slug }: { slug: string }) {
         whileTap={!hasLiked ? { scale: 0.92 } : {}}
         className={`relative flex items-center justify-center w-20 h-20 rounded-full shadow-2xl transition-all duration-300 ${
           hasLiked
-            ? 'bg-[var(--brand)] text-white cursor-default'
+            ? 'bg-[var(--brand)] text-[var(--brand-contrast)] cursor-default'
             : 'bg-[var(--bg-muted)] text-[var(--text-muted)] border-2 border-[var(--border-default)] hover:border-[var(--brand)] hover:text-[var(--brand)]'
         }`}
       >

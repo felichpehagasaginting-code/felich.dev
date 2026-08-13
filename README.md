@@ -24,9 +24,9 @@ Three themes powered by CSS variables (`--brand`, `--surface-*`, `--text-*`, ...
 
 | Theme | Mode | Notes |
 |:---|:---|:---|
-| `noir` | Dark (default) | Signature look, `--brand: #FFFFFF` |
+| `noir` | Dark (default) | Graphite & silver, `--brand: #CDCDD6` |
 | `vanilla` | Light | Clean, high-contrast |
-| `violet` | Dark | Purple accents |
+| `violet` | Light | Lavender accents ("Lavender") |
 
 The active theme persists to localStorage (store version 2) via `ThemeProvider`; `ThemeMetaSync` keeps `<meta>` and OG colors in sync.
 
