@@ -15,6 +15,7 @@ const AdaptiveBackground = dynamic(() => import('@/components/AdaptiveBackground
 const ScrollProgress = dynamic(() => import('@/components/ScrollProgress'));
 const SmoothScroll = dynamic(() => import('@/components/SmoothScroll'));
 const LiveVisitorBadge = dynamic(() => import('@/components/LiveVisitorBadge'));
+const IntroAnimation = dynamic(() => import('@/components/IntroAnimation'));
 
 const poppins = Poppins({ subsets: ['latin'], variable: '--font-poppins', weight: ['400', '500', '600', '700'] });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', weight: ['400', '500'] });
@@ -63,6 +64,7 @@ export default function RootLayout({
             <LiveVisitorBadge showViews={true} />
 
             <SmoothScroll>
+              <IntroAnimation />
               <div className="min-h-screen flex">
                 <Sidebar />
                 <MobileNav />
