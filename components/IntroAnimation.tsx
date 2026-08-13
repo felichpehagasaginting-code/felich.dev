@@ -64,14 +64,16 @@ export default function IntroAnimation() {
             progressBarRef.current.style.width = `${current}%`;
           }
           if (statusRef.current) {
-            if (current < 30) {
-              statusRef.current.innerText = 'INITIALIZING SYSTEM CORE...';
-            } else if (current < 70) {
-              statusRef.current.innerText = 'LOADING AI & APPLIED MODELS...';
+            if (current < 25) {
+              statusRef.current.innerText = 'INITIALIZING CORE SYSTEM...';
+            } else if (current < 50) {
+              statusRef.current.innerText = 'LOADING 32+ SKILLS & 8+ PROJECTS...';
+            } else if (current < 75) {
+              statusRef.current.innerText = 'COMPILING BPDP SCHOLAR METRICS...';
             } else if (current < 99) {
-              statusRef.current.innerText = 'OPTIMIZING PERFORMANCE...';
+              statusRef.current.innerText = 'PREPARING AI & AGRI-TECH PIPELINES...';
             } else {
-              statusRef.current.innerText = 'SYSTEM READY ✓';
+              statusRef.current.innerText = 'PORTFOLIO READY ✓';
             }
           }
         },
@@ -120,14 +122,14 @@ export default function IntroAnimation() {
           opacity: 1,
           y: 0,
           duration: 0.4,
-          stagger: 0.1,
+          stagger: 0.08,
           ease: 'power2.out',
         },
         '-=0.2'
       );
 
       // Brief hold on reveal
-      tl.to({}, { duration: 0.8 });
+      tl.to({}, { duration: 0.9 });
 
       // Phase 4: Curtain Slide Exit
       tl.to('.intro-content', {
@@ -172,7 +174,7 @@ export default function IntroAnimation() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--brand)] opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--brand)]" />
           </span>
-          <span>FELICH.DEV // PORTFOLIO INTRO</span>
+          <span>FELICH.DEV // BPDP SCHOLAR & SOFTWARE ENGINEER</span>
         </div>
 
         <button
@@ -209,7 +211,7 @@ export default function IntroAnimation() {
             ref={statusRef}
             className="text-xs font-mono tracking-widest text-[var(--text-muted)] uppercase"
           >
-            INITIALIZING SYSTEM CORE...
+            INITIALIZING CORE SYSTEM...
           </p>
         </div>
 
@@ -233,7 +235,7 @@ export default function IntroAnimation() {
         </div>
 
         {/* Phase 2: Role Badge */}
-        <div className="intro-role-badge mt-4" style={{ opacity: 0 }}>
+        <div className="intro-role-badge mt-2" style={{ opacity: 0 }}>
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[var(--brand)]/30 bg-[var(--brand-bg)] backdrop-blur-xl shadow-2xl">
             <span className="text-sm md:text-base font-semibold tracking-wide text-[var(--brand)]">
               SOFTWARE & PRODUCT ENGINEER
@@ -241,12 +243,19 @@ export default function IntroAnimation() {
           </div>
         </div>
 
-        {/* Phase 2: Tech Tags */}
+        {/* Phase 2: Real Project Metrics & Tech Badges */}
         <div className="flex flex-wrap justify-center items-center gap-3 mt-6">
-          {['APPLIED AI', 'INTELLIGENT SYSTEMS', 'AGRI-TECH'].map((tag, idx) => (
+          {[
+            '32+ SKILLS',
+            '8+ ACHIEVEMENTS',
+            '8+ PROJECTS',
+            '2+ YEARS EXP.',
+            'BPDP SCHOLAR',
+            'APPLIED AI & AGRI-TECH',
+          ].map((tag, idx) => (
             <span
               key={idx}
-              className="intro-tags-item opacity-0 text-[10px] font-mono tracking-widest px-3 py-1 rounded border border-[var(--border-default)] text-[var(--text-muted)] bg-[var(--bg-surface)]"
+              className="intro-tags-item opacity-0 text-[10px] font-mono tracking-widest px-3 py-1.5 rounded-full border border-[var(--border-default)] text-[var(--text-muted)] bg-[var(--bg-surface)] hover:border-[var(--brand)] transition-colors"
             >
               {tag}
             </span>
@@ -256,7 +265,7 @@ export default function IntroAnimation() {
 
       {/* Footer Info */}
       <div className="relative z-10 flex justify-between items-center text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
-        <span>INDONESIA 🇮🇩</span>
+        <span>INDONESIA 🇮🇩 // POLITEKNIK CWE</span>
         <span>CRAFTED WITH GSAP + LENIS</span>
       </div>
     </div>
