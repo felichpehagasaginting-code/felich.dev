@@ -10,7 +10,11 @@ import { useFocusTrap } from '@/lib/useFocusTrap';
 import { AnimatePresence, motion } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
 import Logo from '@/components/Logo';
+import { Clapperboard } from 'lucide-react';
+import FelichAvatar from '@/components/FelichAvatar';
 import type { Theme } from '@/lib/store';
+
+
 
 const navLinks = [
   {
@@ -214,15 +218,8 @@ export default function MobileNav() {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   <Magnetic>
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-[var(--border-default)]">
-                      <Image
-                        src="/images/profile.jpg"
-                        alt="Felich"
-                        fill
-                        className="object-cover"
-                        sizes="48px"
-                        priority
-                      />
+                    <div className="relative w-12 h-12 flex items-center justify-center">
+                      <FelichAvatar size={48} showBadge={false} />
                     </div>
                   </Magnetic>
                   <div>
@@ -233,6 +230,7 @@ export default function MobileNav() {
                       </svg>
                     </h2>
                   </div>
+
                 </div>
 
                 <button
@@ -335,10 +333,27 @@ export default function MobileNav() {
                     </motion.div>
                   );
                 })}
+
+                <div className="pt-4 border-t border-[var(--border-default)]">
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      if (typeof window !== 'undefined') {
+                        window.dispatchEvent(new CustomEvent('replay-intro'));
+                      }
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-xs font-mono uppercase tracking-wider text-[var(--text-muted)] hover:text-[var(--brand)] bg-[var(--bg-muted)]/50 border border-[var(--border-default)] hover:border-[var(--brand)] transition-all cursor-pointer"
+                  >
+                    <Clapperboard size={14} className="text-[var(--brand)]" />
+                    <span>Replay Intro Animation</span>
+                  </button>
+
+                </div>
               </nav>
             </motion.div>
           </>
         )}
+
       </AnimatePresence>
     </>
   );

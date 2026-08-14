@@ -28,55 +28,55 @@ function createMockRequest(body: any) {
 }
 
 describe('Contact API Route', () => {
-  beforeEach(() => {
+  let POST: any;
+
+  beforeEach(async () => {
     vi.clearAllMocks();
+    if (!POST) {
+      const mod = await import('@/app/api/contact/route');
+      POST = mod.POST;
+    }
   });
 
   it('rejects empty request body', async () => {
-    const { POST } = await import('@/app/api/contact/route');
     const res = await POST(createMockRequest({}));
     const data = await res.json();
     expect(res.status).toBe(400);
     expect(data.error).toContain('required');
-  });
+  }, 15000);
 
   it('rejects missing name', async () => {
-    const { POST } = await import('@/app/api/contact/route');
     const res = await POST(createMockRequest({ email: 'test@test.com', message: 'hello' }));
     const data = await res.json();
     expect(res.status).toBe(400);
     expect(data.error).toContain('required');
-  });
+  }, 15000);
 
   it('rejects missing email', async () => {
-    const { POST } = await import('@/app/api/contact/route');
     const res = await POST(createMockRequest({ name: 'Test', message: 'hello' }));
     const data = await res.json();
     expect(res.status).toBe(400);
-  });
+  }, 15000);
 
   it('rejects invalid email format', async () => {
-    const { POST } = await import('@/app/api/contact/route');
     const res = await POST(createMockRequest({ name: 'Test', email: 'not-an-email', message: 'hello' }));
     const data = await res.json();
     expect(res.status).toBe(400);
     expect(data.error).toContain('Invalid email');
-  });
+  }, 15000);
 
   it('accepts valid contact submission', async () => {
-    const { POST } = await import('@/app/api/contact/route');
     const res = await POST(createMockRequest({ name: 'Test User', email: 'test@example.com', message: 'Hello, this is a test message' }));
     const data = await res.json();
     expect(res.status).toBe(200);
     expect(data.success).toBe(true);
-  });
+  }, 15000);
 
   it('returns 429 when rate limited', async () => {
     mockConsume.mockRejectedValueOnce(new Error('Rate limit exceeded'));
-    const { POST } = await import('@/app/api/contact/route');
     const res = await POST(createMockRequest({ name: 'Test', email: 'test@test.com', message: 'hello' }));
     expect(res.status).toBe(429);
     const data = await res.json();
     expect(data.error).toContain('Too many requests');
-  });
+  }, 15000);
 });

@@ -13,9 +13,12 @@ import Script from 'next/script';
 import { absoluteUrl, createMetadata } from '@/lib/seo';
 import { 
   MdxH1, MdxH2, MdxH3, MdxP, MdxUl, MdxLi, 
-  MdxA, MdxStrong, MdxBlockquote, MdxCode, 
+  MdxA, MdxStrong, MdxBlockquote, MdxCode, MdxPre,
   FadeIn, TimelineItem, HighlightBox, Reveal 
 } from '@/components/MDXComponents';
+import BlogAudioReader from '@/components/blog/BlogAudioReader';
+import BlogShareBar from '@/components/blog/BlogShareBar';
+import FelichAvatar from '@/components/FelichAvatar';
 
 const componentsMap = {
   h1: MdxH1,
@@ -28,6 +31,7 @@ const componentsMap = {
   strong: MdxStrong,
   blockquote: MdxBlockquote,
   code: MdxCode,
+  pre: MdxPre,
   FadeIn,
   TimelineItem,
   HighlightBox,
@@ -108,7 +112,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
             {frontMatter.title}
           </h1>
           
-          <div className="flex items-center flex-wrap gap-6 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-12">
+          <div className="flex items-center flex-wrap gap-6 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-8">
             <div className="flex items-center gap-2">
               <span className="w-1 h-1 rounded-full bg-primary" />
               {new Date(frontMatter.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -124,7 +128,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
           </div>
 
           {frontMatter.image && (
-            <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl border border-[var(--border-default)] mb-16">
+            <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl border border-[var(--border-default)] mb-8">
               <Image
                 src={frontMatter.image}
                 alt={`${frontMatter.title} cover image`}
@@ -136,27 +140,25 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
           )}
+
+          <BlogAudioReader title={frontMatter.title} />
         </header>
 
         <div className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-black prose-headings:tracking-tighter prose-p:text-lg prose-p:leading-relaxed prose-blockquote:border-primary prose-blockquote:bg-primary/5 prose-blockquote:py-1 prose-blockquote:rounded-r-2xl">
           <MDXRemote source={content} components={componentsMap} />
         </div>
 
+        <BlogShareBar title={frontMatter.title} slug={slug} />
+
         <BlogLikeButton slug={slug} />
 
         <footer className="mt-24 pt-12 border-t border-[var(--border-default)]">
           <div className="flex flex-col items-center text-center p-12 rounded-[3rem] bg-[var(--bg-muted)] border border-[var(--border-default)]">
-             <div className="w-20 h-20 rounded-full overflow-hidden mb-6 ring-4 ring-primary/20">
-                <Image
-                  src="/images/profile.jpg"
-                  alt="Felich"
-                  width={80}
-                  height={80}
-                  sizes="5rem"
-                  className="object-cover w-full h-full"
-                />
+             <div className="w-20 h-20 mb-6 flex items-center justify-center">
+                <FelichAvatar size={80} showBadge={true} />
              </div>
              <h3 className="text-2xl font-black mb-2">Thanks for reading.</h3>
+
              <p className="text-[var(--text-muted)] max-w-sm mb-8 font-medium">
                I write about building premium digital experiences and exploring the frontiers of AI.
              </p>

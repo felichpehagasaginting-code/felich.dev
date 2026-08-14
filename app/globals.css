@@ -607,6 +607,31 @@ html.lenis body {
   border-radius: 4px;
 }
 
+/* ── View Transitions API Support ───────────────────────────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.22s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::view-transition-old(project-preview),
+::view-transition-new(project-preview) {
+  animation-duration: 0.28s;
+  mix-blend-mode: normal;
+}
+
+/* ── High Contrast Mode (WCAG 2.2 a11y) ─────────────────────────────────── */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid Highlight !important;
+  }
+  .glass-panel,
+  .surface-card,
+  button {
+    border: 1px solid CanvasText !important;
+  }
+}
+
 /* ── Reduced Motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -616,6 +641,11 @@ html.lenis body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
   body::before {
     display: none;

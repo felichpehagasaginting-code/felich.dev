@@ -1,14 +1,80 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Volume2, Bot, Sparkles, X, Mic, MicOff, Send, ChevronUp, ChevronDown, MessageSquare } from 'lucide-react';
+import { Volume2, Bot, Sparkles, X, Mic, MicOff, Send, ChevronUp, ChevronDown, MessageSquare, ExternalLink, ArrowRight } from 'lucide-react';
 import AuraOrb, { AuraOrbMini } from '@/components/AuraOrb';
 import { useFocusTrap } from '@/lib/useFocusTrap';
 
 type OrbState = 'idle' | 'listening' | 'speaking' | 'thinking';
+
+interface ActionChip {
+  type: string;
+  label: string;
+}
+
+function parseMessageActions(rawContent: string): { cleanContent: string; actions: ActionChip[] } {
+  const actions: ActionChip[] = [];
+  const cleanContent = rawContent.replace(/\[action:([^\|\]]+)(?:\|([^\]]+))?\]/g, (_, type, label) => {
+    actions.push({
+      type: type.trim(),
+      label: (label || type).trim(),
+    });
+    return '';
+  }).trim();
+
+  return { cleanContent, actions };
+}
+
+function AudioWaveform({ analyserRef }: { analyserRef: React.RefObject<AnalyserNode | null> }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const analyser = analyserRef.current;
+    if (!analyser || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId: number;
+    const buffer = new Uint8Array(analyser.frequencyBinCount);
+
+    const draw = () => {
+      animId = requestAnimationFrame(draw);
+      analyser.getByteFrequencyData(buffer);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const barWidth = 3;
+      const gap = 3;
+      const barCount = 16;
+      const startX = (canvas.width - barCount * (barWidth + gap)) / 2;
+
+      for (let i = 0; i < barCount; i++) {
+        const val = buffer[i * 4] || 0;
+        const height = Math.max(4, (val / 255) * (canvas.height - 4));
+        const x = startX + i * (barWidth + gap);
+        const y = (canvas.height - height) / 2;
+
+        ctx.fillStyle = 'rgba(205, 205, 214, 0.75)';
+        ctx.beginPath();
+        if (typeof ctx.roundRect === 'function') {
+          ctx.roundRect(x, y, barWidth, height, 2);
+        } else {
+          ctx.rect(x, y, barWidth, height);
+        }
+        ctx.fill();
+      }
+    };
+
+    draw();
+    return () => cancelAnimationFrame(animId);
+  }, [analyserRef]);
+
+  return <canvas ref={canvasRef} width={160} height={28} className="mx-auto opacity-80" />;
+}
 
 interface Message {
   id: string;
@@ -38,13 +104,14 @@ const VAD_SILENCE_MS = 1500; // stop after 1.5s of silence
 const VAD_SILENCE_THRESHOLD = 10; // RMS amplitude threshold (0-128)
 
 export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
+  const router = useRouter();
   const [open, setOpen] = useState(initiallyOpen);
   const [voiceMode, setVoiceMode] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '0',
       role: 'assistant',
-      content: "Nihao! I'm **Felich AI** 👋 — your guide to Felich's portfolio. Ask me anything about his skills, projects, or how to get in touch!",
+      content: "Nihao! I'm **Felich AI** 👋 — your guide to Felich's portfolio. Ask me anything about his skills, projects, or how to get in touch!\n\n[action:view_projects|📂 View Projects] [action:download_cv|📄 Download CV]",
       timestamp: new Date(),
     },
   ]);
@@ -52,6 +119,25 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
   const [loading, setLoading] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [unread, setUnread] = useState(0);
+
+  const handleAction = useCallback((action: ActionChip) => {
+    if (action.type.startsWith('view_project:')) {
+      const slug = action.type.split(':')[1];
+      router.push('/projects');
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('open-project-modal', { detail: slug }));
+      }, 300);
+    } else if (action.type === 'view_projects') {
+      router.push('/projects');
+    } else if (action.type === 'contact') {
+      router.push('/contact');
+    } else if (action.type === 'download_cv') {
+      window.open('/CV_ATS_English.md', '_blank');
+    } else if (action.type === 'command_palette') {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }));
+    }
+  }, [router]);
+
 
   // Voice states
   const [orbState, setOrbState] = useState<OrbState>('idle');
@@ -522,6 +608,13 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                         </AnimatePresence>
                       </div>
 
+                      {/* Audio waveform visualizer */}
+                      <div className="h-7 flex items-center justify-center">
+                        {(isListening || isSpeaking) ? (
+                          <AudioWaveform analyserRef={analyserRef} />
+                        ) : null}
+                      </div>
+
                       {/* Mic button */}
                       <motion.button
                         onClick={startListening}
@@ -552,67 +645,91 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
                         aria-relevant="additions"
                         className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scroll-smooth"
                       >
-                        {messages.map(msg => (
-                          <motion.div
-                            key={msg.id}
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
-                          >
-                            {msg.role === 'assistant' && (
-                              <div className="flex-shrink-0 mt-0.5">
-                                <AuraOrbMini state={speakingMsgId === msg.id ? 'speaking' : 'idle'} size={28} />
-                              </div>
-                            )}
-                            <div
-                              className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed relative group/msg ${msg.role === 'user'
-                                ? 'bg-[var(--brand)] text-[var(--brand-contrast)] rounded-tr-sm shadow-md'
-                                : 'bg-[var(--bg-muted)] text-[var(--text-primary)] rounded-tl-sm border border-[var(--border-default)]'
-                                }`}
+                        {messages.map(msg => {
+                          const { cleanContent, actions } = msg.role === 'assistant' 
+                            ? parseMessageActions(msg.content) 
+                            : { cleanContent: msg.content, actions: [] };
+
+                          return (
+                            <motion.div
+                              key={msg.id}
+                              initial={{ opacity: 0, y: 8 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                             >
                               {msg.role === 'assistant' && (
-                                <button
-                                  onClick={() => speak(msg.content, msg.id)}
-                                  className="absolute -right-10 top-0 p-1.5 rounded-full bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-[var(--brand)] opacity-0 group-hover/msg:opacity-100 transition-all shadow-sm"
-                                  title="Listen to response"
-                                >
-                                  <Volume2 size={12} />
-                                </button>
-                              )}
-                              <div className="markdown-content text-sm">
-                                <ReactMarkdown
-                                  remarkPlugins={[remarkGfm]}
-                                  components={{
-                                    p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
-                                    strong: ({ children }) => <strong className="font-extrabold text-[var(--brand)]">{children}</strong>,
-                                    ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
-                                    li: ({ children }) => React.createElement('li', { className: 'mb-0.5' }, children),
-                                    code: ({ children }) => <code className="bg-[var(--bg-base)] px-1 rounded font-mono text-[11px]">{children}</code>,
-                                  }}
-                                >
-                                  {msg.content}
-                                </ReactMarkdown>
-                              </div>
-                              {/* Speaking wave indicator */}
-                              {speakingMsgId === msg.id && (
-                                <div className="flex items-center gap-0.5 mt-1.5">
-                                  {[0, 1, 2, 3].map(i => (
-                                    <motion.span
-                                      key={i}
-                                      className="w-0.5 bg-[var(--brand)] rounded-full"
-                                      animate={{ height: ['4px', '12px', '4px'] }}
-                                      transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.12 }}
-                                    />
-                                  ))}
+                                <div className="flex-shrink-0 mt-0.5">
+                                  <AuraOrbMini state={speakingMsgId === msg.id ? 'speaking' : 'idle'} size={28} />
                                 </div>
                               )}
-                              <p className={`text-[9px] mt-1.5 font-mono ${msg.role === 'user' ? 'text-[var(--brand-contrast)]/60 text-right' : 'text-[var(--text-muted)]'}`}>
-                                {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                              </p>
-                            </div>
-                          </motion.div>
-                        ))}
+                              <div
+                                className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed relative group/msg ${msg.role === 'user'
+                                  ? 'bg-[var(--brand)] text-[var(--brand-contrast)] rounded-tr-sm shadow-md'
+                                  : 'bg-[var(--bg-muted)] text-[var(--text-primary)] rounded-tl-sm border border-[var(--border-default)]'
+                                  }`}
+                              >
+                                {msg.role === 'assistant' && (
+                                  <button
+                                    onClick={() => speak(cleanContent, msg.id)}
+                                    className="absolute -right-10 top-0 p-1.5 rounded-full bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-[var(--brand)] opacity-0 group-hover/msg:opacity-100 transition-all shadow-sm"
+                                    title="Listen to response"
+                                  >
+                                    <Volume2 size={12} />
+                                  </button>
+                                )}
+                                <div className="markdown-content text-sm">
+                                  <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                      p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                                      strong: ({ children }) => <strong className="font-extrabold text-[var(--brand)]">{children}</strong>,
+                                      ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
+                                      li: ({ children }) => React.createElement('li', { className: 'mb-0.5' }, children),
+                                      code: ({ children }) => <code className="bg-[var(--bg-base)] px-1 rounded font-mono text-[11px]">{children}</code>,
+                                    }}
+                                  >
+                                    {cleanContent}
+                                  </ReactMarkdown>
+                                </div>
+
+                                {/* Action chips */}
+                                {actions.length > 0 && (
+                                  <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2 border-t border-[var(--border-default)]/60">
+                                    {actions.map((act, idx) => (
+                                      <button
+                                        key={idx}
+                                        onClick={() => handleAction(act)}
+                                        className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-[var(--brand-bg)] text-[var(--brand)] border border-[var(--brand)]/20 hover:border-[var(--brand)] hover:scale-105 active:scale-95 transition-all shadow-xs"
+                                      >
+                                        <span>{act.label}</span>
+                                        <ArrowRight size={10} className="opacity-70" />
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+
+                                {/* Speaking wave indicator */}
+                                {speakingMsgId === msg.id && (
+                                  <div className="flex items-center gap-0.5 mt-1.5">
+                                    {[0, 1, 2, 3].map(i => (
+                                      <motion.span
+                                        key={i}
+                                        className="w-0.5 bg-[var(--brand)] rounded-full"
+                                        animate={{ height: ['4px', '12px', '4px'] }}
+                                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.12 }}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
+                                <p className={`text-[9px] mt-1.5 font-mono ${msg.role === 'user' ? 'text-[var(--brand-contrast)]/60 text-right' : 'text-[var(--text-muted)]'}`}>
+                                  {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </p>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+
 
                         {loading && (
                           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">

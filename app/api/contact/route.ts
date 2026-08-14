@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, email, message } = await req.json();
+    const { name, email, message, inquiryType, budget } = await req.json();
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return NextResponse.json(
         { error: 'All fields are required.' },
@@ -40,12 +40,15 @@ export async function POST(req: NextRequest) {
     // ── Persist to Firestore ──────────────────────────────────────────────────
     // Preferred: Admin SDK (bypasses rules; rate limiting happens in this route).
     // Fallback: client SDK — Firestore rules validate the payload client-side.
-    const payload = {
+    const payload: Record<string, any> = {
       name: name.trim(),
       email: email.trim().toLowerCase(),
       message: message.trim(),
       read: false,
     };
+    if (inquiryType) payload.inquiryType = String(inquiryType).trim();
+    if (budget) payload.budget = String(budget).trim();
+
     const adminDb = getAdminDb();
     if (adminDb) {
       const { FieldValue } = await import('firebase-admin/firestore');

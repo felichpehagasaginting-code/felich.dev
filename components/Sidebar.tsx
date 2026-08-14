@@ -8,8 +8,11 @@ import Image from 'next/image';
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import Magnetic from '@/components/Magnetic';
-import { GitBranch } from 'lucide-react';
+import { GitBranch, Clapperboard } from 'lucide-react';
 import Logo from '@/components/Logo';
+import FelichAvatar from '@/components/FelichAvatar';
+
+
 import { useTranslation } from 'react-i18next';
 import type { Theme } from '@/lib/store';
 
@@ -241,23 +244,11 @@ export default function Sidebar() {
       {/* ── Profile header ─────────────────────────────────────────────── */}
       <div className="mb-6 text-center">
         <Magnetic>
-          <div className="relative w-24 h-24 mx-auto mb-4 group cursor-pointer">
-            {/* soft brand glow behind avatar */}
-            <div className="absolute -inset-2.5 rounded-full bg-gradient-to-tr from-[var(--brand)]/25 via-transparent to-[var(--brand)]/15 blur-lg opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-            {/* gradient ring */}
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-[var(--brand)] via-[var(--brand-strong)] to-[var(--brand)] opacity-70 group-hover:opacity-100 group-hover:rotate-6 transition-all duration-300" />
-            <div className="relative w-24 h-24 rounded-full overflow-hidden border-[3px] border-[var(--bg-surface)] shadow-lg">
-              <Image
-                src="/images/profile.jpg"
-                alt="Felich"
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, 96px"
-                priority
-              />
-            </div>
+          <div className="relative w-24 h-24 mx-auto mb-4 group cursor-pointer flex items-center justify-center">
+            <FelichAvatar size={96} showBadge={true} className="transition-transform duration-300 group-hover:scale-105" />
           </div>
         </Magnetic>
+
 
         <Link href="/" className="flex flex-col items-center gap-2 group">
           <Logo className="w-10 h-10" />
@@ -412,17 +403,34 @@ export default function Sidebar() {
           </span>
         </div>
 
-        <div className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-fit mx-auto group">
-          <GitBranch className="w-3 h-3 text-[var(--text-muted)] group-hover:text-[var(--brand)] transition-colors" />
-          <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest whitespace-nowrap">
-            v2.0.0-stable <span className="opacity-0 group-hover:opacity-100 transition-opacity ml-1">#MAIN</span>
-          </span>
+        <div className="flex items-center justify-between gap-2 px-1">
+          <button
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('replay-intro'));
+              }
+            }}
+            title="Replay Cinematic Intro"
+            className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--bg-muted)]/50 border border-[var(--border-default)] hover:border-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand-bg)] text-[var(--text-muted)] text-[10px] font-mono uppercase tracking-wider transition-all cursor-pointer shadow-xs active:scale-95"
+          >
+            <Clapperboard size={12} className="text-[var(--brand)]" />
+            <span>Replay Intro</span>
+          </button>
+
+
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[var(--bg-muted)]/30 border border-[var(--border-default)] group">
+            <GitBranch className="w-3 h-3 text-[var(--text-muted)] group-hover:text-[var(--brand)] transition-colors" />
+            <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest whitespace-nowrap">
+              v2.0
+            </span>
+          </div>
         </div>
 
         <p className="text-xs text-[var(--text-muted)] text-center">
           &copy; {new Date().getFullYear()} Felich. All rights reserved.
         </p>
       </div>
+
     </aside>
   );
 }

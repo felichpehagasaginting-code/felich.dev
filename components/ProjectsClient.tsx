@@ -1,48 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal from '@/components/Reveal';
 import TiltCard from './TiltCard';
 import { useProjectLikes } from '@/lib/useProjectLikes';
 import { useTranslation } from 'react-i18next';
+import { getProjectIcon } from '@/lib/projectIcons';
+import { safeViewTransition } from '@/lib/viewTransitions';
 
 const projectTypes = ['All', 'Web', 'Mobile', 'IoT'];
 const projectCategories = ['All', 'Personal Project', 'Freelance'];
-
-/* ── Per-project icon SVGs (inline, no external assets) ──────────────── */
-const PROJECT_ICONS: Record<string, React.ReactNode> = {
-  'flight-tracker': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-  ),
-  'pemrograman-trpl': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-  ),
-  'estate-harvest-rotation-planner': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
-  ),
-  'nettas-2026': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-  ),
-  'photobooth-ai': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-  ),
-  'edge-ai-palmoil': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M3 9h2m-2 6h2m14-6h2m-2 6h2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
-  ),
-  'blade-ascension': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-  ),
-  'stackway': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-  ),
-  'portfolio': (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-  )
-};
+const projectTechs = ['All Tech', 'TypeScript', 'Python', 'Next.js', 'Flutter', 'PyTorch', 'Tailwind', 'Supabase'];
 
 /* ── Markdown content renderer ───────────────────────────────────────── */
+
 function renderFormattedContent(rawContent: string) {
   if (!rawContent) return null;
   const cleanText = rawContent.replace(/^---[\s\S]*?---/, '').trim();
@@ -140,7 +113,10 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
   const { t } = useTranslation();
   const [activeType, setActiveType] = useState('All');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [activeTech, setActiveTech] = useState('All Tech');
+  const [modalTab, setModalTab] = useState<'overview' | 'preview'>('overview');
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState<number>(-1);
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
@@ -153,8 +129,67 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
       p.type === activeType ||
       (Array.isArray(p.type) && p.type.includes(activeType));
     const matchCat = activeCategory === 'All' || p.category === activeCategory;
-    return matchType && matchCat;
+    const matchTech =
+      activeTech === 'All Tech' ||
+      (p.techStack && p.techStack.some((tech: string) => tech.toLowerCase().includes(activeTech.toLowerCase())));
+    return matchType && matchCat && matchTech;
   });
+
+
+  const openProjectModal = useCallback((project: any) => {
+    safeViewTransition(() => {
+      setSelectedProject(project);
+    });
+  }, []);
+
+  const closeProjectModal = useCallback(() => {
+    safeViewTransition(() => {
+      setSelectedProject(null);
+    });
+  }, []);
+
+  // Event listener for opening project modal from AIChatbot or external triggers
+  useEffect(() => {
+    const handleOpenBySlug = (e: CustomEvent<string>) => {
+      const targetSlug = e.detail;
+      const found = projects.find(p => p.slug === targetSlug || p.title?.toLowerCase().replace(/\s+/g, '-') === targetSlug);
+      if (found) {
+        openProjectModal(found);
+      }
+    };
+
+    window.addEventListener('open-project-modal', handleOpenBySlug as EventListener);
+    return () => {
+      window.removeEventListener('open-project-modal', handleOpenBySlug as EventListener);
+    };
+  }, [projects, openProjectModal]);
+
+  // Keyboard navigation (J / K, Arrow keys, Enter, Escape)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedProject) {
+        if (e.key === 'Escape') {
+          closeProjectModal();
+        }
+        return;
+      }
+
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      if (e.key === 'ArrowRight' || e.key === 'j' || e.key === 'J') {
+        setFocusedIndex(prev => (prev + 1) % Math.max(1, filtered.length));
+      } else if (e.key === 'ArrowLeft' || e.key === 'k' || e.key === 'K') {
+        setFocusedIndex(prev => (prev - 1 + filtered.length) % Math.max(1, filtered.length));
+      } else if (e.key === 'Enter' && focusedIndex >= 0 && focusedIndex < filtered.length) {
+        openProjectModal(filtered[focusedIndex]);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProject, focusedIndex, filtered, openProjectModal, closeProjectModal]);
 
   return (
     <div className="space-y-8">
@@ -187,6 +222,10 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)]" />
                 <span>Open Source</span>
+              </div>
+              <span className="text-[var(--border-default)]">|</span>
+              <div className="text-[9px] text-[var(--text-muted)] font-mono">
+                Keyboard: <kbd className="px-1 py-0.5 bg-[var(--bg-muted)] rounded text-[var(--text-primary)]">J</kbd>/<kbd className="px-1 py-0.5 bg-[var(--bg-muted)] rounded text-[var(--text-primary)]">K</kbd> to navigate
               </div>
             </div>
           </div>
@@ -254,98 +293,170 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
             );
           })}
         </div>
+
+        {/* Tech stack filters */}
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[var(--border-default)]">
+          <span className="text-[10px] font-mono font-semibold uppercase tracking-widest text-[var(--text-muted)] mr-2">
+            Technology
+          </span>
+          {projectTechs.map((tech) => (
+            <button
+              key={tech}
+              onClick={() => setActiveTech(tech)}
+              className={`px-2.5 py-1 text-[10px] font-mono rounded transition-all ${
+                activeTech === tech
+                  ? 'bg-[var(--brand-bg)] text-[var(--brand)] font-bold border border-[var(--brand)]'
+                  : 'bg-[var(--bg-base)] text-[var(--text-muted)] border border-[var(--border-default)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              {tech}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* ── Project Cards Grid ───────────────────────────────────────── */}
+
+      {/* ── Bento Grid Showcase 2.0 ──────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <AnimatePresence mode="popLayout">
           {filtered.map((project, i) => {
-            const icon = PROJECT_ICONS[project.slug] || PROJECT_ICONS['portfolio'];
+            const icon = getProjectIcon(project.slug);
+            const isFeaturedFlagship = project.featured && i === 0;
+            const isFocused = focusedIndex === i;
 
             return (
-              <TiltCard key={project.title}>
-                <motion.div
-                  layoutId={`project-card-${project.title}`}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3, delay: i * 0.04 }}
-                  onClick={() => setSelectedProject(project)}
-                  className="group cursor-pointer bg-[var(--bg-surface)] border border-[var(--border-default)] overflow-hidden hover:border-[var(--brand)] transition-all duration-150 flex flex-col h-full [transform-style:preserve-3d]"
-                  style={{ borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
-                >
-                  {/* Card Header */}
-                  <div className="px-5 pt-5 pb-3 border-b border-[var(--border-default)] flex items-center justify-between [transform:translateZ(30px)]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 flex items-center justify-center bg-[var(--brand-bg)] text-[var(--brand)] border border-[var(--brand)]/15" style={{ borderRadius: '6px' }}>
-                        {icon}
-                      </div>
-                      <div>
-                        <h3 className="font-display font-bold text-sm text-[var(--text-primary)] tracking-tight group-hover:text-[var(--brand)] transition-colors">
-                          {project.title}
-                        </h3>
-                        <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                          {Array.isArray(project.type) ? project.type.join(' · ') : project.type}
-                        </span>
-                      </div>
-                    </div>
-
-                    {project.featured && (
-                      <span className="px-2 py-0.5 bg-[var(--warning)]/10 border border-[var(--warning)]/25 text-[var(--warning)] text-[9px] font-semibold uppercase tracking-widest" style={{ borderRadius: '4px' }}>
-                        Featured
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Card Body */}
-                  <div className="p-5 flex-1 flex flex-col justify-between [transform:translateZ(40px)]">
-                    <div>
-                      <p className="text-[13px] text-[var(--text-muted)] line-clamp-2 leading-relaxed mb-4">
-                        {project.description}
-                      </p>
-
-                      {/* Feature highlights */}
-                      {project.features && project.features.length > 0 && (
-                        <div className="mb-4 space-y-1.5">
-                          {project.features.slice(0, 2).map((feat: string, fIdx: number) => (
-                            <div key={fIdx} className="flex items-center gap-2 text-[11px] text-[var(--text-primary)] font-medium">
-                              <span className="w-1 h-1 rounded-full bg-[var(--brand)] flex-shrink-0" />
-                              <span className="truncate">{feat}</span>
-                            </div>
-                          ))}
+              <div 
+                key={project.title} 
+                className={`${isFeaturedFlagship ? 'md:col-span-2' : 'col-span-1'}`}
+              >
+                <TiltCard>
+                  <motion.div
+                    layoutId={`project-card-${project.title}`}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3, delay: i * 0.04 }}
+                    onClick={() => openProjectModal(project)}
+                    tabIndex={0}
+                    onFocus={() => setFocusedIndex(i)}
+                    className={`group cursor-pointer bg-[var(--bg-surface)] border overflow-hidden transition-all duration-200 flex flex-col h-full [transform-style:preserve-3d] ${
+                      isFocused 
+                        ? 'border-[var(--brand)] shadow-[0_0_0_2px_var(--brand)]' 
+                        : 'border-[var(--border-default)] hover:border-[var(--brand)] hover:shadow-lg'
+                    }`}
+                    style={{ 
+                      borderRadius: '8px', 
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                      viewTransitionName: `project-card-${project.slug || i}` as any,
+                    }}
+                  >
+                    {/* Card Header */}
+                    <div className="px-5 pt-5 pb-3 border-b border-[var(--border-default)] flex items-center justify-between [transform:translateZ(30px)]">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 flex items-center justify-center p-1.5 bg-[var(--brand-bg)] text-[var(--brand)] border border-[var(--brand)]/15" style={{ borderRadius: '6px' }}>
+                          {icon}
                         </div>
-                      )}
-                    </div>
-
-                    {/* Footer */}
-                    <div className="pt-3 border-t border-[var(--border-default)] space-y-3">
-                      <div className="flex flex-wrap gap-1">
-                        {(project.techStack || []).slice(0, 4).map((tech: string) => (
-                          <span
-                            key={tech}
-                            className="px-2 py-0.5 text-[10px] bg-[var(--bg-muted)] text-[var(--text-muted)] font-semibold border border-[var(--border-default)]"
-                            style={{ borderRadius: '4px' }}
-                          >
-                            {tech}
+                        <div>
+                          <h3 className="font-display font-bold text-sm md:text-base text-[var(--text-primary)] tracking-tight group-hover:text-[var(--brand)] transition-colors">
+                            {project.title}
+                          </h3>
+                          <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
+                            {Array.isArray(project.type) ? project.type.join(' · ') : project.type}
                           </span>
-                        ))}
-                        {(project.techStack || []).length > 4 && (
-                          <span className="px-1.5 py-0.5 text-[10px] bg-[var(--bg-muted)] text-[var(--text-muted)] font-semibold" style={{ borderRadius: '4px' }}>
-                            +{(project.techStack || []).length - 4}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {project.featured && (
+                          <span className="px-2 py-0.5 bg-[var(--warning)]/10 border border-[var(--warning)]/25 text-[var(--warning)] text-[9px] font-semibold uppercase tracking-widest flex items-center gap-1" style={{ borderRadius: '4px' }}>
+                            <span className="w-1 h-1 rounded-full bg-[var(--warning)] animate-pulse" />
+                            Featured
                           </span>
                         )}
                       </div>
+                    </div>
 
-                      <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--brand)] group-hover:translate-x-0.5 transition-transform">
-                        <span>View Case Study</span>
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7" />
-                        </svg>
+                    {/* Card Body */}
+                    <div className="p-5 flex-1 flex flex-col justify-between [transform:translateZ(40px)]">
+                      <div>
+                        <p className={`text-[13px] text-[var(--text-muted)] leading-relaxed mb-4 ${isFeaturedFlagship ? 'line-clamp-3 md:line-clamp-4' : 'line-clamp-2'}`}>
+                          {project.description}
+                        </p>
+
+                        {/* Feature highlights */}
+                        {project.features && project.features.length > 0 && (
+                          <div className={`mb-4 space-y-1.5 ${isFeaturedFlagship ? 'grid grid-cols-1 md:grid-cols-2 gap-2 space-y-0' : ''}`}>
+                            {project.features.slice(0, isFeaturedFlagship ? 4 : 2).map((feat: string, fIdx: number) => (
+                              <div key={fIdx} className="flex items-center gap-2 text-[11px] text-[var(--text-primary)] font-medium">
+                                <span className="w-1 h-1 rounded-full bg-[var(--brand)] flex-shrink-0" />
+                                <span className="truncate">{feat}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Footer & Quick actions */}
+                      <div className="pt-3 border-t border-[var(--border-default)] space-y-3">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <div className="flex flex-wrap gap-1">
+                            {(project.techStack || []).slice(0, isFeaturedFlagship ? 6 : 4).map((tech: string) => (
+                              <span
+                                key={tech}
+                                className="px-2 py-0.5 text-[10px] bg-[var(--bg-muted)] text-[var(--text-muted)] font-semibold border border-[var(--border-default)]"
+                                style={{ borderRadius: '4px' }}
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                            {(project.techStack || []).length > (isFeaturedFlagship ? 6 : 4) && (
+                              <span className="px-1.5 py-0.5 text-[10px] bg-[var(--bg-muted)] text-[var(--text-muted)] font-semibold" style={{ borderRadius: '4px' }}>
+                                +{(project.techStack || []).length - (isFeaturedFlagship ? 6 : 4)}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            {project.github && (
+                              <a
+                                href={project.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--brand-bg)] rounded transition-colors"
+                                title="View GitHub Repository"
+                                aria-label="GitHub repository"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                              </a>
+                            )}
+                            {project.live && (
+                              <a
+                                href={project.live}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="p-1.5 text-[var(--brand)] hover:bg-[var(--brand-bg)] rounded transition-colors"
+                                title="Open Live System"
+                                aria-label="Live system demo"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                              </a>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--brand)] group-hover:translate-x-0.5 transition-transform">
+                          <span>View Case Study</span>
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7" />
+                          </svg>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              </TiltCard>
+                  </motion.div>
+                </TiltCard>
+              </div>
             );
           })}
         </AnimatePresence>
@@ -464,7 +575,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setSelectedProject(null)}
+                onClick={closeProjectModal}
                 className="fixed inset-0 bg-[var(--scrim)] backdrop-blur-sm cursor-alias z-0"
               />
               
@@ -480,8 +591,8 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                 {/* Sticky header */}
                 <div className="sticky top-0 z-50 px-6 py-4 flex justify-between items-center bg-[var(--bg-surface)]/90 backdrop-blur-md border-b border-[var(--border-default)]">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 flex items-center justify-center bg-[var(--brand-bg)] text-[var(--brand)]" style={{ borderRadius: '6px' }}>
-                      {PROJECT_ICONS[selectedProject.slug] || PROJECT_ICONS['portfolio']}
+                    <div className="w-8 h-8 flex items-center justify-center p-1 bg-[var(--brand-bg)] text-[var(--brand)]" style={{ borderRadius: '6px' }}>
+                      {getProjectIcon(selectedProject.slug)}
                     </div>
                     <div className="flex gap-1.5">
                       <span className="px-2 py-0.5 bg-[var(--brand-bg)] text-[var(--brand)] text-[10px] font-semibold uppercase tracking-wider" style={{ borderRadius: '4px' }}>
@@ -494,7 +605,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                     </div>
                   </div>
                   <button
-                    onClick={() => setSelectedProject(null)}
+                    onClick={closeProjectModal}
                     className="p-2 bg-[var(--bg-muted)] hover:bg-[var(--brand-bg)] text-[var(--text-primary)] transition-all group"
                     aria-label="Close"
                     title="Close"
@@ -515,29 +626,103 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                     </p>
                   </div>
 
-                  {/* Tech stack */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {(selectedProject.techStack || []).map((tech: string) => (
-                      <span key={tech} className="px-2.5 py-1 text-[11px] bg-[var(--bg-muted)] border border-[var(--border-default)] font-semibold text-[var(--text-muted)]" style={{ borderRadius: '4px' }}>
-                        {tech}
-                      </span>
-                    ))}
+                  {/* Modal Tabs */}
+                  <div className="flex items-center gap-2 border-b border-[var(--border-default)] pb-2">
+                    <button
+                      onClick={() => setModalTab('overview')}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                        modalTab === 'overview'
+                          ? 'bg-[var(--brand)] text-[var(--brand-contrast)]'
+                          : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      📖 Overview &amp; Architecture
+                    </button>
+                    <button
+                      onClick={() => setModalTab('preview')}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                        modalTab === 'preview'
+                          ? 'bg-[var(--brand)] text-[var(--brand-contrast)]'
+                          : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                      }`}
+                    >
+                      🎬 Live Demo &amp; Preview
+                    </button>
                   </div>
 
-                  {/* Features */}
-                  {selectedProject.features && selectedProject.features.length > 0 && (
-                    <div className="p-4 bg-[var(--bg-base)] border border-[var(--border-default)]" style={{ borderRadius: '6px' }}>
-                      <h4 className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-3">Key Capabilities</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {selectedProject.features.map((feat: string, fIdx: number) => (
-                          <div key={fIdx} className="flex items-center gap-2 text-[11px] font-medium text-[var(--text-primary)]">
-                            <span className="w-1 h-1 rounded-full bg-[var(--brand)] flex-shrink-0" />
-                            <span>{feat}</span>
-                          </div>
-                        ))}
+                  {modalTab === 'preview' ? (
+                    /* Live Demo Sandbox View */
+                    <div className="space-y-4">
+                      <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-base)] p-6 text-center space-y-4">
+                        <div className="w-12 h-12 mx-auto rounded-2xl bg-[var(--brand-bg)] text-[var(--brand)] flex items-center justify-center">
+                          {getProjectIcon(selectedProject.slug)}
+                        </div>
+                        <div className="max-w-md mx-auto space-y-1">
+                          <h4 className="font-display font-bold text-base text-[var(--text-primary)]">
+                            {selectedProject.title} Interactive Sandbox
+                          </h4>
+                          <p className="text-xs text-[var(--text-muted)]">
+                            {selectedProject.live
+                              ? 'This project is live and running on production cloud infrastructure.'
+                              : 'This system is hosted as an open-source technical architecture on GitHub.'}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap justify-center gap-3 pt-2">
+                          {selectedProject.live && (
+                            <a
+                              href={selectedProject.live}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-5 py-2.5 rounded-xl bg-[var(--brand)] text-[var(--brand-contrast)] font-semibold text-xs hover:brightness-110 shadow-md transition-all flex items-center gap-2"
+                            >
+                              <span>Launch Production App</span>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                          )}
+                          {selectedProject.github && (
+                            <a
+                              href={selectedProject.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-5 py-2.5 rounded-xl bg-[var(--bg-muted)] text-[var(--text-primary)] border border-[var(--border-default)] font-semibold text-xs hover:bg-[var(--border-default)] transition-all flex items-center gap-2"
+                            >
+                              <span>View Source on GitHub</span>
+                              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
+                  ) : (
+                    /* Overview View */
+                    <>
+                      {/* Tech stack */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {(selectedProject.techStack || []).map((tech: string) => (
+                          <span key={tech} className="px-2.5 py-1 text-[11px] bg-[var(--bg-muted)] border border-[var(--border-default)] font-semibold text-[var(--text-muted)]" style={{ borderRadius: '4px' }}>
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Features */}
+                      {selectedProject.features && selectedProject.features.length > 0 && (
+                        <div className="p-4 bg-[var(--bg-base)] border border-[var(--border-default)]" style={{ borderRadius: '6px' }}>
+                          <h4 className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-3">Key Capabilities</h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {selectedProject.features.map((feat: string, fIdx: number) => (
+                              <div key={fIdx} className="flex items-center gap-2 text-[11px] font-medium text-[var(--text-primary)]">
+                                <span className="w-1 h-1 rounded-full bg-[var(--brand)] flex-shrink-0" />
+                                <span>{feat}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
+
 
                   {/* Body content */}
                   {selectedProject.content && (

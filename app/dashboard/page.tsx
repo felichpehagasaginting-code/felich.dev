@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Star, GitFork, BarChart2, Music, Headphones, Folder } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, GitFork, BarChart2, Music, Headphones, Folder, Search, Activity, Globe, Cpu, Clock, CheckCircle2, ShieldCheck, Terminal } from 'lucide-react';
 import PageTransition from '@/components/PageTransition';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { useTranslation } from 'react-i18next';
@@ -45,13 +45,17 @@ function generateContribData() {
   return data;
 }
 
-const contribColors = [
-  'bg-neutral-100 dark:bg-neutral-800',
-  'bg-green-200 dark:bg-green-900',
-  'bg-green-400 dark:bg-green-700',
-  'bg-green-500 dark:bg-green-500',
-  'bg-green-700 dark:bg-green-400',
-];
+const LANGUAGE_COLORS: Record<string, string> = {
+  TypeScript: '#3178c6',
+  JavaScript: '#f1e05a',
+  Python: '#3572A5',
+  HTML: '#e34c26',
+  CSS: '#563d7c',
+  Shell: '#89e051',
+  C: '#555555',
+  'C++': '#f34b7d',
+  Dart: '#00B4AB',
+};
 
 interface Repo {
   name: string;
@@ -62,6 +66,8 @@ interface Repo {
   html_url: string;
 }
 
+const REPO_CATEGORIES = ['All', 'AI & ML', 'Web Apps', 'FinTech', 'Tools'];
+
 export default function Dashboard() {
   const { t } = useTranslation();
   const { data: spotify, progressMs } = useSpotify();
@@ -69,6 +75,11 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [contribData, setContribData] = useState<{ level: number, count: number, date: string }[][]>(() => generateContribData());
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState<'updated' | 'stars' | 'forks'>('updated');
+  const [hoveredDay, setHoveredDay] = useState<{ count: number; date: string } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,16 +121,78 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+  // Compute language distribution
+  const languageStats = useMemo(() => {
+    const counts: Record<string, number> = {};
+    let total = 0;
+
+    repos.forEach((r) => {
+      if (r.language) {
+        counts[r.language] = (counts[r.language] || 0) + 1;
+        total += 1;
+      }
+    });
+
+    if (total === 0) return [];
+
+    return Object.entries(counts)
+      .map(([name, count]) => ({
+        name,
+        count,
+        percentage: Math.round((count / total) * 100),
+        color: LANGUAGE_COLORS[name] || '#888888',
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [repos]);
+
+  // Filtered and sorted repositories
+  const filteredRepos = useMemo(() => {
+    return repos
+      .filter((r) => {
+        const matchesQuery =
+          r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (r.description && r.description.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        if (!matchesQuery) return false;
+
+        if (selectedCategory === 'All') return true;
+        if (selectedCategory === 'AI & ML') {
+          return (
+            r.name.toLowerCase().includes('ai') ||
+            r.name.toLowerCase().includes('ml') ||
+            r.name.toLowerCase().includes('vision') ||
+            (r.description && (r.description.toLowerCase().includes('ai') || r.description.toLowerCase().includes('model')))
+          );
+        }
+        if (selectedCategory === 'FinTech') {
+          return (
+            r.name.toLowerCase().includes('fin') ||
+            r.name.toLowerCase().includes('pay') ||
+            (r.description && r.description.toLowerCase().includes('fintech'))
+          );
+        }
+        if (selectedCategory === 'Web Apps') {
+          return r.language === 'TypeScript' || r.language === 'JavaScript' || r.language === 'HTML';
+        }
+        if (selectedCategory === 'Tools') {
+          return r.language === 'Python' || r.language === 'Shell' || r.name.toLowerCase().includes('tool');
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'stars') return b.stargazers_count - a.stargazers_count;
+        if (sortBy === 'forks') return b.forks_count - a.forks_count;
+        return 0; // Default order is updated
+      });
+  }, [repos, searchQuery, selectedCategory, sortBy]);
+
   if (loading) {
     return (
       <div className="w-full space-y-8 animate-pulse p-2">
-        {/* Title Skeleton */}
         <div className="space-y-3">
           <div className="h-9 w-52 bg-[var(--bg-muted)] rounded-xl" />
           <div className="h-4 w-80 max-w-full bg-[var(--bg-muted)] rounded-lg" />
         </div>
-
-        {/* Stats Grid Skeleton */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="p-5 rounded-2xl bg-[var(--bg-muted)] border border-[var(--border-default)] space-y-3">
@@ -127,20 +200,6 @@ export default function Dashboard() {
               <div className="h-8 w-16 bg-[var(--bg-muted)] rounded-lg" />
             </div>
           ))}
-        </div>
-
-        {/* Repositories Grid Skeleton */}
-        <div className="space-y-4">
-          <div className="h-6 w-44 bg-[var(--bg-muted)] rounded-lg" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="p-5 rounded-2xl bg-[var(--bg-muted)] border border-[var(--border-default)] space-y-3">
-                <div className="h-5 w-1/2 bg-[var(--bg-muted)] rounded-lg" />
-                <div className="h-3.5 w-full bg-[var(--bg-muted)] rounded" />
-                <div className="h-3.5 w-2/3 bg-[var(--bg-muted)] rounded" />
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     );
@@ -156,16 +215,13 @@ export default function Dashboard() {
 
   return (
     <PageTransition>
-      <div className="relative">
-        {/* Holographic Glow Background */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-[var(--brand)]/10 rounded-full blur-[100px] pointer-events-none animate-pulse" />
-        <div className="absolute top-1/2 -right-24 w-64 h-64 bg-[var(--brand)]/10 rounded-full blur-[80px] pointer-events-none" />
-
+      <div className="relative space-y-10">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="mb-8 relative"
+          className="relative"
         >
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-[var(--text-primary)] text-[var(--bg-base)]" style={{ borderRadius: '6px' }}>
@@ -182,13 +238,46 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* Stats overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        {/* ── System Status & Latency Matrix ──────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] flex flex-wrap items-center justify-between gap-4 text-xs font-mono"
+        >
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--success)] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[var(--success)]" />
+            </span>
+            <span className="text-[var(--text-primary)] font-bold">All Systems Operational</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 text-[var(--text-muted)] text-[11px]">
+            <span className="flex items-center gap-1.5">
+              <Activity size={13} className="text-[var(--brand)]" />
+              Edge Latency: ~16ms
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1.5">
+              <Clock size={13} className="text-[var(--brand)]" />
+              Asia/Jakarta (WIB UTC+7)
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1.5">
+              <Cpu size={13} className="text-[var(--brand)]" />
+              Next.js 16 Webpack SSG
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Stats Overview Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: t('dashboard_stats_repos'), value: repos.length },
             { label: t('dashboard_stats_stars'), value: repos.reduce((a, r) => a + r.stargazers_count, 0) },
             { label: t('dashboard_stats_forks'), value: repos.reduce((a, r) => a + r.forks_count, 0) },
-            { label: t('dashboard_stats_languages'), value: new Set(repos.map(r => r.language).filter(Boolean)).size }
+            { label: t('dashboard_stats_languages'), value: languageStats.length }
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -196,8 +285,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
               whileHover={{ scale: 1.02 }}
-              className="p-5 bg-[var(--bg-surface)] border border-[var(--border-default)] hover:border-[var(--brand)] transition-all duration-150"
-              style={{ borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
+              className="p-5 bg-[var(--bg-surface)] border border-[var(--border-default)] hover:border-[var(--brand)] transition-all duration-150 rounded-xl shadow-xs"
             >
               <AnimatedCounter 
                 end={stat.value} 
@@ -210,25 +298,66 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* GitHub Contribution Graph - Modern Grid */}
+        {/* ── Language & Tech Stack Distribution ───────────────────────── */}
+        {languageStats.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-default)] space-y-4 shadow-xs"
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-display font-bold text-[var(--text-primary)] flex items-center gap-2">
+                <Terminal size={15} className="text-[var(--brand)]" />
+                Language &amp; Code Distribution
+              </h3>
+              <span className="text-[10px] font-mono text-[var(--text-muted)]">Public Repositories</span>
+            </div>
+
+            {/* Segmented Bar */}
+            <div className="h-3 rounded-full overflow-hidden flex bg-[var(--bg-muted)] w-full">
+              {languageStats.map((lang) => (
+                <div
+                  key={lang.name}
+                  style={{ width: `${lang.percentage}%`, backgroundColor: lang.color }}
+                  title={`${lang.name}: ${lang.percentage}%`}
+                  className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
+                />
+              ))}
+            </div>
+
+            {/* Language Legend Chips */}
+            <div className="flex flex-wrap gap-3 pt-1">
+              {languageStats.map((lang) => (
+                <div key={lang.name} className="flex items-center gap-1.5 text-xs font-mono">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: lang.color }} />
+                  <span className="font-semibold text-[var(--text-primary)]">{lang.name}</span>
+                  <span className="text-[var(--text-muted)] text-[10px]">{lang.percentage}%</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── GitHub Contribution Heatmap ──────────────────────────────── */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-10"
+          transition={{ delay: 0.3 }}
+          className="space-y-3"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold flex items-center gap-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold flex items-center gap-2">
               <BarChart2 className="w-5 h-5 text-[var(--brand)]" /> 
               {t('dashboard_contributions')}
             </h2>
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-muted)] border border-[var(--border-default)]">
                <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
-               <span className="text-[10px] font-bold font-mono text-[var(--text-muted)]">LIVE_FEED</span>
+               <span className="text-[10px] font-bold font-mono text-[var(--text-muted)]">LIVE FEED</span>
             </div>
           </div>
           
-          <div className="p-6 rounded-[2rem] border border-[var(--border-default)] bg-[var(--glass-bg)] backdrop-blur-xl overflow-x-auto shadow-sm liquid-glass">
+          <div className="p-5 rounded-2xl border border-[var(--border-default)] bg-[var(--glass-bg)] backdrop-blur-xl overflow-x-auto shadow-xs">
             <div className="flex gap-[3px] min-w-fit">
               {contribData.map((week, wi) => (
                 <div key={wi} className="flex flex-col gap-[3px]">
@@ -237,9 +366,11 @@ export default function Dashboard() {
                       key={`${wi}-${di}`}
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.5 + (wi * 0.01) }}
-                      whileHover={{ scale: 1.5, zIndex: 10 }}
-                      className={`w-[11px] h-[11px] rounded-[2px] transition-colors duration-300 ${
+                      transition={{ delay: 0.1 + (wi * 0.005) }}
+                      whileHover={{ scale: 1.4, zIndex: 10 }}
+                      onMouseEnter={() => setHoveredDay({ count: day.count, date: day.date || `Week ${wi + 1}` })}
+                      onMouseLeave={() => setHoveredDay(null)}
+                      className={`w-[11px] h-[11px] rounded-[2px] transition-colors duration-200 cursor-pointer ${
                         day.level === 0 ? 'bg-[#ebedf0] dark:bg-[#161b22]' :
                         day.level === 1 ? 'bg-[#9be9a8] dark:bg-[#0e4429]' :
                         day.level === 2 ? 'bg-[#40c463] dark:bg-[#006d32]' :
@@ -252,182 +383,215 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
-            <div className="flex items-center justify-end gap-2 mt-4 text-[10px] font-bold font-mono text-[var(--text-muted)]">
-              <span className="uppercase tracking-widest mr-1">{t('less')}</span>
-              <div className="flex gap-[3px]">
-                {[0, 1, 2, 3, 4].map(i => (
-                  <div key={i} className={`w-[11px] h-[11px] rounded-[2px] ${
-                    i === 0 ? 'bg-[#ebedf0] dark:bg-[#161b22]' :
-                    i === 1 ? 'bg-[#9be9a8] dark:bg-[#0e4429]' :
-                    i === 2 ? 'bg-[#40c463] dark:bg-[#006d32]' :
-                    i === 3 ? 'bg-[#30a14e] dark:bg-[#26a641]' :
-                    'bg-[#216e39] dark:bg-[#39d353]'
-                  }`} />
-                ))}
+
+            <div className="flex items-center justify-between mt-4 text-[10px] font-mono text-[var(--text-muted)]">
+              <span>
+                {hoveredDay ? `${hoveredDay.count} contributions (${hoveredDay.date})` : 'Hover on any block to view details'}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="uppercase tracking-widest mr-1">{t('less')}</span>
+                <div className="flex gap-[3px]">
+                  {[0, 1, 2, 3, 4].map(i => (
+                    <div key={i} className={`w-[11px] h-[11px] rounded-[2px] ${
+                      i === 0 ? 'bg-[#ebedf0] dark:bg-[#161b22]' :
+                      i === 1 ? 'bg-[#9be9a8] dark:bg-[#0e4429]' :
+                      i === 2 ? 'bg-[#40c463] dark:bg-[#006d32]' :
+                      i === 3 ? 'bg-[#30a14e] dark:bg-[#26a641]' :
+                      'bg-[#216e39] dark:bg-[#39d353]'
+                    }`} />
+                  ))}
+                </div>
+                <span className="uppercase tracking-widest ml-1">{t('more')}</span>
               </div>
-              <span className="uppercase tracking-widest ml-1">{t('more')}</span>
             </div>
           </div>
         </motion.section>
 
-        {/* Spotify Now Playing - Premium Player */}
+        {/* ── Spotify Now Playing Card ─────────────────────────────────── */}
         <motion.section
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-10"
+          transition={{ delay: 0.4 }}
         >
-          <div className="group p-1 rounded-[2.5rem] bg-gradient-to-br from-green-500/20 via-emerald-500/10 to-transparent p-[1px]">
-            <div className="p-6 rounded-[2.5rem] bg-[var(--glass-bg)] backdrop-blur-3xl border border-[var(--border-default)] shadow-2xl shadow-green-500/5 liquid-glass">
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="relative group shrink-0">
-                  <div className="w-24 h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-green-500/20 group-hover:scale-105 transition-transform duration-500 ring-2 ring-[var(--border-default)] relative">
-                    {spotify?.albumImageUrl ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img 
-                        src={spotify.albumImageUrl} 
-                        alt={spotify.album} 
-                        className="w-full h-full object-cover" 
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white">
-                        <Headphones className="w-10 h-10 animate-bounce" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 bg-[var(--bg-base)] p-2 rounded-full shadow-lg">
-                    <Music className={`w-4 h-4 text-[var(--success)] ${spotify?.isPlaying ? 'animate-spin-slow' : ''}`} />
-                  </div>
-                </div>
-                
-                <div className="flex-1 w-full text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                    <span className="flex h-2 w-2 relative">
-                      {spotify?.isPlaying && (
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--success)] opacity-75"></span>
-                      )}
-                      <span className={`relative inline-flex rounded-full h-2 w-2 ${spotify?.isPlaying ? 'bg-[var(--success)]' : 'bg-[var(--text-muted)]'}`}></span>
-                    </span>
-                    <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${spotify?.isPlaying ? 'text-[var(--success)]' : 'text-[var(--text-muted)]'}`}>
-                      {spotify?.isPlaying ? t('dashboard_spotify_streaming') : t('spotify_last_played')}
-                    </p>
-                  </div>
-                  <h3 className="text-2xl font-black tracking-tighter mb-1 truncate">
-                    {spotify?.title || 'Coding Flow & Lo-Fi'}
-                  </h3>
-                  <p className="text-sm text-[var(--text-muted)] font-medium mb-4">
-                    {spotify?.artist || 'Deep Focus'} • {spotify?.album || '24/7 Beats'}
-                  </p>
-                  
-                  {/* Progress Bar Simulation */}
-                  <div className="w-full h-1.5 bg-[var(--bg-muted)] rounded-full overflow-hidden mb-2">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${spotify ? Math.min(100, (progressMs / spotify.durationMs) * 100) : 0}%` }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
-                      className="h-full bg-gradient-to-r from-green-500 to-emerald-400"
+          <div className="p-6 rounded-2xl bg-[var(--glass-bg)] backdrop-blur-2xl border border-[var(--border-default)] shadow-xs">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="relative group shrink-0">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-lg ring-1 ring-[var(--border-default)] relative">
+                  {spotify?.albumImageUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img 
+                      src={spotify.albumImageUrl} 
+                      alt={spotify.album} 
+                      className="w-full h-full object-cover" 
                     />
-                  </div>
-                  <div className="flex justify-between text-[8px] font-mono font-bold text-[var(--text-muted)] tracking-widest">
-                    <span>{formatTime(progressMs)}</span>
-                    <span>{formatTime(spotify?.durationMs || 0)}</span>
-                  </div>
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center text-white">
+                      <Headphones className="w-8 h-8 animate-bounce" />
+                    </div>
+                  )}
                 </div>
+                <div className="absolute -bottom-1 -right-1 bg-[var(--bg-base)] p-1.5 rounded-full shadow-md">
+                  <Music className={`w-3.5 h-3.5 text-[var(--success)] ${spotify?.isPlaying ? 'animate-spin-slow' : ''}`} />
+                </div>
+              </div>
+              
+              <div className="flex-1 w-full text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start gap-2 mb-1.5">
+                  <span className="flex h-2 w-2 relative">
+                    {spotify?.isPlaying && (
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--success)] opacity-75"></span>
+                    )}
+                    <span className={`relative inline-flex rounded-full h-2 w-2 ${spotify?.isPlaying ? 'bg-[var(--success)]' : 'bg-[var(--text-muted)]'}`}></span>
+                  </span>
+                  <p className={`text-[10px] font-mono font-bold uppercase tracking-wider ${spotify?.isPlaying ? 'text-[var(--success)]' : 'text-[var(--text-muted)]'}`}>
+                    {spotify?.isPlaying ? t('dashboard_spotify_streaming') : t('spotify_last_played')}
+                  </p>
+                </div>
+                <h3 className="text-xl font-bold tracking-tight mb-0.5 truncate">
+                  {spotify?.title || 'Coding Flow & Lo-Fi'}
+                </h3>
+                <p className="text-xs text-[var(--text-muted)] font-medium mb-3">
+                  {spotify?.artist || 'Deep Focus'} • {spotify?.album || '24/7 Beats'}
+                </p>
                 
-                <a
-                  href={spotify?.songUrl || 'https://open.spotify.com'}
+                {/* Progress Bar */}
+                <div className="w-full h-1.5 bg-[var(--bg-muted)] rounded-full overflow-hidden mb-1.5">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${spotify ? Math.min(100, (progressMs / spotify.durationMs) * 100) : 0}%` }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="h-full bg-gradient-to-r from-green-500 to-emerald-400"
+                  />
+                </div>
+                <div className="flex justify-between text-[8px] font-mono font-bold text-[var(--text-muted)]">
+                  <span>{formatTime(progressMs)}</span>
+                  <span>{formatTime(spotify?.durationMs || 0)}</span>
+                </div>
+              </div>
+              
+              <a
+                href={spotify?.songUrl || 'https://open.spotify.com'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-2.5 rounded-xl bg-green-500 text-white text-xs font-bold uppercase tracking-wider hover:bg-green-600 transition-all shadow-md active:scale-95"
+              >
+                {t('dashboard_spotify_listen')}
+              </a>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* ── Repositories Explorer & Filters ─────────────────────────── */}
+        <section className="space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-display font-bold tracking-tight flex items-center gap-2">
+                <Folder className="w-5 h-5 text-[var(--brand)]" />
+                {t('dashboard_active_repos')}
+              </h2>
+              <p className="text-xs text-[var(--text-muted)] font-mono">
+                Showing {filteredRepos.length} of {repos.length} repositories
+              </p>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative w-full md:w-64">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+              <input
+                type="text"
+                placeholder="Search repository..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="form-input pl-9 py-2 text-xs"
+              />
+            </div>
+          </div>
+
+          {/* Category Filter Pills & Sort */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)]">
+            <div className="flex flex-wrap items-center gap-1.5">
+              {REPO_CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
+                    selectedCategory === cat
+                      ? 'bg-[var(--brand)] text-[var(--brand-contrast)] font-semibold shadow-xs'
+                      : 'bg-[var(--bg-base)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-muted)]">
+              <span>Sort:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="bg-[var(--bg-base)] border border-[var(--border-default)] rounded px-2 py-1 text-xs text-[var(--text-primary)] outline-none"
+              >
+                <option value="updated">Recently Updated</option>
+                <option value="stars">Most Stars</option>
+                <option value="forks">Most Forks</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Repos Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AnimatePresence mode="popLayout">
+              {filteredRepos.map((repo, index) => (
+                <motion.a
+                  key={repo.name}
+                  href={repo.html_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-8 py-3 rounded-2xl bg-green-500 text-white text-xs font-black uppercase tracking-widest hover:bg-green-600 transition-all shadow-xl shadow-green-500/20 hover:-translate-y-1 active:scale-95"
+                  layout
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ delay: index * 0.03 }}
+                  className="group p-5 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[var(--brand)] hover:shadow-md transition-all flex flex-col justify-between"
                 >
-                  {t('dashboard_spotify_listen')}
-                </a>
-              </div>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Repositories - Elite Grid */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
-            <Folder className="w-7 h-7 text-[var(--brand)]" />
-            {t('dashboard_active_repos')}
-          </h2>
-          <div className="h-px flex-1 bg-[var(--bg-muted)] mx-6 hidden md:block" />
-          <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">{t('dashboard_sort_updated')}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {repos.map((repo, index) => (
-            <motion.a
-              key={repo.name}
-              href={repo.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="group p-6 rounded-3xl border border-[var(--border-default)] bg-[var(--glass-bg)] backdrop-blur-xl hover:border-[var(--brand)]/30 hover:shadow-[0_20px_50px_var(--brand-bg)] transition-all duration-500 relative overflow-hidden liquid-glass"
-            >
-              {/* Animated Border Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand)]/0 via-[var(--brand)]/5 to-[var(--brand)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              <div className="flex items-start gap-5 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-[var(--bg-muted)] flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--brand)] group-hover:text-[var(--brand-contrast)] transition-all duration-300 shadow-inner group-hover:rotate-3">
-                  <Folder className="w-7 h-7" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-black text-xl mb-1 truncate group-hover:text-primary transition-colors tracking-tight">
-                    {repo.name}
-                  </h3>
-                  <p className="text-xs text-[var(--text-muted)] line-clamp-2 leading-relaxed mb-4">
-                    {repo.description || 'No description provided for this technical architecture.'}
-                  </p>
-                  
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--bg-muted)] border border-[var(--border-default)] text-[10px] font-black text-[var(--text-muted)] group-hover:border-[var(--brand)]/20 group-hover:bg-[var(--brand-bg)] transition-all">
-                      <Star className="w-3.5 h-3.5 text-[var(--warning)]" />
-                      {repo.stargazers_count}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Folder className="w-4 h-4 text-[var(--brand)]" />
+                        <h3 className="font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--brand)] transition-colors truncate">
+                          {repo.name}
+                        </h3>
+                      </div>
+                      <span className="text-[10px] font-mono text-[var(--text-muted)]">Public</span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--bg-muted)] border border-[var(--border-default)] text-[10px] font-black text-[var(--text-muted)] group-hover:border-[var(--brand)]/20 group-hover:bg-[var(--brand-bg)] transition-all">
-                      <GitFork className="w-3.5 h-3.5 text-[var(--brand)]" />
-                      {repo.forks_count}
+
+                    <p className="text-xs text-[var(--text-muted)] line-clamp-2 leading-relaxed mb-4">
+                      {repo.description || 'Open source engineering project repository.'}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-3 border-t border-[var(--border-default)]">
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--bg-muted)] text-[10px] font-bold text-[var(--text-muted)]">
+                      <Star className="w-3 h-3 text-[var(--warning)]" />
+                      <span>{repo.stargazers_count}</span>
+                    </div>
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--bg-muted)] text-[10px] font-bold text-[var(--text-muted)]">
+                      <GitFork className="w-3 h-3 text-[var(--brand)]" />
+                      <span>{repo.forks_count}</span>
                     </div>
                     {repo.language && (
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--bg-muted)] border border-[var(--border-default)] text-[10px] font-black text-[var(--text-muted)] group-hover:border-[var(--brand)]/20 group-hover:bg-[var(--brand-bg)] transition-all">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--brand)]" />
-                        {repo.language}
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-[var(--bg-muted)] text-[10px] font-bold text-[var(--text-muted)] ml-auto">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: LANGUAGE_COLORS[repo.language] || '#888' }} />
+                        <span>{repo.language}</span>
                       </div>
                     )}
                   </div>
-                </div>
-              </div>
-            </motion.a>
-          ))}
-        </div>
-
-        {/* Footer Technical Note */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-12 p-8 rounded-[2.5rem] border border-dashed border-[var(--border-default)] bg-[var(--bg-muted)] text-center relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-grid-neutral-200/50 dark:bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-          <p className="text-sm font-bold text-[var(--text-muted)] mb-4 relative z-10">
-             {t('dashboard_token_note')} <code className="px-1.5 py-0.5 bg-[var(--bg-muted)] rounded font-mono text-xs">.env.local</code>
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 relative z-10">
-            <a
-              href="https://github.com/settings/tokens"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-2.5 rounded-xl bg-[var(--text-primary)] text-[var(--bg-base)] text-xs font-black uppercase tracking-widest hover:scale-105 transition-all active:scale-95"
-            >
-              {t('dashboard_get_token')}
-            </a>
+                </motion.a>
+              ))}
+            </AnimatePresence>
           </div>
-        </motion.div>
+        </section>
       </div>
     </PageTransition>
   );

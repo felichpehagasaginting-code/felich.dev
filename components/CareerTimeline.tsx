@@ -1,8 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Briefcase, GraduationCap, MapPin, Calendar, ExternalLink, Rocket } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Briefcase, GraduationCap, MapPin, Calendar, ExternalLink, Rocket, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
+import Link from 'next/link';
+import { introAudio } from '@/lib/introAudio';
 
 interface TimelineEvent {
   type: 'work' | 'education' | 'milestone' | 'project';
@@ -23,7 +25,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'FlightTracker',
-    subtitle: 'Automated flight price monitor',
+    subtitle: 'Automated flight price monitor & Telegram notifier',
     location: 'Personal Project',
     period: 'Aug 2026',
     description: 'Real-time flight ticket price tracker for KNO→CGK routes via Playwright Google Flights scraping, paired with instant Telegram alert dispatch.',
@@ -36,7 +38,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'PemrogramanTRPL',
-    subtitle: 'Coding learning platform',
+    subtitle: 'Interactive coding & matriculation platform',
     location: 'Education Platform',
     period: 'Aug 2026',
     description: 'Interactive coding learning & matriculation platform for incoming TRPL students — live Python execution, quizzes, gamification, and progress tracking.',
@@ -49,7 +51,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'Estate Harvest Rotation Planner',
-    subtitle: 'Decision support for estate managers',
+    subtitle: 'Decision support system for estate managers',
     location: 'Agri-Tech',
     period: 'Jul 2026',
     description: 'Data-driven mobile decision support system automating daily FFB harvest rotation scheduling for oil palm estates using mathematical priority models.',
@@ -62,7 +64,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'NETTAS 2026',
-    subtitle: 'Gateway portal for the IT revolution',
+    subtitle: 'High-performance gateway portal',
     location: 'Event Portal',
     period: 'Jul 2026',
     description: 'High-performance gateway portal built with modern frontend tooling — dynamic transitions, state management, and scalable layout architecture.',
@@ -75,7 +77,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'Edge AI PalmOil',
-    subtitle: 'On-device FFB classification',
+    subtitle: 'On-device FFB classification on Edge AI hardware',
     location: 'Agri-Tech / IoT',
     period: 'Jun 2026',
     description: 'Automated FFB classification on MAX78000 ultra-low-power Edge AI hardware with MQTT/LoRa gateway failover, TimescaleDB, and a real-time dashboard.',
@@ -88,7 +90,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'Photobooth-AI',
-    subtitle: 'AI-powered photobooth app',
+    subtitle: 'Cross-platform computer vision photobooth',
     location: 'Personal Project',
     period: 'May 2026',
     description: 'Cross-platform interactive photobooth harnessing computer vision and AI — real-time background removal, style transfer, and dynamic photo filters.',
@@ -101,7 +103,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'StackWay',
-    subtitle: 'Simplified tech education',
+    subtitle: 'Ultra-simplified tech education platform',
     location: 'Education Platform',
     period: 'Apr 2026',
     description: 'Ultra-simplified tech education platform breaking complex engineering concepts into intuitive real-world analogies across 6 intensive learning paths.',
@@ -114,7 +116,7 @@ const timelineData: TimelineEvent[] = [
     type: 'project',
     year: '2026',
     title: 'Blade Ascension',
-    subtitle: '2D hack-and-slash RPG',
+    subtitle: '2D hack-and-slash RPG browser game',
     location: 'Game Dev',
     period: 'Mar 2026',
     description: 'Action-packed 2D hack-and-slash RPG browser game on HTML5 Canvas — custom collision detection, combo chains, particle physics, and progression.',
@@ -141,167 +143,150 @@ function TimelineIcon({ type }: { type: TimelineEvent['icon'] }) {
   if (type === 'education') return <GraduationCap className="w-5 h-5" />;
   if (type === 'work') return <Briefcase className="w-5 h-5" />;
   if (type === 'project') return <Rocket className="w-5 h-5" />;
-  return (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-    </svg>
-  );
-}
-
-function TimelineCard({ event, index, showYear }: { event: TimelineEvent; index: number; showYear: boolean }) {
-  const isLeft = index % 2 === 0;
-  const isInternal = event.link?.startsWith('/');
-
-  return (
-    <div className={`relative flex items-start gap-4 md:gap-8 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}>
-      {/* Year label (desktop) */}
-      <div className={`hidden md:flex flex-col items-${isLeft ? 'end' : 'start'} w-32 flex-shrink-0 pt-6`}>
-        {showYear ? (
-          <motion.span
-            initial={{ opacity: 0, x: isLeft ? 20 : -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-            className={`text-4xl font-black bg-gradient-to-br ${event.color} bg-clip-text text-transparent`}
-          >
-            {event.year}
-          </motion.span>
-        ) : (
-          <span className="h-9" aria-hidden="true" />
-        )}
-      </div>
-
-      {/* Center dot */}
-      <div className="relative flex flex-col items-center flex-shrink-0">
-        <motion.div
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ type: 'spring', damping: 12, delay: index * 0.1 + 0.2 }}
-          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${event.color} flex items-center justify-center text-white shadow-lg z-10 relative`}
-        >
-          <TimelineIcon type={event.icon} />
-          {/* Glow */}
-          <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${event.color} opacity-40 blur-md -z-10`} />
-        </motion.div>
-      </div>
-
-      {/* Card */}
-      <motion.div
-        initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.1 }}
-        whileHover={{ y: -4 }}
-        className={`flex-1 mb-12 group p-5 md:p-6 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] backdrop-blur-xl hover:shadow-[0_10px_40px_rgba(0,0,0,0.1)] transition-all duration-300 relative overflow-hidden liquid-glass`}
-      >
-        {/* Gradient shimmer on hover */}
-        <div className={`absolute inset-0 bg-gradient-to-r ${event.color} opacity-0 group-hover:opacity-[0.04] transition-opacity duration-500 rounded-2xl`} />
-
-        {/* Left accent bar */}
-        <div className={`absolute left-0 inset-y-0 w-1 bg-gradient-to-b ${event.color} rounded-l-2xl scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top`} />
-
-        <div className="relative z-10">
-          {/* Mobile year */}
-          {showYear && (
-            <span className={`md:hidden inline-block text-2xl font-black bg-gradient-to-br ${event.color} bg-clip-text text-transparent mb-1`}>
-              {event.year}
-            </span>
-          )}
-
-          <div className="flex items-start justify-between gap-3 flex-wrap mb-3">
-            <div>
-              <h3 className="font-bold text-base md:text-lg leading-tight">{event.title}</h3>
-              <p className={`text-sm font-semibold bg-gradient-to-r ${event.color} bg-clip-text text-transparent mt-0.5`}>
-                {event.subtitle}
-              </p>
-            </div>
-            {event.link && (
-              <a
-                href={event.link}
-                {...(!isInternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                className="p-1.5 rounded-lg bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-primary transition-colors flex-shrink-0"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 text-xs text-[var(--text-muted)] mb-3">
-            <span className="flex items-center gap-1">
-              <MapPin className="w-3 h-3 flex-shrink-0" />
-              {event.location}
-            </span>
-            <span className="opacity-50">·</span>
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3 h-3 flex-shrink-0" />
-              {event.period}
-            </span>
-          </div>
-
-          <p className="text-sm text-[var(--text-muted)] leading-relaxed mb-4">
-            {event.description}
-          </p>
-
-          {event.tags && (
-            <div className="flex flex-wrap gap-1.5">
-              {event.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[10px] px-2.5 py-1 rounded-full font-semibold border border-[var(--border-default)] bg-[var(--bg-muted)] text-[var(--text-muted)] uppercase tracking-wide"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </motion.div>
-    </div>
-  );
+  return <Sparkles className="w-5 h-5" />;
 }
 
 export default function CareerTimeline() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start 80%', 'end 20%'],
+  const [filterType, setFilterType] = useState<'all' | 'project' | 'education'>('all');
+
+  const filteredEvents = timelineData.filter((event) => {
+    if (filterType === 'all') return true;
+    return event.type === filterType;
   });
 
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
-
   return (
-    <section ref={containerRef} className="relative">
-      {/* Animated vertical line (desktop only) */}
-      <div className="hidden md:block absolute left-[8.5rem] top-0 bottom-0 w-[2px] bg-[var(--bg-muted)] overflow-hidden rounded-full" style={{ left: 'calc(8.5rem + 23px)' }}>
-        <motion.div
-          style={{ height: lineHeight }}
-          className="w-full bg-gradient-to-b from-[var(--brand)] via-[var(--brand)] to-transparent rounded-full"
-        />
+    <div className="space-y-8">
+      {/* Filter Tabs */}
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => {
+            introAudio.playTick(1.0);
+            setFilterType('all');
+          }}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+            filterType === 'all'
+              ? 'bg-[var(--brand)] text-[var(--brand-contrast)] font-bold shadow-xs'
+              : 'bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
+          }`}
+        >
+          All Milestones ({timelineData.length})
+        </button>
+        <button
+          onClick={() => {
+            introAudio.playTick(1.0);
+            setFilterType('project');
+          }}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+            filterType === 'project'
+              ? 'bg-[var(--brand)] text-[var(--brand-contrast)] font-bold shadow-xs'
+              : 'bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
+          }`}
+        >
+          🚀 Flagship Projects ({timelineData.filter((e) => e.type === 'project').length})
+        </button>
+        <button
+          onClick={() => {
+            introAudio.playTick(1.0);
+            setFilterType('education');
+          }}
+          className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+            filterType === 'education'
+              ? 'bg-[var(--brand)] text-[var(--brand-contrast)] font-bold shadow-xs'
+              : 'bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-[var(--text-primary)] border border-[var(--border-default)]'
+          }`}
+        >
+          🎓 Education &amp; Degree ({timelineData.filter((e) => e.type === 'education').length})
+        </button>
       </div>
 
-      <div className="space-y-0">
-        {timelineData.map((event, index) => (
-          <TimelineCard
-            key={`${event.year}-${event.title}`}
-            event={event}
-            index={index}
-            showYear={index === 0 || timelineData[index - 1].year !== event.year}
-          />
-        ))}
-      </div>
+      {/* Timeline List */}
+      <div className="relative pl-6 md:pl-8 border-l border-[var(--border-default)] space-y-8">
+        <AnimatePresence mode="popLayout">
+          {filteredEvents.map((event, index) => {
+            const isInternal = event.link?.startsWith('/');
 
-      {/* Bottom cap */}
-      <motion.div
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true }}
-        className="hidden md:flex items-center gap-3 ml-[calc(8.5rem+17px)] -mt-6"
-      >
-        <div className="w-12 h-6 rounded-full bg-gradient-to-r from-[var(--brand-bg)] to-[var(--brand-bg)] border border-[var(--border-default)] flex items-center justify-center">
-          <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">Now</span>
-        </div>
-      </motion.div>
-    </section>
+            return (
+              <motion.div
+                key={event.title}
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="relative group"
+              >
+                {/* Dot */}
+                <div
+                  className={`absolute -left-[31px] md:-left-[39px] top-1.5 w-6 h-6 rounded-full bg-[var(--bg-surface)] border-2 border-[var(--brand)] flex items-center justify-center shadow-xs text-[var(--brand)] group-hover:scale-110 transition-transform`}
+                >
+                  <div className="w-2 h-2 rounded-full bg-[var(--brand)]" />
+                </div>
+
+                {/* Card Container */}
+                <div className="p-5 md:p-6 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[var(--brand)] hover:shadow-md transition-all space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 text-[10px] font-mono font-bold rounded bg-[var(--brand-bg)] text-[var(--brand)] uppercase tracking-wider">
+                        {event.period}
+                      </span>
+                      <span className="text-xs font-mono text-[var(--text-muted)]">
+                        {event.location}
+                      </span>
+                    </div>
+
+                    {event.link && (
+                      isInternal ? (
+                        <Link
+                          href={event.link}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--brand)] hover:underline"
+                        >
+                          <span>Explore Project</span>
+                          <ExternalLink size={12} />
+                        </Link>
+                      ) : (
+                        <a
+                          href={event.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--brand)] hover:underline"
+                        >
+                          <span>Explore</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      )
+                    )}
+                  </div>
+
+                  <div>
+                    <h3 className="text-base md:text-lg font-bold text-[var(--text-primary)]">
+                      {event.title}
+                    </h3>
+                    <p className="text-xs font-medium text-[var(--text-muted)]">
+                      {event.subtitle}
+                    </p>
+                  </div>
+
+                  <p className="text-xs md:text-sm text-[var(--text-muted)] leading-relaxed">
+                    {event.description}
+                  </p>
+
+                  {event.tags && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {event.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-0.5 text-[10px] font-mono rounded bg-[var(--bg-muted)] text-[var(--text-muted)] border border-[var(--border-default)]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
+    </div>
   );
 }

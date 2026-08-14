@@ -23,7 +23,16 @@ function mulberry32(seed: number) {
 function ParticleSwarm({ isMobile, activeColor }: { isMobile: boolean; activeColor: string }) {
   const ref = useRef<THREE.Points>(null);
   
-  const sphereCount = isMobile ? 300 : 1500;
+  const sphereCount = useMemo(() => {
+    if (isMobile) return 300;
+    if (typeof navigator !== 'undefined') {
+      const isLowTier = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+        ((navigator as any).deviceMemory && (navigator as any).deviceMemory <= 4);
+      if (isLowTier) return 600;
+    }
+    return 1500;
+  }, [isMobile]);
+
   const spherePositions = useMemo(() => {
     const rand = mulberry32(42);
     const positions = new Float32Array(sphereCount * 3);
@@ -38,6 +47,7 @@ function ParticleSwarm({ isMobile, activeColor }: { isMobile: boolean; activeCol
     }
     return positions;
   }, [sphereCount]);
+
 
   useFrame((state, delta) => {
     if (ref.current) {

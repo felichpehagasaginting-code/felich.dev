@@ -137,7 +137,8 @@ export function useFirestoreCounter({
       setHasActed(false);
       console.error(`[useFirestoreCounter] Increment error on ${collectionName}/${docId}:`, err);
     }
-  }, [hasActed, collectionName, docId, countField, persistenceStrategy, storageKey]);
+  }, [hasActed, collectionName, docId, persistenceStrategy, storageKey]);
 
   return { count, hasActed, loading, increment: doIncrement };
 }
+
