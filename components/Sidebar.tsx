@@ -250,8 +250,7 @@ export default function Sidebar() {
         </Magnetic>
 
 
-        <Link href="/" className="flex flex-col items-center gap-2 group">
-          <Logo className="w-10 h-10" />
+        <Link href="/" className="flex flex-col items-center gap-1 group">
           <h1 className="text-lg font-display font-bold flex items-center justify-center gap-1.5 tracking-tight text-[var(--text-primary)]">
             <span>Felich<span className="text-[var(--brand)]">.dev</span></span>
             <svg className="w-3.5 h-3.5 text-[var(--brand)] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -259,6 +258,7 @@ export default function Sidebar() {
             </svg>
           </h1>
         </Link>
+
 
         <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-[var(--brand-bg)]/60 border border-[var(--brand)]/25 text-xs font-medium text-[var(--text-primary)] overflow-hidden">
           <span className="relative flex h-1.5 w-1.5 flex-shrink-0">

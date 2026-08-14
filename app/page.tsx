@@ -10,6 +10,8 @@ import TerminalSection from '@/components/home/TerminalSection';
 import SkillsSection from '@/components/home/SkillsSection';
 import BlogTeaser from '@/components/home/BlogTeaser';
 import ShortcutHint from '@/components/home/ShortcutHint';
+import SectionBeam from '@/components/home/SectionBeam';
+import InteractiveGridCanvas from '@/components/home/InteractiveGridCanvas';
 
 export default function Home() {
   // Read projects MDX (featured-first for the home teaser)
@@ -65,7 +67,9 @@ export default function Home() {
           }),
         }}
       />
-      <div>
+      <div className="relative">
+        <InteractiveGridCanvas />
+        <SectionBeam />
         <Hero />
         <StatsBand />
         <FeaturedProjects projects={projects} />

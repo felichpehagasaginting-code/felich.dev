@@ -1,17 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { SkillIcons } from '@/components/SkillIcons';
 import AnimatedDivider from '@/components/AnimatedDivider';
 import Reveal from '@/components/Reveal';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// ── Static data ─────────────────────────────────────────────────────────────
-// Moved here from page.tsx so it is only bundled as part of the async chunk
-// that loads when the skills section scrolls into view (via LazySection +
-// next/dynamic). The main page.tsx no longer pays the cost of loading 74 KB of
-// SVG icon data on first paint.
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 const skillCategories = [
   { name: 'All', count: 52 },
@@ -76,6 +77,8 @@ const skills = [
   { name: 'Smooth Scroll', color: '#000000', category: 'Frontend', slug: 'scroll' },
 ];
 
+const marqueeSkills = skills.slice(0, 18);
+
 const skillLinks: Record<string, string> = {
   'HTML': 'https://developer.mozilla.org/en-US/docs/Web/HTML',
   'CSS': 'https://developer.mozilla.org/en-US/docs/Web/CSS',
@@ -108,78 +111,140 @@ const skillLinks: Record<string, string> = {
   'Postman': 'https://www.postman.com/',
   'npm': 'https://www.npmjs.com/',
   'Vercel': 'https://vercel.com/',
-  'IBM': 'https://www.ibm.com/',
-  'Langflow': 'https://www.langflow.org/',
-  'GSAP': 'https://gsap.com/',
-  'Sanity CMS': 'https://www.sanity.io/',
   'Vitest': 'https://vitest.dev/',
   'Playwright': 'https://playwright.dev/',
   'Gemini AI': 'https://deepmind.google/technologies/gemini/',
+  'GSAP': 'https://greensock.com/gsap/',
   'Canvas API': 'https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API',
+  'Rust': 'https://www.rust-lang.org/',
+  'PyTorch': 'https://pytorch.org/',
+  'TensorFlow': 'https://www.tensorflow.org/',
+  'Svelte': 'https://svelte.dev/',
+  'React Query': 'https://tanstack.com/query',
+  'tRPC': 'https://trpc.io/',
+  'Claude': 'https://claude.ai/',
+  'Redis': 'https://redis.io/',
+  'Linux': 'https://www.kernel.org/',
+  'Cloudflare': 'https://www.cloudflare.com/',
+  'IBM': 'https://www.ibm.com/',
+  'Langflow': 'https://www.langflow.org/',
+  'REST API': 'https://restfulapi.net/',
   'Lenis': 'https://lenis.darkroom.engineering/',
   'Smooth Scroll': 'https://lenis.darkroom.engineering/',
 };
 
-// ── Component ────────────────────────────────────────────────────────────────
-
 export default function SkillsGrid() {
   const { t } = useTranslation();
   const [activeFilter, setActiveFilter] = useState('All');
+  const sectionRef = useRef<HTMLElement>(null);
+  const marqueeTrackRef = useRef<HTMLDivElement>(null);
 
-  const filteredSkills = activeFilter === 'All'
-    ? skills
-    : skills.filter(s => s.category === activeFilter);
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const track = marqueeTrackRef.current;
+        if (!track) return;
+
+        // Dynamic speed horizontal ticker
+        const tween = gsap.to(track, {
+          xPercent: -50,
+          repeat: -1,
+          duration: 25,
+          ease: 'none',
+        });
+
+        // Scroll velocity acceleration binding
+        ScrollTrigger.create({
+          onUpdate: (self) => {
+            const v = Math.abs(self.getVelocity());
+            const timeScale = gsap.utils.clamp(1, 4, 1 + v / 500);
+            gsap.to(tween, { timeScale, duration: 0.3, overwrite: 'auto' });
+            gsap.to(tween, { timeScale: 1, duration: 1.2, delay: 0.3, ease: 'power2.out' });
+          },
+        });
+
+        // Hover deceleration
+        track.addEventListener('mouseenter', () => {
+          gsap.to(tween, { timeScale: 0.2, duration: 0.5 });
+        });
+        track.addEventListener('mouseleave', () => {
+          gsap.to(tween, { timeScale: 1, duration: 0.5 });
+        });
+      });
+    },
+    { scope: sectionRef }
+  );
+
+  const filteredSkills =
+    activeFilter === 'All' ? skills : skills.filter((s) => s.category === activeFilter);
 
   return (
-    <section className="mb-16">
-      <AnimatedDivider className="mb-8" />
+    <section ref={sectionRef} className="mb-16 space-y-8">
+      <AnimatedDivider className="mb-4" />
 
-      <Reveal>
-        <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-          <span className="text-lg">{'</>'}</span>
+      <div>
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
+          <span className="text-xl text-[var(--brand)] font-mono">{'</>'}</span>
           {t('stats_skills')}
         </h2>
-      </Reveal>
-
-      <Reveal delay={0.4}>
-        <p className="text-[var(--text-muted)] text-sm mb-6">
+        <p className="text-xs md:text-sm text-[var(--text-muted)]">
           {t('skills_subtitle')}
         </p>
-      </Reveal>
+      </div>
+
+      {/* ── Dynamic Infinite GSAP Marquee Ribbon ─────────────────────── */}
+      <div className="relative w-full overflow-hidden py-3 bg-[var(--bg-surface)] border-y border-[var(--border-default)] rounded-2xl">
+        <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[var(--bg-surface)] to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[var(--bg-surface)] to-transparent z-10 pointer-events-none" />
+
+        <div ref={marqueeTrackRef} className="flex gap-4 w-max select-none cursor-grab">
+          {[...marqueeSkills, ...marqueeSkills].map((skill, index) => (
+            <div
+              key={`${skill.name}-${index}`}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[var(--bg-base)] border border-[var(--border-default)] text-xs font-mono font-semibold text-[var(--text-primary)] whitespace-nowrap shadow-xs hover:border-[var(--brand)] transition-colors"
+            >
+              <div className="w-4 h-4 flex items-center justify-center text-[var(--brand)]">
+                {SkillIcons[skill.slug] || skill.name.slice(0, 2)}
+              </div>
+              <span>{skill.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Filter pills */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2">
         {skillCategories.map((cat) => {
-          const localizedName = cat.name === 'All' ? t('skills_filter_all') :
-                                cat.name === 'Frontend' ? t('skills_filter_frontend') :
-                                cat.name === 'Backend' ? t('skills_filter_backend') :
-                                cat.name === 'Database' ? t('skills_filter_database') :
-                                cat.name === 'Tools' ? t('skills_filter_tools') : cat.name;
+          const localizedName =
+            cat.name === 'All'
+              ? t('skills_filter_all')
+              : cat.name === 'Frontend'
+              ? t('skills_filter_frontend')
+              : cat.name === 'Backend'
+              ? t('skills_filter_backend')
+              : cat.name === 'Database'
+              ? t('skills_filter_database')
+              : cat.name === 'Tools'
+              ? t('skills_filter_tools')
+              : cat.name;
           return (
             <button
               key={cat.name}
               onClick={() => setActiveFilter(cat.name)}
-              className={`filter-pill ${activeFilter === cat.name ? 'active' : ''}`}
+              className={`filter-pill text-xs font-mono ${activeFilter === cat.name ? 'active' : ''}`}
             >
               {localizedName}
-              <span className="ml-1.5 text-xs opacity-70">{cat.count}</span>
+              <span className="ml-1.5 text-[10px] opacity-70">({cat.count})</span>
             </button>
           );
         })}
       </div>
 
       {/* Skills grid */}
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-50px' }}
-        variants={{
-          visible: { transition: { staggerChildren: 0.02 } },
-          hidden: {}
-        }}
-        className="flex flex-wrap gap-2 md:gap-3"
-      >
-        <AnimatePresence>
+      <div className="flex flex-wrap gap-2 md:gap-2.5">
+        <AnimatePresence mode="popLayout">
           {filteredSkills.map((skill) => (
             <motion.div
               key={skill.name}
@@ -188,82 +253,30 @@ export default function SkillsGrid() {
                 const link = skillLinks[skill.name];
                 if (link) window.open(link, '_blank');
               }}
-              initial={{ opacity: 0, scale: 0.8, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 15 } }}
-              exit={{ opacity: 0, scale: 0.8, y: -10, transition: { duration: 0.2 } }}
-              whileHover={{
-                scale: 1.05,
-                y: -2,
+              initial={{ opacity: 0, scale: 0.85, y: 15 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                transition: { type: 'spring', stiffness: 220, damping: 18 },
               }}
+              exit={{ opacity: 0, scale: 0.85, y: -10, transition: { duration: 0.15 } }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="skill-card group relative flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl text-xs md:text-sm font-semibold
-                         bg-[var(--bg-surface)] border border-[var(--border-default)]
-                         cursor-pointer overflow-hidden transition-all duration-300"
-              style={{
-                '--skill-color': skill.color,
-                '--skill-glow': `${skill.color}60`,
-                '--skill-drop-shadow': `drop-shadow(0 0 5px ${skill.color}50)`
-              } as React.CSSProperties}
+              className="skill-card group relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium bg-[var(--bg-surface)] border border-[var(--border-default)] cursor-pointer overflow-hidden transition-all duration-300 hover:border-[var(--brand)] hover:shadow-sm"
             >
-              {/* Background Tint on Hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-[0.08] transition-opacity duration-300 pointer-events-none hidden lg:block bg-[var(--skill-color)]"
-              />
-
-              {/* Logo Indicator */}
-              <motion.div
-                className="relative w-4 h-4 md:w-5 md:h-5 flex-shrink-0 transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-0.5 [filter:var(--skill-drop-shadow)]"
-              >
-                {SkillIcons[skill.slug] ? (
-                  <div className="w-full h-full flex items-center justify-center text-[var(--skill-color)]">
-                    {SkillIcons[skill.slug]}
-                  </div>
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center font-bold text-[10px] text-[var(--skill-color)]">
-                    {skill.name.substring(0, 2).toUpperCase()}
-                  </div>
+              <div className="w-4 h-4 flex items-center justify-center text-[var(--brand)]">
+                {SkillIcons[skill.slug] || (
+                  <span className="font-bold text-[9px]">{skill.name.slice(0, 2).toUpperCase()}</span>
                 )}
-              </motion.div>
-
-              <span className="relative z-10 text-[var(--text-primary)] transition-colors duration-300">
+              </div>
+              <span className="text-[var(--text-primary)] group-hover:text-[var(--brand)] transition-colors">
                 {skill.name}
               </span>
-
-              {/* Technical Meta-Data Tooltip */}
-              <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <span className="text-[7px] font-mono text-[var(--text-muted)] uppercase tracking-tighter">
-                    Spec v1.0
-                 </span>
-              </div>
-
-              <div className="absolute inset-0 bg-[var(--bg-surface)] backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center px-4 z-20">
-                 <div className="flex items-center justify-between mb-1">
-                    <span className="text-[7px] font-bold font-mono tracking-widest text-[var(--brand)] uppercase">
-                      {skill.category}
-                    </span>
-                    <span className="text-[7px] font-mono text-[var(--text-muted)]">VER_1.2</span>
-                 </div>
-
-                 <div className="flex items-center justify-between pointer-events-none">
-                    <span className="text-[9px] font-mono font-bold text-[var(--text-primary)] uppercase tracking-tighter">Expertise</span>
-                    <span className="text-[9px] font-bold font-mono text-[var(--brand)]">
-                      {(skill.name.length * 7 + 38) % 30 + 70}%
-                    </span>
-                 </div>
-
-                 <div className="w-full h-1 bg-[var(--bg-muted)] mt-1.5 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${(skill.name.length * 7 + 38) % 30 + 70}%` }}
-                      transition={{ duration: 0.8, ease: 'easeOut' }}
-                      className="h-full bg-[var(--brand)]"
-                    />
-                 </div>
-              </div>
             </motion.div>
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </section>
   );
 }
