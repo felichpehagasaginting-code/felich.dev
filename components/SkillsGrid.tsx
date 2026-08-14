@@ -9,6 +9,7 @@ import Reveal from '@/components/Reveal';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { introAudio } from '@/lib/introAudio';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -232,7 +233,10 @@ export default function SkillsGrid() {
           return (
             <button
               key={cat.name}
-              onClick={() => setActiveFilter(cat.name)}
+              onClick={() => {
+                introAudio.playTick(1.0);
+                setActiveFilter(cat.name);
+              }}
               className={`filter-pill text-xs font-mono ${activeFilter === cat.name ? 'active' : ''}`}
             >
               {localizedName}
@@ -250,6 +254,7 @@ export default function SkillsGrid() {
               key={skill.name}
               layout
               onClick={() => {
+                introAudio.playTick(1.0);
                 const link = skillLinks[skill.name];
                 if (link) window.open(link, '_blank');
               }}

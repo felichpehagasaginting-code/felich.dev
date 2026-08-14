@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { introAudio } from '@/lib/introAudio';
 
 type Command = {
   text: string;
@@ -258,6 +259,7 @@ export default function Terminal() {
       const suggestion = getSuggestion(input, currentPath);
       if (suggestion) {
         e.preventDefault();
+        introAudio.playTick(0.8);
         setInput(suggestion);
       } else if (e.key === 'Tab') {
         e.preventDefault();
@@ -269,6 +271,7 @@ export default function Terminal() {
     e.preventDefault();
     if (!input.trim()) return;
 
+    introAudio.playTick(1.0);
     const fullCmd = input.trim();
     const cmdParts = fullCmd.split(' ');
     const cmd = cmdParts[0].toLowerCase();
@@ -505,7 +508,7 @@ export default function Terminal() {
 
               <div className="grid grid-cols-[85px_1fr] gap-x-2 text-[11px] sm:text-xs">
                 <span className="text-[var(--term-dim)] uppercase font-bold tracking-tighter">OS</span>
-                <span className="text-[var(--term-text)] font-medium">LiquidOS (Next.js 14)</span>
+                <span className="text-[var(--term-text)] font-medium">LiquidOS (Next.js 16 App Router)</span>
 
                 <span className="text-[var(--term-dim)] uppercase font-bold tracking-tighter">HOST</span>
                 <span className="text-[var(--term-text)]">Felich-Workstation-Pro</span>

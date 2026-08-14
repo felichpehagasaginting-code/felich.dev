@@ -12,7 +12,16 @@ import Magnetic from '@/components/Magnetic';
 import Logo from '@/components/Logo';
 import { Clapperboard } from 'lucide-react';
 import FelichAvatar from '@/components/FelichAvatar';
+import DraggableSegmentedControl from '@/components/DraggableSegmentedControl';
 import type { Theme } from '@/lib/store';
+import { introAudio } from '@/lib/introAudio';
+
+const langs = [
+  { key: 'en' as const, label: 'US' },
+  { key: 'id' as const, label: 'ID' },
+  { key: 'zh' as const, label: 'ZH' },
+  { key: 'de' as const, label: 'DE' },
+];
 
 
 
@@ -246,58 +255,19 @@ export default function MobileNav() {
               </div>
 
               <div className="flex flex-col gap-3 mb-6 w-full">
-                <div
-                  className="flex items-center justify-between gap-1 p-1 rounded-full bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full"
-                  role="group"
-                  aria-label="Language switcher"
-                >
-                  {([
-                    { code: 'en', label: 'US' },
-                    { code: 'id', label: 'ID' },
-                    { code: 'zh', label: 'ZH' },
-                    { code: 'de', label: 'DE' },
-                  ] as const).map((l) => (
-                    <button
-                      key={l.code}
-                      onClick={() => setLanguage(l.code)}
-                      className={`relative min-h-[32px] px-3 py-1 flex-1 text-[10px] font-semibold tracking-widest rounded-full transition-all duration-200 text-center ${
-                        language === l.code
-                          ? 'bg-[var(--brand)] text-[var(--brand-contrast)]'
-                          : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                      }`}
-                      aria-label={`Switch language to ${l.code}`}
-                      aria-pressed={language === l.code}
-                    >
-                      {l.label}
-                    </button>
-                  ))}
-                </div>
+                <DraggableSegmentedControl
+                  options={langs}
+                  value={language}
+                  onChange={setLanguage}
+                  ariaLabel="Language switcher"
+                />
 
-                <div
-                  className="flex items-center justify-between gap-1 p-1 rounded-full bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full h-10"
-                  role="group"
-                  aria-label="Theme switcher"
-                >
-                  {themes.map((t) => {
-                    const isActive = theme === t.key;
-                    return (
-                      <button
-                        key={t.key}
-                        onClick={() => setTheme(t.key)}
-                        className={`relative h-8 flex-1 rounded-full transition-all duration-200 flex items-center justify-center group cursor-pointer ${
-                          isActive
-                            ? 'bg-[var(--brand)] text-[var(--brand-contrast)] shadow-sm'
-                            : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)]'
-                        }`}
-                        aria-label={`Switch to ${t.label} theme`}
-                        aria-pressed={isActive}
-                        title={t.label}
-                      >
-                        {t.icon(isActive)}
-                      </button>
-                    );
-                  })}
-                </div>
+                <DraggableSegmentedControl
+                  options={themes}
+                  value={theme}
+                  onChange={setTheme}
+                  ariaLabel="Theme switcher"
+                />
               </div>
 
               <hr className="border-[var(--border-default)] mb-4" />
@@ -314,7 +284,10 @@ export default function MobileNav() {
                     >
                       <Link
                         href={link.href}
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={() => {
+                          introAudio.playTick(1.0);
+                          setMobileMenuOpen(false);
+                        }}
                         className={`flex items-center gap-3 px-4 py-4 rounded-lg text-sm font-medium transition-all ${
                           isActive
                             ? 'bg-[var(--brand-bg)] text-[var(--text-primary)] font-semibold border-l-[3px] border-[var(--brand)]'

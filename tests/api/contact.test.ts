@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 
 const mockConsume = vi.fn(() => Promise.resolve());
 
@@ -30,12 +30,13 @@ function createMockRequest(body: any) {
 describe('Contact API Route', () => {
   let POST: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    const mod = await import('@/app/api/contact/route');
+    POST = mod.POST;
+  }, 30000);
+
+  beforeEach(() => {
     vi.clearAllMocks();
-    if (!POST) {
-      const mod = await import('@/app/api/contact/route');
-      POST = mod.POST;
-    }
   });
 
   it('rejects empty request body', async () => {

@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import { Volume2, Bot, Sparkles, X, Mic, MicOff, Send, ChevronUp, ChevronDown, MessageSquare, ExternalLink, ArrowRight } from 'lucide-react';
 import AuraOrb, { AuraOrbMini } from '@/components/AuraOrb';
 import { useFocusTrap } from '@/lib/useFocusTrap';
+import { introAudio } from '@/lib/introAudio';
 
 type OrbState = 'idle' | 'listening' | 'speaking' | 'thinking';
 
@@ -326,6 +327,7 @@ export default function AIChatbot({ initiallyOpen = false }: { initiallyOpen?: b
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return;
 
+    introAudio.playTick(1.0);
     const userMsg: Message = {
       id: Date.now().toString(),
       role: 'user',

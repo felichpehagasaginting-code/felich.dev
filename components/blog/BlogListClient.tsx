@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Clock, Calendar, Tag, ArrowRight, BookOpen } from 'lucide-react';
 import BlogHeader from './BlogHeader';
+import { introAudio } from '@/lib/introAudio';
 
 export interface BlogPostItem {
   slug: string;
@@ -83,7 +84,10 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
             return (
               <button
                 key={topic}
-                onClick={() => setSelectedTopic(topic)}
+                onClick={() => {
+                  introAudio.playTick(1.0);
+                  setSelectedTopic(topic);
+                }}
                 className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-[var(--brand)] text-[var(--brand-contrast)] font-semibold shadow-xs'
@@ -129,6 +133,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
 
                 <Link
                   href={`/blog/${post.slug}`}
+                  onClick={() => introAudio.playTick(1.0)}
                   className="block p-5 md:p-6 bg-[var(--bg-surface)] border border-[var(--border-default)] hover:border-[var(--brand)] rounded-2xl transition-all duration-200 shadow-xs hover:shadow-md group-hover:-translate-y-0.5"
                 >
                   <div className="space-y-3">

@@ -277,8 +277,10 @@ export default function About() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {CORE_COMPETENCIES.map((comp) => (
-              <div
+              <motion.div
                 key={comp.title}
+                whileHover={{ y: -4, scale: 1.01 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 className="p-5 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[var(--brand)] hover:shadow-md transition-all space-y-3"
               >
                 <div className="flex items-center justify-between">
@@ -309,7 +311,7 @@ export default function About() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.section>
@@ -336,8 +338,10 @@ export default function About() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {ENGINEERING_PRINCIPLES.map((principle) => (
-              <div
+              <motion.div
                 key={principle.title}
+                whileHover={{ y: -3, scale: 1.01 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 className="p-5 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[var(--brand)] transition-all space-y-2"
               >
                 <div className="flex items-center gap-2.5">
@@ -356,7 +360,7 @@ export default function About() {
                 <p className="text-xs text-[var(--text-muted)] leading-relaxed pt-1">
                   {principle.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.section>

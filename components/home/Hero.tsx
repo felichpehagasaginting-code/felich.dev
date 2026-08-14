@@ -9,6 +9,9 @@ import SpotifyWidget from '@/components/SpotifyWidget';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, ArrowRight, Terminal } from 'lucide-react';
 import Link from 'next/link';
+import { introAudio } from '@/lib/introAudio';
+import Magnetic from '@/components/Magnetic';
+import GlitchName from '@/components/GlitchName';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(useGSAP);
@@ -205,12 +208,7 @@ export default function Hero() {
         {/* Kinetic Hero Heading */}
         <h1 className="hero-title-line text-4xl md:text-6xl font-display font-bold tracking-tight leading-[1.1] text-[var(--text-primary)]">
           {t('hi_im')}{' '}
-          <span
-            ref={nameScrambleRef}
-            className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] via-purple-400 to-cyan-400 inline-block font-mono tracking-tighter"
-          >
-            Felich
-          </span>
+          <GlitchName text="Felich" />
         </h1>
 
         {/* Dynamic Typing Title */}
@@ -266,22 +264,28 @@ export default function Hero() {
 
         {/* Magnetic Interactive CTA Buttons */}
         <div className="hero-cta-group pt-2 flex flex-wrap items-center gap-3">
-          <Link
-            ref={ctaBtnRef}
-            href="/projects"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--brand)] text-[var(--brand-contrast)] font-semibold text-xs hover:brightness-110 shadow-md transition-all cursor-pointer select-none"
-          >
-            <span>Explore Flagship Work</span>
-            <ArrowRight size={14} />
-          </Link>
+          <Magnetic>
+            <Link
+              ref={ctaBtnRef}
+              href="/projects"
+              onClick={() => introAudio.playTick(1.0)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--brand)] text-[var(--brand-contrast)] font-semibold text-xs hover:brightness-110 shadow-md transition-all cursor-pointer select-none"
+            >
+              <span>Explore Flagship Work</span>
+              <ArrowRight size={14} />
+            </Link>
+          </Magnetic>
 
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-primary)] font-semibold text-xs hover:border-[var(--brand)] transition-all cursor-pointer"
-          >
-            <Sparkles size={14} className="text-[var(--brand)]" />
-            <span>{t('lets_connect')}</span>
-          </Link>
+          <Magnetic>
+            <Link
+              href="/contact"
+              onClick={() => introAudio.playTick(1.0)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-default)] text-[var(--text-primary)] font-semibold text-xs hover:border-[var(--brand)] transition-all cursor-pointer"
+            >
+              <Sparkles size={14} className="text-[var(--brand)]" />
+              <span>{t('lets_connect')}</span>
+            </Link>
+          </Magnetic>
         </div>
       </div>
 

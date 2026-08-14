@@ -7,6 +7,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionHeading from './SectionHeading';
 import { ArrowRight } from 'lucide-react';
+import { introAudio } from '@/lib/introAudio';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -96,6 +97,7 @@ export default function BlogTeaser({ posts }: { posts: any[] }) {
             <Link
               key={slug}
               href={`/blog/${slug}`}
+              onClick={() => introAudio.playTick(1.0)}
               onMouseMove={(e) => handleMouseMove(slug, e)}
               className="blog-teaser-card group p-6 bg-[var(--bg-surface)] border border-[var(--border-default)] hover:border-[var(--brand)] hover:shadow-xl transition-all duration-300 flex items-start justify-between gap-6 rounded-2xl relative overflow-hidden hover:-translate-y-1"
             >

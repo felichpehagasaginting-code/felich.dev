@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { introAudio } from '@/lib/introAudio';
 
 const glitchText = '404';
 
@@ -104,7 +105,7 @@ export default function NotFound() {
         )}
 
         <div className="flex items-center justify-center gap-3">
-          <Link href="/">
+          <Link href="/" onClick={() => introAudio.playTick(1.0)}>
             <motion.span
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
@@ -116,7 +117,7 @@ export default function NotFound() {
               Back to Home
             </motion.span>
           </Link>
-          <Link href="/contact">
+          <Link href="/contact" onClick={() => introAudio.playTick(1.0)}>
             <motion.span
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}

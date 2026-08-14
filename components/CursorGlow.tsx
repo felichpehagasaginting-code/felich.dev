@@ -85,9 +85,9 @@ export default function CursorGlow() {
             transition={{ type: 'spring', damping: 25, stiffness: 200, mass: 0.5 }}
             style={{
               borderRadius: '50%',
-              border: (isHovering || isText) ? 'none' : '2px solid rgba(59, 130, 246, 0.5)',
+              border: (isHovering || isText) ? 'none' : '2px solid var(--brand)',
               background: isHovering 
-                ? 'radial-gradient(circle, rgba(59,130,246,0.8) 0%, rgba(139,92,246,0.4) 60%, transparent 100%)' 
+                ? 'radial-gradient(circle, var(--brand) 0%, rgba(124, 111, 196, 0.4) 60%, transparent 100%)' 
                 : 'transparent',
             }}
           />

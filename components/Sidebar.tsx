@@ -15,6 +15,7 @@ import FelichAvatar from '@/components/FelichAvatar';
 
 import { useTranslation } from 'react-i18next';
 import type { Theme } from '@/lib/store';
+import { introAudio } from '@/lib/introAudio';
 
 const navLinks = [
   {
@@ -144,69 +145,37 @@ const themes: {
   },
 ];
 
+import DraggableSegmentedControl from '@/components/DraggableSegmentedControl';
+
 function ThemeSwitcher() {
   const { theme, setTheme } = useLayoutStore();
 
   return (
-    <div
-      className="flex items-center justify-between gap-1 p-1 rounded-full bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full h-10"
-      role="group"
-      aria-label="Theme switcher"
-    >
-      {themes.map((t) => {
-        const isActive = theme === t.key;
-        return (
-          <button
-            key={t.key}
-            onClick={() => setTheme(t.key)}
-            className={`relative h-8 flex-1 rounded-full transition-all duration-200 flex items-center justify-center group cursor-pointer ${
-              isActive
-                ? 'bg-[var(--brand)] text-[var(--brand-contrast)] shadow-sm'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)]'
-            }`}
-            aria-label={`Switch to ${t.label} theme`}
-            aria-pressed={isActive}
-            title={t.label}
-          >
-            {t.icon(isActive)}
-          </button>
-        );
-      })}
-    </div>
+    <DraggableSegmentedControl
+      options={themes}
+      value={theme}
+      onChange={setTheme}
+      ariaLabel="Theme switcher"
+    />
   );
 }
 
 function LanguageSwitcher() {
   const { language, setLanguage } = useLayoutStore();
   const langs = [
-    { code: 'en', label: 'US' },
-    { code: 'id', label: 'ID' },
-    { code: 'zh', label: 'ZH' },
-    { code: 'de', label: 'DE' },
-  ] as const;
+    { key: 'en' as const, label: 'US' },
+    { key: 'id' as const, label: 'ID' },
+    { key: 'zh' as const, label: 'ZH' },
+    { key: 'de' as const, label: 'DE' },
+  ];
 
   return (
-    <div
-      className="flex items-center justify-between gap-1 p-1 rounded-full bg-[var(--bg-muted)]/50 border border-[var(--border-default)] w-full h-10"
-      role="group"
-      aria-label="Language switcher"
-    >
-      {langs.map((l) => (
-        <button
-          key={l.code}
-          onClick={() => setLanguage(l.code)}
-          className={`relative h-8 flex-1 text-[10px] font-semibold tracking-widest rounded-full transition-all duration-200 flex items-center justify-center ${
-            language === l.code
-              ? 'bg-[var(--brand)] text-[var(--brand-contrast)]'
-              : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-          }`}
-          aria-label={`Switch language to ${l.code}`}
-          aria-pressed={language === l.code}
-        >
-          {l.label}
-        </button>
-      ))}
-    </div>
+    <DraggableSegmentedControl
+      options={langs}
+      value={language}
+      onChange={setLanguage}
+      ariaLabel="Language switcher"
+    />
   );
 }
 
@@ -323,6 +292,7 @@ export default function Sidebar() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={() => introAudio.playTick(1.0)}
               className={`nav-link ${isActive ? 'active' : ''}`}
               aria-current={isActive ? 'page' : undefined}
             >

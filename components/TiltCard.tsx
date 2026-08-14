@@ -56,11 +56,11 @@ export default function TiltCard({ children, className = '' }: { children: React
       }}
       className={`relative will-change-transform ${className}`}
     >
-      {/* Glare Effect */}
+      {/* Specular Glare & Glass Reflection Effect */}
       <motion.div
-        className="pointer-events-none absolute inset-0 z-50 mix-blend-overlay transition-opacity duration-300 rounded-2xl"
+        className="pointer-events-none absolute inset-0 z-50 mix-blend-overlay transition-opacity duration-300 rounded-2xl overflow-hidden"
         style={{
-          background: `radial-gradient(circle at ${glareX} ${glareY}, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%)`,
+          background: `radial-gradient(circle 300px at ${glareX} ${glareY}, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.05) 40%, transparent 80%)`,
           opacity: hovering ? 1 : 0,
         }}
       />

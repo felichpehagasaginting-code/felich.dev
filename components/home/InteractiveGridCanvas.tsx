@@ -95,11 +95,12 @@ export default function InteractiveGridCanvas() {
           p.alpha += (p.baseAlpha - p.alpha) * 0.05;
         }
 
+        const themeRGB = '205, 205, 214';
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(59, 130, 246, ${p.alpha})`;
+        ctx.fillStyle = `rgba(${themeRGB}, ${p.alpha})`;
         ctx.shadowBlur = 8;
-        ctx.shadowColor = 'rgba(59, 130, 246, 0.4)';
+        ctx.shadowColor = `rgba(${themeRGB}, 0.4)`;
         ctx.fill();
         ctx.shadowBlur = 0;
 
@@ -111,7 +112,7 @@ export default function InteractiveGridCanvas() {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(59, 130, 246, ${(1 - dist2 / 110) * 0.15})`;
+            ctx.strokeStyle = `rgba(${themeRGB}, ${(1 - dist2 / 110) * 0.15})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }

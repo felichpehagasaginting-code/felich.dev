@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionHeading from './SectionHeading';
 import { getProjectIcon } from '@/lib/projectIcons';
 import { ArrowRight, Sparkles, ExternalLink } from 'lucide-react';
+import { introAudio } from '@/lib/introAudio';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -106,6 +107,7 @@ export default function FeaturedProjects({ projects }: { projects: any[] }) {
             <Link
               key={slug}
               href={`/projects/${project.slug || ''}`}
+              onClick={() => introAudio.playTick(1.0)}
               onMouseMove={(e) => handleCardMouseMove(slug, e)}
               className={`project-bento-card group p-6 bg-[var(--bg-surface)] border border-[var(--border-default)] hover:border-[var(--brand)] hover:shadow-2xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden rounded-3xl [transform-style:preserve-3d] hover:-translate-y-1.5 ${
                 isFlagship ? 'md:col-span-2' : 'col-span-1'

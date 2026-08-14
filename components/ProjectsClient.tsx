@@ -9,6 +9,7 @@ import { useProjectLikes } from '@/lib/useProjectLikes';
 import { useTranslation } from 'react-i18next';
 import { getProjectIcon } from '@/lib/projectIcons';
 import { safeViewTransition } from '@/lib/viewTransitions';
+import { introAudio } from '@/lib/introAudio';
 
 const projectTypes = ['All', 'Web', 'Mobile', 'IoT'];
 const projectCategories = ['All', 'Personal Project', 'Freelance'];
@@ -137,12 +138,14 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
 
 
   const openProjectModal = useCallback((project: any) => {
+    introAudio.playTick(1.0);
     safeViewTransition(() => {
       setSelectedProject(project);
     });
   }, []);
 
   const closeProjectModal = useCallback(() => {
+    introAudio.playTick(0.8);
     safeViewTransition(() => {
       setSelectedProject(null);
     });
@@ -247,7 +250,10 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
             return (
               <button
                 key={type}
-                onClick={() => setActiveType(type)}
+                onClick={() => {
+                  introAudio.playTick(1.0);
+                  setActiveType(type);
+                }}
                 className={`px-3 py-1.5 text-[11px] font-semibold flex items-center gap-1.5 transition-all duration-150 ${
                   activeType === type
                     ? 'bg-[var(--brand)] text-[var(--brand-contrast)] shadow-sm'
@@ -279,7 +285,10 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
             return (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(cat)}
+                onClick={() => {
+                  introAudio.playTick(1.0);
+                  setActiveCategory(cat);
+                }}
                 className={`px-3 py-1.5 text-[11px] font-medium transition-all duration-150 ${
                   activeCategory === cat
                     ? 'bg-[var(--text-primary)] text-[var(--bg-base)] font-semibold'
@@ -302,7 +311,10 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
           {projectTechs.map((tech) => (
             <button
               key={tech}
-              onClick={() => setActiveTech(tech)}
+              onClick={() => {
+                introAudio.playTick(1.0);
+                setActiveTech(tech);
+              }}
               className={`px-2.5 py-1 text-[10px] font-mono rounded transition-all ${
                 activeTech === tech
                   ? 'bg-[var(--brand-bg)] text-[var(--brand)] font-bold border border-[var(--brand)]'
