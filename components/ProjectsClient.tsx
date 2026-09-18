@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import Reveal from '@/components/Reveal';
 import TiltCard from './TiltCard';
@@ -10,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import { getProjectIcon } from '@/lib/projectIcons';
 import { safeViewTransition } from '@/lib/viewTransitions';
 import { introAudio } from '@/lib/introAudio';
+import { toYouTubeThumbnail } from '@/lib/projects';
+import { ProjectCover, ProjectGallery, ProjectVideo } from '@/components/ProjectMedia';
 
 const projectTypes = ['All', 'Web', 'Mobile', 'IoT'];
 const projectCategories = ['All', 'Personal Project', 'Freelance'];
@@ -362,6 +365,9 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                       viewTransitionName: `project-card-${project.slug || i}` as any,
                     }}
                   >
+                    {/* Card Cover (dari /admin: coverImage atau thumbnail YouTube) */}
+                    <ProjectCover project={project} />
+
                     {/* Card Header */}
                     <div className="px-5 pt-5 pb-3 border-b border-[var(--border-default)] flex items-center justify-between [transform:translateZ(30px)]">
                       <div className="flex items-center gap-3">
@@ -629,6 +635,30 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
 
                 {/* Content */}
                 <div className="p-6 md:p-8 space-y-6">
+                  {(selectedProject.coverImage || selectedProject.demoVideo) && (
+                    <div className="relative w-full aspect-[16/8] overflow-hidden rounded-xl border border-[var(--border-default)]">
+                      {selectedProject.coverImage ? (
+                        <Image
+                          src={selectedProject.coverImage}
+                          alt={`${selectedProject.title} cover`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 720px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        selectedProject.demoVideo &&
+                        toYouTubeThumbnail(selectedProject.demoVideo) && (
+                          <Image
+                            src={toYouTubeThumbnail(selectedProject.demoVideo) as string}
+                            alt={`${selectedProject.title} video thumbnail`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 720px"
+                            className="object-cover"
+                          />
+                        )
+                      )}
+                    </div>
+                  )}
                   <div>
                     <h2 className="text-2xl md:text-3xl font-display font-bold tracking-[-0.01em] text-[var(--text-primary)] mb-2">
                       {selectedProject.title}
@@ -663,9 +693,14 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                   </div>
 
                   {modalTab === 'preview' ? (
-                    /* Live Demo Sandbox View */
+                    /* Live Demo & Media View (diisi dari /admin) */
                     <div className="space-y-4">
-                      <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-base)] p-6 text-center space-y-4">
+                      {selectedProject.demoVideo && (
+                        <ProjectVideo url={selectedProject.demoVideo} title={selectedProject.title} />
+                      )}
+                      <ProjectGallery project={selectedProject} />
+                      {!selectedProject.demoVideo && (!selectedProject.gallery || selectedProject.gallery.length === 0) && (
+                        <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-base)] p-6 text-center space-y-4">
                         <div className="w-12 h-12 mx-auto rounded-2xl bg-[var(--brand-bg)] text-[var(--brand)] flex items-center justify-center">
                           {getProjectIcon(selectedProject.slug)}
                         </div>
@@ -705,6 +740,7 @@ export default function ProjectsClient({ projects }: { projects: any[] }) {
                           )}
                         </div>
                       </div>
+                      )}
                     </div>
                   ) : (
                     /* Overview View */

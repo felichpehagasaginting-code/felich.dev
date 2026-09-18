@@ -75,5 +75,14 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if false;
     }
+
+    // projects: dibaca publik hanya yang published; semua tulis via
+    // /api/admin/* (Admin SDK + verifikasi ID token + ADMIN_EMAILS).
+    match /projects/{slug} {
+      allow read: if resource.data.status == 'published';
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
   }
 }

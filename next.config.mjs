@@ -1,4 +1,5 @@
 import withPWAInit from "@ducanh2912/next-pwa";
+import { withSentryConfig } from "@sentry/nextjs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -19,6 +20,14 @@ const nextConfig = {
       { protocol: 'https', hostname: 'cdn.sanity.io' },
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      // Project admin (URL-only, gratis): jsDelivr/GitHub, ImageKit, Cloudinary, YouTube thumbnails
+      { protocol: 'https', hostname: 'cdn.jsdelivr.net' },
+      { protocol: 'https', hostname: 'cdn.statically.io' },
+      { protocol: 'https', hostname: 'raw.githubusercontent.com' },
+      { protocol: 'https', hostname: 'ik.imagekit.io' },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: 'i.ytimg.com' },
+      { protocol: 'https', hostname: 'img.youtube.com' },
     ],
   },
 
@@ -106,4 +115,13 @@ const withPWA = withPWAInit({
   skipWaiting: true,
 });
 
-export default withPWA(nextConfig);
+export default withSentryConfig(withPWA(nextConfig), {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  silent: true,
+  // Upload sourcemaps hanya bila eksplisit diaktifkan (butuh SENTRY_AUTH_TOKEN).
+  // Error tetap terlapor tanpa ini; aktifkan untuk stack trace termapping.
+  sourcemaps: {
+    disable: process.env.SENTRY_UPLOAD_SOURCEMAPS !== "1",
+  },
+});

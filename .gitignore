@@ -28,6 +28,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# local firestore backups (may contain drafts)
+backups/
+
 # ide
 .vscode/
 
@@ -35,6 +38,7 @@ yarn-error.log*
 /.poolside/
 /playwright-report/
 /test-results/
+*.tsbuildinfo
 
 # stray generated files
 /common.json

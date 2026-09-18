@@ -11,9 +11,7 @@
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "type-check": "tsc --noEmit",
-    "backend": "node server.js",
-    "backend:dev": "nodemon server.js",
-    "dev:all": "concurrently \"npm run dev\" \"npm run backend:dev\""
+    "export:projects": "tsx scripts/export-projects.ts"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
@@ -22,9 +20,9 @@
     "@react-three/fiber": "^9.6.0",
     "@sanity/client": "^7.22.0",
     "@sanity/image-url": "^2.1.1",
+    "@sentry/nextjs": "^10.75.0",
     "autoprefixer": "^10.4.20",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.4.2",
     "firebase": "^12.12.1",
     "firebase-admin": "^14.2.0",
     "framer-motion": "^12.38.0",
@@ -58,11 +56,10 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
-    "concurrently": "^9.2.1",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.4",
     "jsdom": "^29.0.2",
-    "nodemon": "^3.1.14",
+    "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   },
