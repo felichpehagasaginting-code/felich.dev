@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
+import { FieldValue } from 'firebase-admin/firestore';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { verifyAdmin } from '@/lib/admin-auth';
 import { normalizeProject, slugify, validateProject } from '@/lib/projects';
@@ -69,7 +70,6 @@ export async function POST(req: NextRequest) {
   if (!adminDb) return NextResponse.json({ error: 'Firebase Admin is not configured.' }, { status: 500 });
 
   try {
-    const { FieldValue } = await import('firebase-admin/firestore');
     const ref = adminDb.collection('projects').doc(requestedSlug);
     const existing = await ref.get();
     if (existing.exists) return NextResponse.json({ error: `Slug "${requestedSlug}" sudah dipakai.` }, { status: 409 });

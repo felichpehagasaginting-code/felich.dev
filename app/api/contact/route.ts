@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
+import { FieldValue } from 'firebase-admin/firestore';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { getDb } from '@/lib/firebase';
 
@@ -51,7 +52,6 @@ export async function POST(req: NextRequest) {
 
     const adminDb = getAdminDb();
     if (adminDb) {
-      const { FieldValue } = await import('firebase-admin/firestore');
       await adminDb.collection('contact_messages').add({
         ...payload,
         createdAt: FieldValue.serverTimestamp(),

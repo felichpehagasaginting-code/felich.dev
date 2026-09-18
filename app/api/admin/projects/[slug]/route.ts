@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
+import { FieldValue } from 'firebase-admin/firestore';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { verifyAdmin } from '@/lib/admin-auth';
 import { normalizeProject, slugify, validateProject } from '@/lib/projects';
@@ -61,7 +62,6 @@ export async function PUT(req: NextRequest, ctx: Ctx) {
   if (errors.length > 0) return NextResponse.json({ error: 'Validation failed.', details: errors }, { status: 400 });
 
   try {
-    const { FieldValue } = await import('firebase-admin/firestore');
     const data = normalizeProject(merged as Parameters<typeof normalizeProject>[0]);
     // Slug rename: bila body.slug berbeda & valid → pindah dokumen.
     const newSlugRaw = typeof body.slug === 'string' ? body.slug.trim() : '';

@@ -1,4 +1,6 @@
 import type { NextRequest } from 'next/server';
+import { getApp, getApps } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
 function getAdminEmails(): string[] {
@@ -59,10 +61,7 @@ export async function verifyAdmin(req: NextRequest): Promise<AdminAuthResult> {
   }
 
   try {
-    const { getAuth } = await import('firebase-admin/auth');
-    // getAuth() tanpa argumen memakai app default; admin app kita bernama 'admin'
-    // — ambil via getApp('admin') bila ada.
-    const { getApp, getApps } = await import('firebase-admin/app');
+    // App admin bernama 'admin' (dibuat di lib/firebase-admin.ts).
     const app = getApps().find((a) => a.name === 'admin') ?? getApp();
     const decoded = await getAuth(app).verifyIdToken(match[1], true);
     const email = (decoded.email ?? '').toLowerCase();
