@@ -8,10 +8,7 @@ import ProjectForm from '@/components/admin/ProjectForm';
 
 type View = { name: 'list' } | { name: 'create' } | { name: 'edit'; slug: string };
 
-async function authHeaders(user: { getIdToken: (f?: boolean) => Promise<string> }) {
-  const token = await user.getIdToken();
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-}
+type FirebaseUserLike = { getIdToken: (forceRefresh?: boolean) => Promise<string> };
 
 export default function AdminPage() {
   const { user, loading: authLoading, signInWithGoogle, signOut } = useAuth();
@@ -28,22 +25,53 @@ export default function AdminPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [draftSignal, setDraftSignal] = useState(0);
 
+  /**
+   * Fetch ke /api/admin/* dengan Bearer ID token.
+   * Bila server jawab 401 (token basi), refresh token paksa sekali lalu ulangi.
+   */
+  const apiFetch = useCallback(
+    async (path: string, init?: RequestInit): Promise<Response> => {
+      const u = user as unknown as FirebaseUserLike;
+      const send = async (force: boolean) => {
+        const token = await u.getIdToken(force);
+        return fetch(path, {
+          ...init,
+          headers: {
+            'Content-Type': 'application/json',
+            ...(init?.headers ?? {}),
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      };
+      const res = await send(false);
+      if (res.status === 401) return send(true);
+      return res;
+    },
+    [user]
+  );
+
   const load = useCallback(async () => {
     if (!user) return;
     setListLoading(true);
     setListError(null);
     try {
-      const headers = await authHeaders(user as unknown as { getIdToken: () => Promise<string> });
-      const res = await fetch('/api/admin/projects?all=1', { headers });
+      const res = await apiFetch('/api/admin/projects?all=1');
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'Gagal memuat projects.');
+      if (!res.ok) {
+        // 401 persisten setelah retry = sesi/token tidak valid → paksa login ulang
+        if (res.status === 401) {
+          await signOut();
+          throw new Error('Sesi berakhir atau tidak valid. Kamu sudah di-sign out — login ulang ya.');
+        }
+        throw new Error(data.error ?? 'Gagal memuat projects.');
+      }
       setProjects(sortProjects((data.projects ?? []) as Project[]));
     } catch (err) {
       setListError(err instanceof Error ? err.message : 'Gagal memuat projects.');
     } finally {
       setListLoading(false);
     }
-  }, [user]);
+  }, [user, apiFetch, signOut]);
 
   useEffect(() => {
     void load();
@@ -78,8 +106,7 @@ export default function AdminPage() {
     if (!user) return;
     setFormError(null);
     try {
-      const headers = await authHeaders(user as unknown as { getIdToken: () => Promise<string> });
-      const res = await fetch(`/api/admin/projects/${encodeURIComponent(slug)}`, { headers });
+      const res = await apiFetch(`/api/admin/projects/${encodeURIComponent(slug)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Gagal memuat detail.');
       setEditing(data as Project);
@@ -94,10 +121,9 @@ export default function AdminPage() {
     setSaving(true);
     setFormError(null);
     try {
-      const headers = await authHeaders(user as unknown as { getIdToken: () => Promise<string> });
       const isEdit = view.name === 'edit';
       const url = isEdit ? `/api/admin/projects/${encodeURIComponent(view.slug)}` : '/api/admin/projects';
-      const res = await fetch(url, { method: isEdit ? 'PUT' : 'POST', headers, body: JSON.stringify(value) });
+      const res = await apiFetch(url, { method: isEdit ? 'PUT' : 'POST', body: JSON.stringify(value) });
       const data = await res.json();
       if (!res.ok) {
         const detail = Array.isArray(data.details) ? `: ${data.details.map((d: { message: string }) => d.message).join(' ')}` : '';
@@ -128,8 +154,7 @@ export default function AdminPage() {
     if (!window.confirm(`Hapus project "${slug}"? Tindakan ini tidak bisa dibatalkan.`)) return;
     setDeleting(slug);
     try {
-      const headers = await authHeaders(user as unknown as { getIdToken: () => Promise<string> });
-      const res = await fetch(`/api/admin/projects/${encodeURIComponent(slug)}`, { method: 'DELETE', headers });
+      const res = await apiFetch(`/api/admin/projects/${encodeURIComponent(slug)}`, { method: 'DELETE' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Gagal menghapus.');
       setNotice(`Project "${slug}" dihapus.`);
@@ -144,10 +169,8 @@ export default function AdminPage() {
   const moveOrder = async (p: Project, dir: -1 | 1) => {
     if (!user) return;
     try {
-      const headers = await authHeaders(user as unknown as { getIdToken: () => Promise<string> });
-      const res = await fetch(`/api/admin/projects/${encodeURIComponent(p.slug)}`, {
+      const res = await apiFetch(`/api/admin/projects/${encodeURIComponent(p.slug)}`, {
         method: 'PUT',
-        headers,
         body: JSON.stringify({ order: Math.max(0, (p.order ?? 0) + dir) }),
       });
       if (!res.ok) throw new Error('Gagal mengubah urutan.');
@@ -160,10 +183,8 @@ export default function AdminPage() {
   const toggleFeatured = async (p: Project) => {
     if (!user) return;
     try {
-      const headers = await authHeaders(user as unknown as { getIdToken: () => Promise<string> });
-      const res = await fetch(`/api/admin/projects/${encodeURIComponent(p.slug)}`, {
+      const res = await apiFetch(`/api/admin/projects/${encodeURIComponent(p.slug)}`, {
         method: 'PUT',
-        headers,
         body: JSON.stringify({ featured: !p.featured }),
       });
       if (!res.ok) throw new Error('Gagal mengubah featured.');
@@ -176,10 +197,8 @@ export default function AdminPage() {
   const toggleStatus = async (p: Project) => {
     if (!user) return;
     try {
-      const headers = await authHeaders(user as unknown as { getIdToken: () => Promise<string> });
-      const res = await fetch(`/api/admin/projects/${encodeURIComponent(p.slug)}`, {
+      const res = await apiFetch(`/api/admin/projects/${encodeURIComponent(p.slug)}`, {
         method: 'PUT',
-        headers,
         body: JSON.stringify({ status: p.status === 'published' ? 'draft' : 'published' }),
       });
       if (!res.ok) throw new Error('Gagal mengubah status.');

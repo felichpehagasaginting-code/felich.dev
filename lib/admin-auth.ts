@@ -19,6 +19,8 @@ export interface AdminAuthResult {
   uid?: string;
   error?: string;
   status?: number;
+  /** 'token-expired' | 'token-invalid' — dipakai client untuk retry / pesan yang tepat. */
+  code?: string;
 }
 
 /**
@@ -55,8 +57,14 @@ export async function verifyAdmin(req: NextRequest): Promise<AdminAuthResult> {
       return { ok: false, error: 'Forbidden: not an admin.', status: 403 };
     }
     return { ok: true, email, uid: decoded.uid };
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('verifyAdmin error:', err);
-    return { ok: false, error: 'Invalid or expired token.', status: 401 };
+    const code = (err as { code?: string })?.code ?? '';
+    const msg = err instanceof Error ? err.message : String(err);
+    // Bedakan expired vs invalid agar client bisa retry cerdas (refresh token paksa bila expired).
+    if (code === 'auth/id-token-expired' || /expired/i.test(msg)) {
+      return { ok: false, error: 'Token expired. Please retry.', status: 401, code: 'token-expired' };
+    }
+    return { ok: false, error: `Invalid token (${code || 'unknown'}).`, status: 401, code: 'token-invalid' };
   }
 }
