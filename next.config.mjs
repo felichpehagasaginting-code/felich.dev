@@ -10,6 +10,9 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   compress: true,
   reactStrictMode: true,
+  // firebase-admin harus di-require saat runtime (bukan di-bundle webpack)
+  // untuk menghindari error ESM/CJS di serverless.
+  serverExternalPackages: ['firebase-admin'],
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
