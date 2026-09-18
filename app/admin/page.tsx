@@ -58,10 +58,13 @@ export default function AdminPage() {
       const res = await apiFetch('/api/admin/projects?all=1');
       const data = await res.json();
       if (!res.ok) {
-        // 401 persisten setelah retry = sesi/token tidak valid → paksa login ulang
+        // 401 persisten setelah retry = sesi/token tidak valid → paksa login ulang.
+        // Pakai `notice` (bukan listError) agar pesan tetap terlihat di layar gate login.
         if (res.status === 401) {
           await signOut();
-          throw new Error('Sesi berakhir atau tidak valid. Kamu sudah di-sign out — login ulang ya.');
+          setNotice(`Sesi tidak valid (${data.code ?? 'token-invalid'}): ${data.error ?? ''} Kamu sudah di-sign out — login ulang ya.`);
+          setProjects([]);
+          return;
         }
         throw new Error(data.error ?? 'Gagal memuat projects.');
       }

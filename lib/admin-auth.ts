@@ -8,6 +8,19 @@ function getAdminEmails(): string[] {
     .filter(Boolean);
 }
 
+/** Baca klaim `aud` token TANPA verifikasi — murni diagnostik (aud adalah info publik). */
+function unsafeAudience(token: string): string | undefined {
+  try {
+    const part = token.split('.')[1];
+    if (!part) return undefined;
+    const json = Buffer.from(part.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
+    const aud = (JSON.parse(json) as { aud?: string }).aud;
+    return typeof aud === 'string' ? aud : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function isAdminEmail(email: string | null | undefined): boolean {
   if (!email) return false;
   return getAdminEmails().includes(email.toLowerCase());
@@ -61,10 +74,12 @@ export async function verifyAdmin(req: NextRequest): Promise<AdminAuthResult> {
     console.error('verifyAdmin error:', err);
     const code = (err as { code?: string })?.code ?? '';
     const msg = err instanceof Error ? err.message : String(err);
+    const aud = unsafeAudience(match[1]);
+    const hint = aud ? ` (token aud=${aud})` : '';
     // Bedakan expired vs invalid agar client bisa retry cerdas (refresh token paksa bila expired).
     if (code === 'auth/id-token-expired' || /expired/i.test(msg)) {
       return { ok: false, error: 'Token expired. Please retry.', status: 401, code: 'token-expired' };
     }
-    return { ok: false, error: `Invalid token (${code || 'unknown'}).`, status: 401, code: 'token-invalid' };
+    return { ok: false, error: `Invalid token (${code || 'unknown'})${hint}.`, status: 401, code: 'token-invalid' };
   }
 }
