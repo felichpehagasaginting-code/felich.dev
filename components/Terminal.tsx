@@ -28,8 +28,8 @@ const VFS: Record<string, VFSNode> = {
     content: (
       <div className="space-y-1">
         <p className="text-[var(--term-text)] font-bold">Felich Pehagasa Ginting</p>
-        <p className="text-[var(--term-dim)]">D4 Software Engineering Technology student at Politeknik Kelapa Sawit Citra Widya Edukasi.</p>
-        <p className="text-[var(--term-dim)]">Focused on building intelligent AI-driven systems and scalable financial platforms.</p>
+        <p className="text-[var(--term-dim)]">D4 Software Engineering Technology student (Semester 3) at Politeknik Kelapa Sawit Citra Widya Edukasi.</p>
+        <p className="text-[var(--term-dim)]">Focused on intelligent AI-driven systems, flight simulation physics, and hardware diagnostics.</p>
       </div>
     )
   },
@@ -38,7 +38,7 @@ const VFS: Record<string, VFSNode> = {
     content: (
       <div className="space-y-2">
         <p className="text-[var(--term-text)] font-bold">[ EXPERIENCE / EDUCATION ]</p>
-        <p className="text-[var(--term-dim)]">• <span className="text-[var(--term-accent)]">Politeknik CWE</span> (2025 - 2029) - D4 Software Engineering Technology</p>
+        <p className="text-[var(--term-dim)]">• <span className="text-[var(--term-accent)]">Politeknik CWE</span> (2025 - 2029 · Currently Semester 3) - D4 Software Engineering Technology</p>
         <p className="text-[var(--term-dim)]">• <span className="text-[var(--term-accent)]">BPDP Scholar</span> - Full scholarship recipient</p>
       </div>
     )
@@ -61,6 +61,33 @@ const VFS: Record<string, VFSNode> = {
   'projects': {
     type: 'dir',
     children: {
+      'nusantara-skies.md': {
+        type: 'file',
+        content: (
+          <div>
+            <span className="text-[var(--term-accent)] font-bold">Nusantara Skies</span>
+            <p className="text-[var(--term-dim)] mt-1">Indonesian flight simulation featuring 6-DOF aerodynamics, national airport networks, and Unity 6 / Three.js rendering.</p>
+          </div>
+        )
+      },
+      '4tune-labs.md': {
+        type: 'file',
+        content: (
+          <div>
+            <span className="text-[var(--term-accent)] font-bold">4tune.labs</span>
+            <p className="text-[var(--term-dim)] mt-1">Hardware diagnostics & electronics engineering lab: board-level diagnostics, thermal profiling, micro-soldering, and power rails (VPH_PWR).</p>
+          </div>
+        )
+      },
+      'felys.md': {
+        type: 'file',
+        content: (
+          <div>
+            <span className="text-[var(--term-accent)] font-bold">Felys AI Desktop Assistant</span>
+            <p className="text-[var(--term-dim)] mt-1">Autonomous multimodal desktop companion with streaming Gemini AI, SM-2 episodic memory, and local automation.</p>
+          </div>
+        )
+      },
       'fintech.md': {
         type: 'file',
         content: (
@@ -104,11 +131,11 @@ const VFS: Record<string, VFSNode> = {
     children: {
       'frontend.md': {
         type: 'file',
-        content: <p className="text-[var(--term-dim)]">Next.js, React, HTML5, CSS3, JavaScript, TypeScript, TailwindCSS, Bootstrap, Framer Motion, Vite, Redux, GSAP, Canvas API, Svelte, React Query.</p>
+        content: <p className="text-[var(--term-dim)]">Next.js, React, HTML5, CSS3, JavaScript, TypeScript, TailwindCSS, Bootstrap, Framer Motion, Vite, Redux, Zustand, GSAP, Canvas API, Three.js, MapLibre GL, Web Audio API, Svelte, React Query.</p>
       },
       'backend.md': {
         type: 'file',
-        content: <p className="text-[var(--term-dim)]">Node.js, Express, Python, Go, PHP, Laravel, Prisma, Sanity CMS, Rust, PyTorch, TensorFlow, tRPC.</p>
+        content: <p className="text-[var(--term-dim)]">Node.js, Express, Python, Go, C#, PHP, Laravel, Prisma, Sanity CMS, Rust, PyTorch, TensorFlow, tRPC.</p>
       },
       'database.md': {
         type: 'file',
@@ -116,7 +143,7 @@ const VFS: Record<string, VFSNode> = {
       },
       'tools.md': {
         type: 'file',
-        content: <p className="text-[var(--term-dim)]">Git, GitHub, Docker, VS Code, Postman, npm, Vercel, Vitest, Playwright, Gemini AI, Claude, Linux, Cloudflare, Langflow.</p>
+        content: <p className="text-[var(--term-dim)]">Git, GitHub, Docker, VS Code, Postman, npm, Vercel, Vitest, Playwright, Gemini AI, Claude, Linux, Cloudflare, Langflow, Unity 6, Model Context Protocol, Hardware Diagnostics.</p>
       }
     }
   }
@@ -173,7 +200,7 @@ export default function Terminal() {
   const [history, setHistory] = useState<Command[]>([
     {
       text: 'whoami',
-      output: 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer.',
+      output: 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer, Open-Source Contributor.',
       path: '~'
     }
   ]);
@@ -452,7 +479,7 @@ export default function Terminal() {
         output = 'Domain: felich.dev | Registered to: Felich P. Ginting | Location: Indonesia';
         break;
       case 'whoami':
-        output = 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer.';
+        output = 'Felich - Software Engineer, AI Enthusiast, Fullstack Developer, Open-Source Contributor.';
         break;
       case 'skills':
         output = (

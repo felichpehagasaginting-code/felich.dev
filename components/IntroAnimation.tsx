@@ -269,7 +269,7 @@ export default function IntroAnimation() {
             if (current < 25) {
               terminalLogRef.current.innerText = '> initializing neural pipelines & runtime...';
             } else if (current < 55) {
-              terminalLogRef.current.innerText = '> compiling fintech architecture & WebGL shaders...';
+              terminalLogRef.current.innerText = '> simulating flight aerodynamics & hardware telemetry...';
             } else if (current < 80) {
               terminalLogRef.current.innerText = '> mounting offline service worker & security protocols...';
             } else {
@@ -587,7 +587,7 @@ export default function IntroAnimation() {
 
         {/* Focus Tags */}
         <div className="flex flex-wrap justify-center items-center gap-2.5 mt-5">
-          {['AI ENGINEERING', 'FINTECH ARCHITECTURE', 'AGRI-TECH'].map((tag, idx) => (
+          {['AI SYSTEMS', 'FLIGHT SIMULATION', 'HARDWARE DIAGNOSTICS', 'AGRI-TECH'].map((tag, idx) => (
             <span
               key={idx}
               className="intro-tags-item opacity-0 text-[11px] font-semibold tracking-wider px-3.5 py-1.5 rounded-full border border-current/15 bg-current/5 uppercase"

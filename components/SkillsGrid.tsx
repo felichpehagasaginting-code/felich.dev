@@ -16,11 +16,11 @@ if (typeof window !== 'undefined') {
 }
 
 const skillCategories = [
-  { name: 'All', count: 52 },
-  { name: 'Frontend', count: 18 },
-  { name: 'Backend', count: 14 },
+  { name: 'All', count: 60 },
+  { name: 'Frontend', count: 22 },
+  { name: 'Backend', count: 15 },
   { name: 'Database', count: 6 },
-  { name: 'Tools', count: 14 },
+  { name: 'Tools', count: 17 },
 ];
 
 const skills = [
@@ -38,9 +38,14 @@ const skills = [
   { name: 'Shadcn UI', color: '#000000', category: 'Frontend', slug: 'shadcnui' },
   { name: 'GSAP', color: '#88ce02', category: 'Frontend', slug: 'gsap' },
   { name: 'Canvas API', color: '#ff6b6b', category: 'Frontend', slug: 'canvas' },
+  { name: 'Three.js', color: '#000000', category: 'Frontend', slug: 'threedotjs' },
+  { name: 'Zustand', color: '#443e38', category: 'Frontend', slug: 'zustand' },
+  { name: 'MapLibre GL', color: '#3178c6', category: 'Frontend', slug: 'maplibre' },
+  { name: 'Web Audio API', color: '#ff5500', category: 'Frontend', slug: 'webaudio' },
   { name: 'Node.js', color: '#339933', category: 'Backend', slug: 'nodedotjs' },
   { name: 'Express.js', color: '#000000', category: 'Backend', slug: 'express' },
   { name: 'Python', color: '#3776ab', category: 'Backend', slug: 'python' },
+  { name: 'C#', color: '#239120', category: 'Backend', slug: 'csharp' },
   { name: 'Go', color: '#00add8', category: 'Backend', slug: 'go' },
   { name: 'PHP', color: '#777bb4', category: 'Backend', slug: 'php' },
   { name: 'Laravel', color: '#ff2d20', category: 'Backend', slug: 'laravel' },
@@ -61,6 +66,9 @@ const skills = [
   { name: 'Vitest', color: '#729b1b', category: 'Tools', slug: 'vitest' },
   { name: 'Playwright', color: '#2ead33', category: 'Tools', slug: 'playwright' },
   { name: 'Gemini AI', color: '#1a73e8', category: 'Tools', slug: 'geminiai' },
+  { name: 'Unity 6', color: '#222c37', category: 'Tools', slug: 'unity' },
+  { name: 'Model Context Protocol', color: '#d97706', category: 'Tools', slug: 'mcp' },
+  { name: 'Hardware Diagnostics', color: '#eab308', category: 'Tools', slug: 'hardware' },
   { name: 'Rust', color: '#dea584', category: 'Backend', slug: 'rust' },
   { name: 'PyTorch', color: '#ee4c2c', category: 'Backend', slug: 'pytorch' },
   { name: 'TensorFlow', color: '#ff6f00', category: 'Backend', slug: 'tensorflow' },
@@ -132,6 +140,14 @@ const skillLinks: Record<string, string> = {
   'REST API': 'https://restfulapi.net/',
   'Lenis': 'https://lenis.darkroom.engineering/',
   'Smooth Scroll': 'https://lenis.darkroom.engineering/',
+  'Three.js': 'https://threejs.org/',
+  'Zustand': 'https://zustand-demo.pmnd.rs/',
+  'MapLibre GL': 'https://maplibre.org/',
+  'Web Audio API': 'https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API',
+  'C#': 'https://learn.microsoft.com/en-us/dotnet/csharp/',
+  'Unity 6': 'https://unity.com/',
+  'Model Context Protocol': 'https://modelcontextprotocol.io/',
+  'Hardware Diagnostics': 'https://en.wikipedia.org/wiki/Electrical_engineering',
 };
 
 export default function SkillsGrid() {

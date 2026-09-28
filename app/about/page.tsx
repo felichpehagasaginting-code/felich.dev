@@ -35,16 +35,32 @@ const CORE_COMPETENCIES = [
     icon: Cpu,
     proficiency: 'Advanced',
     color: 'from-blue-500 to-indigo-600',
-    skills: ['Autonomous AI Agents', 'LLM Prompt Engineering', 'PyTorch / TensorFlow', 'Computer Vision (OpenCV)', 'RAG & Vector Embeddings'],
-    description: 'Designing multimodal reasoning loops, on-device Edge AI inference, and autonomous tool-calling pipelines.',
+    skills: ['Autonomous AI Agents', 'Google Gemini & Vercel AI SDK', 'Contextual Companions', 'SuperMemo SM-2 Algorithm', 'Telegram Bot Automation'],
+    description: 'Designing multimodal reasoning loops, streaming AI assistants, cross-mode heuristics, and autonomous tool-calling pipelines.',
   },
   {
     title: 'Fullstack & Systems Architecture',
     icon: Code2,
     proficiency: 'Production Ready',
     color: 'from-cyan-500 to-blue-600',
-    skills: ['Next.js 16 App Router', 'TypeScript', 'Python & Node.js', 'PostgreSQL & Supabase', 'REST & GraphQL APIs'],
-    description: 'Constructing robust web applications with deterministic type safety, server components, and responsive state management.',
+    skills: ['Next.js 15/16 App Router', 'React 19', 'TypeScript & Node.js', 'Firestore & Zustand', 'Tailwind CSS v4 & MapLibre GL'],
+    description: 'Constructing robust web applications with deterministic type safety, double-entry financial ledgers, and responsive state management.',
+  },
+  {
+    title: 'Simulation & 3D Flight Dynamics',
+    icon: Layers,
+    proficiency: 'Specialized',
+    color: 'from-sky-500 to-blue-700',
+    skills: ['6-DOF Flight Dynamics (120Hz)', 'Unity 6 (URP) & C#', 'Three.js & WebGL', 'Model Context Protocol (MCP)', 'Python TDD Mirrors'],
+    description: 'Developing high-precision aeronautical simulations with floating origin systems, non-linear aerodynamics, and MCP runtime microservices.',
+  },
+  {
+    title: 'Hardware Diagnostics & Electronics',
+    icon: Terminal,
+    proficiency: 'Hands-on Lab',
+    color: 'from-amber-500 to-orange-600',
+    skills: ['Micro-soldering & SMD Rework', 'PCB Fault Tracing (VPH_PWR)', 'Thermal Camera Analysis', 'Component-Level Repair', 'PC/Laptop Hardware Upgrades'],
+    description: 'Zero-middleman hardware engineering: board-level diagnostics, thermal throttling mitigation, and micro-soldering on complex consumer electronics.',
   },
   {
     title: 'Linux Systems & Virtualization',
@@ -55,20 +71,12 @@ const CORE_COMPETENCIES = [
     description: 'Configuring isolated virtualization environments, container microservices, and secure Linux server deployments.',
   },
   {
-    title: 'Network Simulation & Routing',
-    icon: Network,
-    proficiency: 'Intermediate',
-    color: 'from-purple-500 to-pink-600',
-    skills: ['MikroTik RouterOS', 'Cisco CCNA Track', 'VLAN & Firewall Rules', 'MQTT / LoRa Gateways', 'Traffic Engineering'],
-    description: 'Simulating multi-node network topologies, routing protocols (OSPF), and IoT gateway failover mechanisms.',
-  },
-  {
     title: 'UI/UX & High-Performance Motion',
     icon: Palette,
     proficiency: 'Mastery',
     color: 'from-emerald-500 to-teal-600',
-    skills: ['Framer Motion & WAAPI', 'Tailwind CSS Glassmorphism', 'HTML5 Canvas API', 'Accessible WCAG Design', 'Micro-interactions'],
-    description: 'Crafting fluid 60FPS motion interfaces, custom shader canvases, and accessible, responsive design tokens.',
+    skills: ['GSAP 3 & ScrollTrigger', 'Lenis Smooth Scroll', 'Framer Motion & WAAPI', 'Vaul Drawers', 'Micro-interactions'],
+    description: 'Crafting fluid 60FPS motion interfaces, kinetic logo assemblies, swipeable tactile sheets, and accessible, responsive design tokens.',
   },
 ];
 
@@ -181,7 +189,7 @@ export default function About() {
                 <span>Academic IPK</span>
               </div>
               <p className="text-xl font-display font-bold text-[var(--success)]">3.89 <span className="text-xs text-[var(--text-muted)] font-normal">/ 4.0</span></p>
-              <p className="text-[10px] font-mono text-[var(--text-muted)]">Semesters 1 &amp; 2</p>
+              <p className="text-[10px] font-mono text-[var(--text-muted)]">Semesters 1 &amp; 2 (Active: Semester 3)</p>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-default)] space-y-0.5">
@@ -189,8 +197,8 @@ export default function About() {
                 <FolderGit2 size={13} className="text-[var(--brand)]" />
                 <span>Flagship Projects</span>
               </div>
-              <p className="text-xl font-display font-bold text-[var(--text-primary)]">8+ Built</p>
-              <p className="text-[10px] font-mono text-[var(--text-muted)]">AI, Web &amp; IoT Stack</p>
+              <p className="text-xl font-display font-bold text-[var(--text-primary)]">12+ Built</p>
+              <p className="text-[10px] font-mono text-[var(--text-muted)]">Web, Simulation &amp; Hardware</p>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-default)] space-y-0.5">
@@ -208,7 +216,7 @@ export default function About() {
                 <span>Undergraduate</span>
               </div>
               <p className="text-xl font-display font-bold text-[var(--text-primary)]">D4 TRPL</p>
-              <p className="text-[10px] font-mono text-[var(--text-muted)]">Cohort 2025 – 2029</p>
+              <p className="text-[10px] font-mono text-[var(--text-muted)]">Semester 3 · Cohort 2025 – 2029</p>
             </div>
           </div>
         </motion.div>
