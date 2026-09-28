@@ -4,6 +4,7 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { verifyAdmin } from '@/lib/admin-auth';
 import { normalizeProject, slugify, validateProject } from '@/lib/projects';
+import { getProjectsMerged } from '@/lib/projects-server';
 
 const listLimiter = new RateLimiterMemory({ points: 60, duration: 60 });
 const writeLimiter = new RateLimiterMemory({ points: 20, duration: 60 });
@@ -21,7 +22,10 @@ export async function GET(req: NextRequest) {
   }
 
   const adminDb = getAdminDb();
-  if (!adminDb) return NextResponse.json({ projects: [] });
+  if (!adminDb) {
+    const projects = await getProjectsMerged({ publishedOnly: false });
+    return NextResponse.json({ projects });
+  }
 
   try {
     const wantAll = req.nextUrl.searchParams.get('all') === '1';
@@ -29,11 +33,19 @@ export async function GET(req: NextRequest) {
       const auth = await verifyAdmin(req);
       if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status ?? 401 });
       const snap = await adminDb.collection('projects').get();
-      const projects = snap.docs.map((doc) => ({ slug: doc.id, ...doc.data() }));
+      const firestoreProjects = snap.docs.map((doc) => ({ slug: doc.id, ...doc.data() }));
+      if (firestoreProjects.length > 0) {
+        return NextResponse.json({ projects: firestoreProjects });
+      }
+      const projects = await getProjectsMerged({ publishedOnly: false });
       return NextResponse.json({ projects });
     }
     const snap = await adminDb.collection('projects').where('status', '==', 'published').get();
-    const projects = snap.docs.map((doc) => ({ slug: doc.id, ...doc.data() }));
+    const firestoreProjects = snap.docs.map((doc) => ({ slug: doc.id, ...doc.data() }));
+    if (firestoreProjects.length > 0) {
+      return NextResponse.json({ projects: firestoreProjects });
+    }
+    const projects = await getProjectsMerged({ publishedOnly: true });
     return NextResponse.json({ projects });
   } catch (err) {
     console.error('Admin projects GET error:', err);

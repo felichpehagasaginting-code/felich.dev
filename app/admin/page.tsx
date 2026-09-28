@@ -28,23 +28,37 @@ export default function AdminPage() {
   const [draftSignal, setDraftSignal] = useState(0);
 
   /**
-   * Fetch ke /api/admin/* dengan Bearer ID token.
+   * Fetch ke /api/admin/* dengan Bearer ID token + AbortSignal timeout (12s).
    * Bila server jawab 401 (token basi), refresh token paksa sekali lalu ulangi.
    */
   const apiFetch = useCallback(
     async (path: string, init?: RequestInit): Promise<Response> => {
       const u = user as unknown as FirebaseUserLike;
       const send = async (force: boolean) => {
-        const token = await u.getIdToken(force);
-        return fetch(path, {
-          ...init,
-          headers: {
-            'Content-Type': 'application/json',
-            ...(init?.headers ?? {}),
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const token = await Promise.race([
+          u.getIdToken(force),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout mengambil token auth dari Firebase.')), 8000)
+          ),
+        ]);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+        try {
+          return await fetch(path, {
+            ...init,
+            signal: controller.signal,
+            headers: {
+              'Content-Type': 'application/json',
+              ...(init?.headers ?? {}),
+              Authorization: `Bearer ${token}`,
+            },
+          });
+        } finally {
+          clearTimeout(timeoutId);
+        }
       };
+
       const res = await send(false);
       if (res.status === 401) return send(true);
       return res;
@@ -58,7 +72,7 @@ export default function AdminPage() {
     setListError(null);
     try {
       const res = await apiFetch('/api/admin/projects?all=1');
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         // 401 persisten setelah retry = sesi/token tidak valid → paksa login ulang.
         // Pakai `notice` (bukan listError) agar pesan tetap terlihat di layar gate login.
@@ -68,10 +82,11 @@ export default function AdminPage() {
           setProjects([]);
           return;
         }
-        throw new Error(data.error ?? 'Gagal memuat projects.');
+        throw new Error(data.error ?? `Server merespon ${res.status}: ${res.statusText}`);
       }
       setProjects(sortProjects((data.projects ?? []) as Project[]));
     } catch (err) {
+      console.error('[Admin] Gagal memuat projects:', err);
       setListError(err instanceof Error ? err.message : 'Gagal memuat projects.');
     } finally {
       setListLoading(false);
