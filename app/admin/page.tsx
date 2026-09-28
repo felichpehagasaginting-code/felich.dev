@@ -5,6 +5,7 @@ import PageTransition from '@/components/PageTransition';
 import { useAuth } from '@/lib/useAuth';
 import { sortProjects, type Project, type ProjectFormValue } from '@/lib/projects';
 import ProjectForm from '@/components/admin/ProjectForm';
+import ConfirmModal from '@/components/admin/ConfirmModal';
 
 type View = { name: 'list' } | { name: 'create' } | { name: 'edit'; slug: string };
 
@@ -23,6 +24,7 @@ export default function AdminPage() {
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [draftSignal, setDraftSignal] = useState(0);
 
   /**
@@ -152,15 +154,16 @@ export default function AdminPage() {
     }
   };
 
-  const handleDelete = async (slug: string) => {
-    if (!user) return;
-    if (!window.confirm(`Hapus project "${slug}"? Tindakan ini tidak bisa dibatalkan.`)) return;
+  const confirmDelete = async () => {
+    if (!user || !deleteTarget) return;
+    const slug = deleteTarget;
     setDeleting(slug);
     try {
       const res = await apiFetch(`/api/admin/projects/${encodeURIComponent(slug)}`, { method: 'DELETE' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Gagal menghapus.');
       setNotice(`Project "${slug}" dihapus.`);
+      setDeleteTarget(null);
       await load();
     } catch (err) {
       setNotice(err instanceof Error ? err.message : 'Gagal menghapus.');
@@ -376,7 +379,7 @@ export default function AdminPage() {
                               Edit
                             </button>
                             <button
-                              onClick={() => handleDelete(p.slug)}
+                              onClick={() => setDeleteTarget(p.slug)}
                               disabled={deleting === p.slug}
                               className="px-3 py-1.5 rounded-md bg-[var(--danger-bg)] border border-[var(--danger-border)] text-[var(--danger)] font-semibold disabled:opacity-50"
                             >
@@ -414,6 +417,20 @@ export default function AdminPage() {
             />
           </div>
         )}
+
+        <ConfirmModal
+          isOpen={deleteTarget !== null}
+          title="Hapus Project"
+          message={`Yakin ingin menghapus project "${deleteTarget ?? ''}"? Tindakan ini permanen dan tidak dapat dibatalkan.`}
+          confirmLabel="Hapus Permanen"
+          cancelLabel="Batal"
+          isDestructive
+          loading={deleting !== null}
+          onConfirm={confirmDelete}
+          onCancel={() => {
+            if (deleting === null) setDeleteTarget(null);
+          }}
+        />
       </div>
     </PageTransition>
   );

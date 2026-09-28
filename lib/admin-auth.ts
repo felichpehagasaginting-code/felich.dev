@@ -38,12 +38,38 @@ export interface AdminAuthResult {
   code?: string;
 }
 
+function isAllowedOrigin(originHeader: string | null, hostHeader: string | null): boolean {
+  if (!originHeader) return true; // Non-browser / server-to-server or standard GET might not send origin
+  try {
+    const originUrl = new URL(originHeader);
+    if (hostHeader && originUrl.host.toLowerCase() === hostHeader.toLowerCase()) {
+      return true;
+    }
+    const originHost = originUrl.hostname.toLowerCase();
+    return (
+      originHost === 'localhost' ||
+      originHost === '127.0.0.1' ||
+      originHost === 'felich.dev' ||
+      originHost.endsWith('.felich.dev') ||
+      originHost.endsWith('.vercel.app')
+    );
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Guard untuk semua /api/admin/* routes.
  * Client wajib kirim `Authorization: Bearer <Firebase ID token>`.
  * Server verifikasi token via Admin SDK lalu cocokkan email ke ADMIN_EMAILS.
  */
 export async function verifyAdmin(req: NextRequest): Promise<AdminAuthResult> {
+  const origin = req.headers.get('origin');
+  const host = req.headers.get('host');
+  if (!isAllowedOrigin(origin, host)) {
+    return { ok: false, error: 'Forbidden: untrusted origin.', status: 403 };
+  }
+
   const allowed = getAdminEmails();
   if (allowed.length === 0) {
     return { ok: false, error: 'ADMIN_EMAILS is not configured.', status: 500 };
