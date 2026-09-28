@@ -6,7 +6,7 @@ import { verifyAdmin } from '@/lib/admin-auth';
 import { normalizeProject, slugify, validateProject } from '@/lib/projects';
 import { getProjectsMerged } from '@/lib/projects-server';
 
-const listLimiter = new RateLimiterMemory({ points: 60, duration: 60 });
+const listLimiter = new RateLimiterMemory({ points: 300, duration: 60 });
 const writeLimiter = new RateLimiterMemory({ points: 20, duration: 60 });
 
 function ipOf(req: NextRequest): string {

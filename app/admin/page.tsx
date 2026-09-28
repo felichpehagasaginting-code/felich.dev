@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import PageTransition from '@/components/PageTransition';
 import { useAuth } from '@/lib/useAuth';
 import { sortProjects, type Project, type ProjectFormValue } from '@/lib/projects';
@@ -27,13 +27,22 @@ export default function AdminPage() {
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [draftSignal, setDraftSignal] = useState(0);
 
+  // Refs to stabilise callback identity and prevent infinite re-render loops.
+  const userRef = useRef(user);
+  const signOutRef = useRef(signOut);
+  const loadingRef = useRef(false);
+
+  useEffect(() => { userRef.current = user; }, [user]);
+  useEffect(() => { signOutRef.current = signOut; }, [signOut]);
+
   /**
    * Fetch ke /api/admin/* dengan Bearer ID token + AbortSignal timeout (12s).
    * Bila server jawab 401 (token basi), refresh token paksa sekali lalu ulangi.
+   * Uses `userRef` so the callback identity never changes.
    */
   const apiFetch = useCallback(
     async (path: string, init?: RequestInit): Promise<Response> => {
-      const u = user as unknown as FirebaseUserLike;
+      const u = userRef.current as unknown as FirebaseUserLike;
       const send = async (force: boolean) => {
         const token = await Promise.race([
           u.getIdToken(force),
@@ -63,11 +72,12 @@ export default function AdminPage() {
       if (res.status === 401) return send(true);
       return res;
     },
-    [user]
+    [] // stable — reads user from ref
   );
 
   const load = useCallback(async () => {
-    if (!user) return;
+    if (!userRef.current || loadingRef.current) return;
+    loadingRef.current = true;
     setListLoading(true);
     setListError(null);
     try {
@@ -75,9 +85,8 @@ export default function AdminPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         // 401 persisten setelah retry = sesi/token tidak valid → paksa login ulang.
-        // Pakai `notice` (bukan listError) agar pesan tetap terlihat di layar gate login.
         if (res.status === 401) {
-          await signOut();
+          await signOutRef.current();
           setNotice(`Sesi tidak valid (${data.code ?? 'token-invalid'}): ${data.error ?? ''} Kamu sudah di-sign out — login ulang ya.`);
           setProjects([]);
           return;
@@ -89,13 +98,17 @@ export default function AdminPage() {
       console.error('[Admin] Gagal memuat projects:', err);
       setListError(err instanceof Error ? err.message : 'Gagal memuat projects.');
     } finally {
+      loadingRef.current = false;
       setListLoading(false);
     }
-  }, [user, apiFetch, signOut]);
+  }, [apiFetch]); // stable — reads user & signOut from refs
 
+  // Load projects once when user becomes available (auth resolves).
   useEffect(() => {
-    void load();
-  }, [load]);
+    if (user && !authLoading) {
+      void load();
+    }
+  }, [user, authLoading, load]);
 
   useEffect(() => {
     if (!notice) return;
