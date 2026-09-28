@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Rounded App Icon Background -->
+  <rect width="512" height="512" rx="116" fill="#FFFFFF"/>
+  <rect x="2" y="2" width="508" height="508" rx="114" stroke="#F0EEF4" stroke-width="4"/>
+
+  <!-- Purple / Lavender Top and Stem ("F" Body) -->
+  <path d="M148 104H360V166H210V408H148V104Z" fill="#5E4EF4"/>
+
+  <!-- Mint / Green Diagonal Fold and Crossbar -->
+  <path d="M148 288L210 226H336V288H148Z" fill="#6EE7B7"/>
+</svg>

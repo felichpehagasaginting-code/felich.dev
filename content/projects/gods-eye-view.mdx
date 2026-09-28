@@ -1,0 +1,60 @@
+---
+title: "God's Eye View (GEV)"
+description: "Real-time spatial intelligence console and spy-satellite simulator rendered in-browser using CesiumJS, Google Photorealistic 3D Tiles, multi-domain live telemetry (aircraft, vessels, satellites, CCTV), GLSL military optics shaders, and an OpenAI Realtime voice AI agent."
+type: "Web"
+category: "Open Source Software"
+featured: true
+techStack: [
+  "CesiumJS",
+  "JavaScript (ESM)",
+  "WebGL & GLSL Shaders",
+  "OpenAI Realtime API",
+  "Google Photorealistic 3D Tiles",
+  "Vite",
+  "Satellite.js (SGP4)",
+  "EGM96 Geoid Datum",
+  "WebSockets",
+  "Mapbox Vector Tiles"
+]
+features: [
+  "Photorealistic 3D Earth & Multi-Provider Basemaps (Google 3D Tiles, Esri, OSM)",
+  "Multi-Domain Live Sensor Fusion (11,000+ Flights, AIS Vessels, SGP4 Satellites, USGS Earthquakes, NASA Fires)",
+  "Interactive Cockpit Mode with Geoid-Conforming Terrain & 250km Radar Roster",
+  "3D CCTV Frustum Projections & Viewshed Calibration on Real Municipal Intersections",
+  "Tactical GLSL Optical Shaders (Night Vision NVG, FLIR Thermal Ironbow, CRT Phosphor, Noir, Snow)",
+  "Voice-Controlled AI Agent with 28 Geospatial Tools & Screen Grounding (OpenAI Realtime API)",
+  "Fault-Tolerant Multi-Mirror Overpass OSM Proxy with Smart Cache Isolation (PR #165 / #173)",
+  "Zero-Framework Pure ESM Architecture with Render Governor for High GPU Efficiency"
+]
+github: "https://github.com/bilawalsidhu/gods-eye-view"
+live: "https://halfpixel.ai"
+date: "2026-09-03"
+coverImage: "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/hero-open-source-reveal.gif"
+demoVideo: "https://www.youtube.com/watch?v=GRJaKcXZS94"
+gallery: [
+  "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/06-cockpit-ar.gif",
+  "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/01-style-sweep.gif",
+  "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/03-austin-cctv.gif",
+  "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/start-here/military-cockpit-dense-google-3d.gif",
+  "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/01-voice-annotate-zilker.gif",
+  "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/08-falcon9-replay.gif",
+  "https://raw.githubusercontent.com/bilawalsidhu/gods-eye-view/main/docs/media/09-undersea-cables.gif"
+]
+---
+
+### Project Overview
+**God's Eye View (GEV)** adalah konsol intelijen spasial (GEOINT/OSINT) dan simulator satelit pengintai interaktif yang berjalan langsung di browser tanpa instalasi runtime berat. Diciptakan bersama oleh Bilawal Sidhu dan Sameh Khamis (Halfpixel), proyek ini viral hingga mencapai **#1 Trending Repositori GitHub Global** dan **#8 Product of the Day di Product Hunt** dengan lebih dari 25 juta tayangan lintas media sosial serta diakui langsung oleh Brendan Eich (pencipta JavaScript & co-founder Mozilla/Brave).
+
+Sistem ini memadukan data telemetri publik dari berbagai domain global—penerbangan komersial & militer, armada maritim, elemen orbital satelit, aktivitas seismik, titik kebakaran termal, hingga kamera pengawas kota—ke dalam satu bola dunia fotorealistik yang dapat dijelajahi secara mulus dari orbit luar angkasa hingga ketinggian jalan kota.
+
+### Upstream Open Source Contribution (PR #165 & #173)
+Sebagai **Open-Source Contributor**, Felich (`daikaginza`) memperkuat lapisan ketahanan infrastruktur proxy OpenStreetMap Overpass:
+- **Resilient Multi-Mirror Rotation**: Mengatasi kelemahan kritis proxy yang sebelumnya berhenti berputar ketika menerima status HTTP 4xx (khususnya HTTP 406 Not Acceptable dari `overpass-api.de`).
+- **Cache Isolation**: Mengisolasi respons penolakan agar tidak tersimpan ke dalam cache persisten, serta menyediakan mekanisme penyajian data valid terakhir (*stale-while-revalidate*) untuk memastikan fitur anotasi batas wilayah dan layer jalan raya tetap responsif 100%.
+- Kontribusi diajukan melalui **Pull Request #165** dan secara resmi dikonsolidasikan dan dimerge ke upstream branch utama oleh pendiri proyek (Bilawal Sidhu) melalui **Pull Request #173**.
+
+### Technical Architecture
+- **CesiumJS & Photorealistic 3D Tiles**: Merender globe 3D skala 1:1 dengan elevasi bumi nyata yang dikoreksi menggunakan model gravitasi **EGM96 Geoid Datum**.
+- **Tactical GLSL Shaders**: Filter optik sensor taktis langsung di WebGL (NVG, FLIR Thermal, CRT Phosphor, dan Scope Mask adaptif).
+- **Voice AI Agent (OpenAI Realtime API)**: Kendali suara interaktif dengan 28 alat navigasi geospasial dan visual grounding analitik.
+- **Render Governor**: Mengoptimalkan rendering loop `requestAnimationFrame` untuk efisiensi daya baterai dan beban GPU.

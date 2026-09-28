@@ -1,0 +1,54 @@
+---
+title: "Felys"
+description: "AI-powered dual-mode productivity and personal finance companion for university students, integrating academic task triage with multi-account cashflow tracking via contextual Google Gemini intelligence."
+type: "Web"
+category: "Personal Project"
+featured: true
+techStack: ["Next.js 15", "React 19", "TypeScript", "Firebase Firestore", "Firebase Auth", "Google Gemini API", "Vercel AI SDK", "Tailwind CSS", "Zustand", "Framer Motion", "Web Audio API", "PWA"]
+features: [
+  "Dual-Mode Ergonomic Workspace (Academic Lavender ↔ Finance Mint)",
+  "Mathematical Urgency Scoring Engine (0-100 Weighted Task Priority)",
+  "Cross-Mode Contextual AI Companion ('Fio') with Gemini Fallback Chain",
+  "Multi-Account & Indonesian E-Wallet Allocation with Immutable Audit Ledger",
+  "Telegram Bot Assistant & Indonesian Bank SMS Mutation Parser",
+  "Zero-Friction Numpad Quick Entry & Indonesian Natural Language Processing Bar",
+  "Privacy-First Web Worker Receipt OCR & Split-Screen PDF Lecture Reader",
+  "Spaced Repetition Study Engine Powered by SuperMemo SM-2 Algorithm",
+  "Always-Open Desktop Companion (PiP Mini Window, Live Tab Timer, Scratchpad)",
+  "Bi-directional Google Calendar Synchronization & Web Push RFC 8291 VAPID"
+]
+github: "https://github.com/felichpehagasaginting-code/Felys"
+live: "https://felys.vercel.app/"
+date: "2026-09-01"
+coverImage: "/projects/felys/felys-logo.svg"
+---
+
+### Problem & Motivation
+Mahasiswa menghadapi dua beban mental bersamaan setiap hari: tenggat waktu tugas kuliah yang menumpuk dan pengelolaan uang saku bulanan yang cepat menipis. Penggunaan aplikasi terpisah (seperti Notion untuk to-do list dan spreadsheet untuk pencatatan pengeluaran) mengaburkan korelasi penting: **saat stres deadline meningkat, pengeluaran impulsif (kopi, pesan antar makanan, camilan larut malam) melonjak drastis**.
+
+**Felys** hadir untuk menyatukan kedua dimensi tersebut dalam satu asisten web dual-mode yang cerdas, hemat memori, dan berbasis AI kontekstual.
+
+### Dual-Mode Ergonomic Workspace
+1. **Mode Akademik (Lavender Pop `#B69CFF`)**:
+   - **Formula Urgensi Matematis**: Penilaian prioritas tugas otomatis pada skala $0 - 100$ menggunakan formula linear berbobot:
+     $$U = (0.5 \times D) + (0.3 \times P) + (0.2 \times E)$$
+     ($D$: Kedekatan deadline, $P$: Bobot prioritas akademik, $E$: Estimasi jam pengerjaan).
+   - **D-Day Countdown**: Kartu hitung mundur visual untuk ujian tengah semester, akhir semester, dan sidang skripsi.
+   - **Spaced Repetition Flashcards**: Pengulangan materi kuliah berkala menggunakan algoritma memori kognitif **SuperMemo SM-2**.
+   - **Team Study Workspace**: Papan kanban kolaboratif untuk pengerjaan tugas kelompok.
+
+2. **Mode Keuangan (Mint Pop `#7FE3C0`)**:
+   - **Multi-Account & E-Wallet Grid**: Pembagian alokasi saldo dompet fisik dan e-wallet resmi Indonesia (GoPay, SeaBank, Superbank, DANA, OVO, ShopeePay, BCA, Mandiri, BRI, BNI).
+   - **Direct Balance Reconciliation**: Penyesuaian saldo instan yang didukung pencatatan audit log `ledger_entries` immutable.
+   - **Numpad Quick Entry & NLP Bar**: Pencatatan pengeluaran dalam 3 detik dengan pengali `+000` atau input teks alami bahasa Indonesia (*"Makan siang ayam geprek 18rb"*).
+   - **Split Bill & IOU**: Pembagi tagihan makan bersama dengan generator pesan penagihan sopan via WhatsApp.
+
+### Contextual AI Engine: "Fio"
+- **Cross-Mode Heuristics**: Otomatis mendeteksi saat mahasiswa menghadapi $\ge 2$ deadline mendesak ($\le 7$ hari) bersamaan dengan konsumsi anggaran hiburan/makan $\ge 70\%$, lalu menyarankan alternatif hemat dan produktif (misalnya belajar di asrama dengan kopi sachet untuk menghemat biaya dan energi).
+- **Rantai Fallback Multi-Tier**: Arsitektur AI tahan banting (`gemini-2.5-flash` $\rightarrow$ `gemini-2.0-flash` $\rightarrow$ `gemini-1.5-flash`) yang menjamin latensi rendah dan ketersediaan 100%.
+- **Deterministic Skills**: Layanan perhitungan cepat untuk kueri keterjangkauan biaya (*can-i-spend*), perencanaan jadwal (*plan-tasks*), dan simulasi tabungan (*simulate-saving*).
+
+### Integrasi Omnichannel & Privasi Edge
+- **Telegram Bot Assistant**: Asisten chat dua arah yang terhubung via pairing code 6-digit untuk pencatatan tugas dan pengeluaran kilat tanpa membuka browser.
+- **Parser Mutasi Bank**: Regex pattern matcher yang membedah format SMS dan notifikasi mutasi perbankan Indonesia menjadi entri transaksi terstruktur.
+- **Client-Side Edge OCR & PDF Reader**: Pemindaian struk belanja fisik via `tesseract.js` Web Worker dan pembacaan slide materi kuliah PDF via `unpdf` langsung di browser pengguna tanpa mengirim file ke server eksternal.

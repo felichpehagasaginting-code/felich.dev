@@ -48,6 +48,28 @@ export const PROJECT_ICONS: Record<string, React.ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
     </svg>
   ),
+  '4tune-labs': (
+    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+    </svg>
+  ),
+  'nusantara-skies': (
+    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+    </svg>
+  ),
+  'felys': (
+    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  'gods-eye-view': (
+    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" strokeWidth={1.5} />
+      <circle cx="12" cy="12" r="3" strokeWidth={1.5} />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v3m0 12v3M3 12h3m12 0h3" />
+    </svg>
+  ),
 };
 
 export function getProjectIcon(slug: string): React.ReactNode {

@@ -1,0 +1,44 @@
+---
+title: "Nusantara Skies"
+description: "Simulator penerbangan mid-fidelity dengan fisika 6-DOF 120Hz double-precision, simulasi 3 armada pesawat (C172S, TBM930, A320neo), dan arsitektur runtime microservice berbasis Model Context Protocol (MCP)."
+type: "Desktop / Web"
+category: "Personal Project"
+featured: true
+techStack: ["Unity 6", "C#", "Three.js", "TypeScript", "Node.js", "Model Context Protocol (MCP)", "Python", "SQLite", "Open-Meteo", "OpenSky ADS-B"]
+features: [
+  "Fisika Penerbangan 6-DOF 120Hz Double-Precision dengan Camera Floating Origin",
+  "Arsitektur Runtime MCP-Native (Weather, Traffic, Geo, LLM ATC, Logbook)",
+  "3 Armada Pesawat: Cessna 172S, Daher TBM 930, dan Airbus A320neo",
+  "13 Bandara Featured Indonesia & Regional (WIII, WADD, WSSS, WMKK, dll.)",
+  "Deterministic ATC FSM Berpagar dengan Voice STT/TTS via LLM",
+  "Evaluasi Debrief Pendaratan Otomatis & Logbook SQLite Lokal",
+  "Implementasi Ganda: Unity 6 URP Native & Three.js Web 3D Client",
+  "Verifikasi TDD 1:1 Menggunakan Python Executable Mirrors"
+]
+github: "https://github.com/felichpehagasaginting-code/nusantara-skies"
+live: ""
+date: "2026-09-22"
+---
+
+### Problem & Motivation
+Membangun simulator penerbangan bukan sekadar merender model 3D di udara; tantangan sesungguhnya terletak pada kestabilan numerik kalkulasi aerodinamika, pemrosesan koordinat geospasial bola bumi tanpa *floating-point jitter*, serta integrasi data dunia nyata (cuaca dan lalu lintas udara) secara dinamis.
+
+Proyek **Nusantara Skies** dirancang sebagai pembuktian rekayasa perangkat lunak tingkat tinggi: *systems programming* berpresisi tinggi, pemodelan matematis aerodinamika 6-DOF, dan penerapan arsitektur modern **Model Context Protocol (MCP) pada level *runtime***.
+
+### Keunggulan Arsitektural: Runtime MCP-Native
+Berbeda dengan proyek konvensional yang hanya memanfaatkan AI generatif pada tahap penulisan kode (*development-time*), simulator ini secara aktif terhubung ke **SimHub Gateway** dan mengonsumsi 5 microservice MCP independen saat game sedang dimainkan:
+- **`weather-mcp`**: Mengambil data observasi METAR resmi stasiun cuaca dan profil kecepatan angin ketinggian (*winds aloft*) dari AviationWeather dan Open-Meteo.
+- **`traffic-mcp`**: Menghubungkan pesawat di sekitar wilayah udara pengguna dengan data transponder ADS-B langsung dari OpenSky Network serta generator prosedural deterministik saat luring.
+- **`geo-mcp`**: Menyediakan basis data navigasi bandara, navaid, dan geometri landasan pacu dari OurAirports serta OpenStreetMap.
+- **`llm-atc-mcp`**: Mengimplementasikan konsep *"LLM di dalam pagar"* — clearance izin ATC dikontrol 100% oleh Finite State Machine (FSM) deterministik, sementara LLM hanya memvariasikan fraseologi ICAO resmi dan memproses masukan suara pilot.
+- **`logbook-mcp`**: Mencatat telemetri dan riwayat penerbangan secara terstruktur ke dalam SQLite lokal via modul native Node.js `node:sqlite` (Node.js >= 22.5).
+
+### Flight Dynamics Model (FDM) 6-DOF
+- **Numerik Presisi Ganda**: Dihitung pada loop fisik $120\text{ Hz}$ dalam kerangka acuan ENU (East-North-Up) meter untuk meminimalisasi akumulasi galat integrasi Euler/RK4.
+- **Camera-Relative Floating Origin**: Sistem koordinat bergeser dinamis setiap radius $10\text{ km}$ untuk melenyapkan artefak *vertex jitter* pada mesh medan geospasial.
+- **Aerodinamika Non-Linier**: Memodelkan histeresis separasi stall Kirchhoff, kompresibilitas atmosfer standar ISA 1976, *ground effect* saat flare pendaratan, serta dinamika interaksi roda elastis dengan landasan pacu.
+
+### Dual Client & Pipeline Verifikasi TDD
+Proyek ini mengadopsi prinsip pengujian ketat (*Test-Driven Development*):
+1. **Python Executable Mirrors (ADR-0001)**: Logika FDM, atmosfer ISA, parser METAR, dan detektor fase penerbangan di-porting 1:1 ke skrip Python dan diverifikasi melalui 21 pengujian otomatis `pytest`.
+2. **Klien Desktop & Web**: Implementasi visual engine disediakan dalam bentuk klien native Unity 6 LTS (URP) untuk performa penuh kartu grafis, serta klien web mandiri berbasis Three.js + TypeScript + Vite lengkap dengan PFD, ND, dan kokpit 3D interaktif.

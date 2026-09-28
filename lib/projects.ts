@@ -121,6 +121,7 @@ const EXTENSIONLESS_CDN_HOSTS = [
 
 export function isAllowedImageUrl(url: string): boolean {
   if (!url) return true; // kosong = opsional, valid
+  if (url.startsWith('/')) return true; // path gambar statis lokal di folder public/
   try {
     const u = new URL(url.trim());
     if (u.protocol !== 'https:') return false;

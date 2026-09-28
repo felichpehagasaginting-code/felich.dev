@@ -44,10 +44,11 @@ describe('lib/projects', () => {
   });
 
   describe('isAllowedImageUrl', () => {
-    it('mengizinkan host gratis', () => {
+    it('mengizinkan host gratis dan path relatif lokal', () => {
       expect(isAllowedImageUrl('https://cdn.jsdelivr.net/gh/u/r@main/a.webp')).toBe(true);
       expect(isAllowedImageUrl('https://ik.imagekit.io/u/a.png')).toBe(true);
       expect(isAllowedImageUrl('https://images.unsplash.com/photo-1')).toBe(true);
+      expect(isAllowedImageUrl('/projects/4tune-labs/og-image.png')).toBe(true);
     });
     it('menolak host sembarang dan http', () => {
       expect(isAllowedImageUrl('https://evil.example.com/a.png')).toBe(false);
