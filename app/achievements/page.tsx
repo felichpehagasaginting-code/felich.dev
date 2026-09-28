@@ -347,7 +347,7 @@ export default function Achievements() {
   }, []);
 
   const predikat = getPredikat(academicStats.ipk);
-  const currentSemester = semesterData.filter((s) => s.ips !== null).length;
+  const currentSemester = 3; // Sedang aktif menempuh Semester 3 (Ganjil 2026/2027)
 
   const copyCredentialId = (id: string) => {
     introAudio.playTick(1.0);
@@ -624,9 +624,9 @@ export default function Achievements() {
             {/* Semester Milestone Cards Grid */}
             <div className="mt-8 pt-6 border-t border-[var(--border-default)]">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {semesterData.map((sem, i) => {
+                {semesterData.map((sem) => {
                   const isCompleted = sem.ips !== null;
-                  const isCurrent = i === currentSemester - 1;
+                  const isCurrent = sem.semester === currentSemester;
 
                   return (
                     <div
@@ -634,12 +634,21 @@ export default function Achievements() {
                       className={`p-4 rounded-xl border transition-all ${
                         isCompleted
                           ? 'border-[var(--border-default)] bg-[var(--bg-base)]'
+                          : isCurrent
+                          ? 'border-[var(--brand)]/60 bg-[var(--brand)]/5 shadow-xs'
                           : 'border-[var(--border-default)]/40 bg-[var(--bg-base)]/40 opacity-40'
                       }`}
                     >
                       <div className="flex justify-between items-center text-[10px] font-mono text-[var(--text-muted)]">
                         <span>Semester {sem.semester}</span>
-                        {isCompleted && <span className="text-[var(--success)] font-bold">Passed</span>}
+                        {isCompleted ? (
+                          <span className="text-[var(--success)] font-bold">Passed</span>
+                        ) : isCurrent ? (
+                          <span className="text-[var(--brand)] font-bold flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)] animate-pulse" />
+                            Active
+                          </span>
+                        ) : null}
                       </div>
 
                       {isCompleted ? (
@@ -650,6 +659,11 @@ export default function Achievements() {
                           <p className="text-[9px] font-mono text-[var(--text-muted)] mt-0.5">
                             {sem.sks} SKS Completed
                           </p>
+                        </div>
+                      ) : isCurrent ? (
+                        <div className="mt-2">
+                          <p className="text-sm font-display font-bold text-[var(--brand)]">Enrolled</p>
+                          <p className="text-[9px] font-mono text-[var(--text-muted)] mt-0.5">Ganjil 2026/2027</p>
                         </div>
                       ) : (
                         <div className="mt-2">
