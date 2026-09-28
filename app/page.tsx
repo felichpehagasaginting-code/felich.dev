@@ -57,8 +57,8 @@ export default function Home() {
             '@type': 'Person',
             name: 'Felich',
             url: 'https://felich.dev',
-            jobTitle: 'Software Engineer',
-            knowsAbout: ['AI Engineering', 'FinTech', 'Next.js', 'TypeScript', 'Machine Learning'],
+            jobTitle: 'Software Engineer & Open-Source Contributor',
+            knowsAbout: ['AI Engineering', 'FinTech', 'Next.js', 'TypeScript', 'Machine Learning', 'Open-Source Systems'],
             sameAs: [
               'https://github.com/felichpehagasaginting-code',
               'https://www.linkedin.com/in/felich-pehagasa-ginting-b6a8a32a6/',

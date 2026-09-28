@@ -218,6 +218,7 @@ export default function Hero() {
               t('hero_typing_se'),
               t('hero_typing_pe'),
               t('hero_typing_ai'),
+              t('hero_typing_osc'),
               t('hero_typing_devops'),
               t('hero_typing_fs'),
             ]}

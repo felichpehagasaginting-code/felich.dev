@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     default: siteConfig.title,
     template: '%s | Felich',
   },
-  keywords: ['felich', 'software engineer', 'ai engineer', 'machine learning', 'portfolio', 'fullstack developer', 'next.js', 'typescript'],
+  keywords: ['felich', 'software engineer', 'open-source contributor', 'ai engineer', 'machine learning', 'portfolio', 'fullstack developer', 'next.js', 'typescript'],
   authors: [{ name: siteConfig.author, url: siteConfig.url }],
   creator: siteConfig.author,
 };
